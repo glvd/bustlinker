@@ -2,8 +2,8 @@ package plugin
 
 import (
 	"github.com/ipfs/go-ipfs/core"
+	"github.com/ipfs/go-ipfs/linker"
 	"github.com/ipfs/go-ipfs/plugin"
-	linker "github.com/ipfs/go-ipfs/plugin/plugins/linker/impl"
 )
 
 var Plugins = []plugin.Plugin{

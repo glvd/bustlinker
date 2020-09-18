@@ -2,7 +2,7 @@ package linker
 
 import (
 	"encoding/json"
-	"github.com/ipfs/go-ipfs/plugin/plugins/linker/impl/config"
+	"github.com/ipfs/go-ipfs/linker/config"
 	"os"
 	"path/filepath"
 

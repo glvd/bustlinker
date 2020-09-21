@@ -178,6 +178,8 @@ func doInit(out io.Writer, repoRoot string, empty bool, identity *config.Identit
 		conf.Bootstrap = fsrepo.CleanUpBootstrapWhenUseSwarmKey(repoRoot)
 	}
 
+	//set badgerds2 as default
+	confProfiles = "badgerds," + confProfiles
 	if err := applyProfiles(conf, confProfiles); err != nil {
 		return err
 	}

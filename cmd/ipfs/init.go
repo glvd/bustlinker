@@ -179,7 +179,12 @@ func doInit(out io.Writer, repoRoot string, empty bool, identity *config.Identit
 	}
 
 	//set badgerds2 as default
-	confProfiles = "badgerds," + confProfiles
+	if confProfiles == "" {
+		confProfiles = "badgerds"
+	} else {
+		confProfiles = filepath.Join("badgerds," + confProfiles)
+	}
+
 	if err := applyProfiles(conf, confProfiles); err != nil {
 		return err
 	}

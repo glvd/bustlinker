@@ -175,6 +175,7 @@ func doInit(out io.Writer, repoRoot string, empty bool, identity *config.Identit
 		if err != nil {
 			return err
 		}
+		conf.Bootstrap = fsrepo.CleanUpBootstrapWhenUseSwarmKey(repoRoot)
 	}
 
 	if err := applyProfiles(conf, confProfiles); err != nil {

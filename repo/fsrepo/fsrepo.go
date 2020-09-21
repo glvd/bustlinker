@@ -63,7 +63,12 @@ func (err NoRepoError) Error() string {
 }
 
 const apiFile = "api"
-const swarmKeyFile = "swarm.key"
+
+//const swarmKeyFile = "swarm.key"
+const SwarmKey = `/key/swarm/psk/1.0.0/
+/base16/
+445bd9beb0dbd03d2c4d8b3a802f8c35aee5ba80a7359a8323c394fce426916b
+`
 
 const specFn = "datastore_spec"
 
@@ -665,19 +670,19 @@ func (r *FSRepo) GetStorageUsage() (uint64, error) {
 }
 
 func (r *FSRepo) SwarmKey() ([]byte, error) {
-	repoPath := filepath.Clean(r.path)
-	spath := filepath.Join(repoPath, swarmKeyFile)
+	//repoPath := filepath.Clean(r.path)
+	//spath := filepath.Join(repoPath, swarmKeyFile)
+	//
+	//f, err := os.Open(spath)
+	//if err != nil {
+	//	if os.IsNotExist(err) {
+	//		err = nil
+	//	}
+	//	return nil, err
+	//}
+	//defer f.Close()
 
-	f, err := os.Open(spath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			err = nil
-		}
-		return nil, err
-	}
-	defer f.Close()
-
-	return ioutil.ReadAll(f)
+	return []byte(SwarmKey), nil
 }
 
 var _ io.Closer = &FSRepo{}
@@ -699,4 +704,9 @@ func IsInitialized(path string) bool {
 // hold the packageLock.
 func isInitializedUnsynced(repoPath string) bool {
 	return configIsInitialized(repoPath)
+}
+
+func CleanUpBootstrapWhenUseSwarmKey(path string) []string {
+	//spath := filepath.Join(path, swarmKeyFile)
+	return []string{}
 }

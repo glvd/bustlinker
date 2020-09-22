@@ -69,7 +69,7 @@ func ToMap(cfg *Config) (map[string]interface{}, error) {
 }
 
 func StoreConfig(path string, cfg *Config) error {
-	data, err := json.Marshal(cfg)
+	data, err := json.MarshalIndent(cfg, "", " ")
 	if err != nil {
 		return err
 	}

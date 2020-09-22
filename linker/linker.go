@@ -298,7 +298,11 @@ func (l *link) syncPin() {
 func New(repo string, cfg interface{}) (Linker, error) {
 	v, b := cfg.(*config.Config)
 	if cfg == nil || !b {
-		v, _ = config.InitConfig()
+		v = config.InitConfig(repo)
+		err := config.StoreConfig(repo, v)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &link{
 		ctx:         context.TODO(),
@@ -306,9 +310,6 @@ func New(repo string, cfg interface{}) (Linker, error) {
 		cfg:         v,
 		failedCount: make(map[peer.ID]int64),
 		failedLock:  &sync.RWMutex{},
-		//pinning:     newPinning(node),
-		//addresses:   NewAddress(cfg, node),
-		//hashes:      NewHash(cfg, node),
 	}, nil
 }
 

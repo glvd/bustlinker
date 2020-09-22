@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 type CacheConfig struct {
@@ -21,8 +24,9 @@ type Config struct {
 	Address     CacheConfig
 }
 
-var DefaultBootstrapAddresses = []string{}
+//var DefaultBootstrapAddresses = []string{}
 var DefaultPinningSeconds = 30
+var DefaultConfigName = "linker"
 
 // Clone copies the config. Use when updating.
 func (c *Config) Clone() (*Config, error) {
@@ -64,7 +68,33 @@ func ToMap(cfg *Config) (map[string]interface{}, error) {
 	return m, nil
 }
 
-func InitConfig() (*Config, error) {
+func StoreConfig(path string, cfg *Config) error {
+	data, err := json.Marshal(cfg)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(filepath.Join(path, DefaultConfigName), data, 0755)
+}
+
+func InitConfig(path string) *Config {
+	open, err := os.Open(filepath.Join(path, DefaultConfigName))
+	if err != nil {
+		return defaultConfig()
+	}
+	var cfg Config
+	cfgData, err := ioutil.ReadAll(open)
+	if err != nil {
+		return defaultConfig()
+	}
+	err = json.Unmarshal(cfgData, &cfg)
+	if err != nil {
+		return defaultConfig()
+	}
+
+	return &cfg
+}
+
+func defaultConfig() *Config {
 	cfg := Config{
 		MaxAttempts: 3,
 		Pinning: Pinning{
@@ -77,5 +107,5 @@ func InitConfig() (*Config, error) {
 			BackupSeconds: 30,
 		},
 	}
-	return &cfg, nil
+	return &cfg
 }

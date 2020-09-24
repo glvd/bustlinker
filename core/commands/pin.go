@@ -183,7 +183,12 @@ var addPinCmd = &cmds.Command{
 func pinAddMany(ctx context.Context, api coreiface.CoreAPI, enc cidenc.Encoder, paths []string, recursive bool) ([]string, error) {
 	added := make([]string, len(paths))
 	for i, b := range paths {
-		rp, err := api.ResolvePath(ctx, path.New(b))
+		c, err := cid.Parse(b)
+		if err != nil {
+			return nil, err
+		}
+		c = cid.NewCidV1(c.Type(), c.Hash())
+		rp, err := api.ResolvePath(ctx, path.IpfsPath(c))
 		if err != nil {
 			return nil, err
 		}

@@ -88,8 +88,7 @@ func HostnameOption() ServeOption {
 					// It does.
 
 					// Should this gateway use subdomains instead of paths?
-					//tag:close subdomains
-					if gw.UseSubdomains && false {
+					if gw.UseSubdomains {
 						// Yes, redirect if applicable
 						// Example: dweb.link/ipfs/{cid} → {cid}.ipfs.dweb.link
 						newURL, err := toSubdomainURL(host, r.URL.Path, r)

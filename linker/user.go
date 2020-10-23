@@ -3,10 +3,10 @@ package linker
 type user struct {
 }
 
-func (*user) Subscribe(hash string) {
+func (*user) Subscribe(id string) {
 
 }
 
-func (*user) Describe(hash string) {
+func (*user) Describe(id string) {
 
 }

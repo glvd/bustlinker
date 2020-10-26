@@ -14,7 +14,7 @@ const hashName = "hash"
 type HashCache struct {
 	lock   *sync.RWMutex
 	hashes map[string]map[peer.ID]bool
-	cache  Cacher
+	cache  Cache
 }
 
 func hashCache() *HashCache {

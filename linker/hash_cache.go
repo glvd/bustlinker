@@ -26,7 +26,7 @@ func hashCache() *HashCache {
 
 func NewHash(cfg *config.Config, repo string, node *core.IpfsNode) *HashCache {
 	cache := hashCache()
-	log.Info("hash cache initialized")
+	log.Info("hash data initialized")
 	cache.cache = NewCache(cfg.Hash, repo, hashName)
 	return cache
 }

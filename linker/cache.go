@@ -6,22 +6,21 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/dgraph-io/badger/v2"
-	"github.com/dgraph-io/badger/v2/options"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 const (
-	cacheName = ".cache"
+	cacheName = ".data"
 )
 
-type baseCache struct {
-	db           *badger.DB
-	iteratorOpts badger.IteratorOptions
-	cfg          config.CacheConfig
+type data struct {
+	db  *gorm.DB
+	cfg config.CacheConfig
 }
 
 type Cache struct {
-	baseCache
+	data
 }
 
 // Cacher ...
@@ -61,37 +60,29 @@ func (v *DataHashInfo) Unmarshal(b []byte) error {
 
 // NewCache ...
 func NewCache(cfg config.CacheConfig, path, name string) Cacher {
+
 	path = filepath.Join(path, name)
-	var err error
-	_, err = os.Stat(path)
+	_, err := os.Stat(path)
 	if err != nil && os.IsNotExist(err) {
 		err := os.MkdirAll(path, 0755)
 		if err != nil {
 			panic(err)
 		}
 	}
-	c := &Cache{
-		baseCache: baseCache{
-			cfg: cfg,
-		},
-	}
-	opts := badger.DefaultOptions(path)
-	opts.CompactL0OnClose = false
-	opts.Truncate = true
-	opts.ValueLogLoadingMode = options.FileIO
-	opts.TableLoadingMode = options.MemoryMap
-	opts.MaxTableSize = 16 << 20
-	opts.Logger = log
-	c.db, err = badger.Open(opts)
+	db, err := gorm.Open(sqlite.Open(filepath.Join(path, "linker.db")), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		panic("failed to connect database")
 	}
-	c.iteratorOpts = badger.DefaultIteratorOptions
-	c.iteratorOpts.Reverse = true
-	return c
+
+	c := data{
+		db:  db,
+		cfg: config.CacheConfig{},
+	}
+
+	return &c
 }
 
-func (c *baseCache) UpdateBytes(hash string, b []byte) error {
+func (c *data) UpdateBytes(hash string, b []byte) error {
 	return c.db.Update(
 		func(txn *badger.Txn) error {
 			item, err := txn.Get([]byte(hash))
@@ -105,7 +96,7 @@ func (c *baseCache) UpdateBytes(hash string, b []byte) error {
 }
 
 // Update ...
-func (c *baseCache) Update(hash string, up CacheUpdater) error {
+func (c *data) Update(hash string, up CacheUpdater) error {
 	return c.db.Update(
 		func(txn *badger.Txn) error {
 			item, err := txn.Get([]byte(hash))
@@ -132,7 +123,7 @@ func (c *baseCache) Update(hash string, up CacheUpdater) error {
 }
 
 // SaveNode ...
-func (c *baseCache) Store(hash string, data json.Marshaler) error {
+func (c *data) Store(hash string, data json.Marshaler) error {
 	return c.db.Update(
 		func(txn *badger.Txn) error {
 			encode, err := data.MarshalJSON()
@@ -144,7 +135,7 @@ func (c *baseCache) Store(hash string, data json.Marshaler) error {
 }
 
 // LoadNode ...
-func (c *baseCache) Load(hash string, data json.Unmarshaler) error {
+func (c *data) Load(hash string, data json.Unmarshaler) error {
 	return c.db.View(
 		func(txn *badger.Txn) error {
 			item, err := txn.Get([]byte(hash))
@@ -158,7 +149,7 @@ func (c *baseCache) Load(hash string, data json.Unmarshaler) error {
 }
 
 // Range ...
-func (c *baseCache) Range(f func(key, value string) bool) {
+func (c *data) Range(f func(key, value string) bool) {
 	err := c.db.View(func(txn *badger.Txn) error {
 		iter := txn.NewIterator(c.iteratorOpts)
 		defer iter.Close()
@@ -190,7 +181,7 @@ func (c *baseCache) Range(f func(key, value string) bool) {
 }
 
 // Close ...
-func (c *baseCache) Close() error {
+func (c *data) Close() error {
 	if c.db != nil {
 		defer func() {
 			c.db = nil

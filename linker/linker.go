@@ -288,7 +288,7 @@ func (l *link) syncPin() {
 				return
 			}
 			for pin = range ls {
-				log.Debugw("add to pin cache", "hash", pin.Path().String())
+				log.Debugw("add to pin data", "hash", pin.Path().String())
 				l.pinning.Add(pin.Path().String())
 			}
 			//release:per/day:test:60*sec

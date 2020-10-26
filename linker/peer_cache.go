@@ -27,7 +27,7 @@ func peerCache() *PeerCache {
 
 func NewAddress(cfg *config.Config, repo string, node *core.IpfsNode) *PeerCache {
 	cache := peerCache()
-	log.Info("peer cache initialized")
+	log.Info("peer data initialized")
 
 	cache.cache = NewCache(cfg.Address, repo, peerName)
 	return cache
@@ -108,7 +108,7 @@ func (c *PeerCache) LoadAddress(ctx context.Context) (<-chan peer.AddrInfo, erro
 		defer close(ai)
 
 		c.cache.Range(func(hash string, value string) bool {
-			log.Infow("per cache ranging", "hash", hash, "value", value)
+			log.Infow("per data ranging", "hash", hash, "value", value)
 			var info peer.AddrInfo
 			err := info.UnmarshalJSON([]byte(value))
 			if err != nil {

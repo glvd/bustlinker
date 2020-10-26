@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	cacheName = ".data"
+	cacheName = "linker.s3db"
 )
 
 type data struct {
@@ -59,7 +59,7 @@ func NewCache(cfg config.CacheConfig, path, name string) Cache {
 			panic(err)
 		}
 	}
-	dsn := fmt.Sprintf("file:%s?_auth&_auth_user=amin&_auth_pass=admin", filepath.Join(path, "linker.db"))
+	dsn := fmt.Sprintf("file:%s?_auth&_auth_user=amin&_auth_pass=admin", filepath.Join(path, cacheName))
 	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")

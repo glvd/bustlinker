@@ -67,7 +67,7 @@ func NewCache(cfg config.CacheConfig, path, name string) Cache {
 
 	c := data{
 		db:  db,
-		cfg: config.CacheConfig{},
+		cfg: cfg,
 	}
 
 	return &c

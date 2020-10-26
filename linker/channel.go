@@ -7,4 +7,5 @@ type Channel struct {
 	ID     string
 	IsFree bool
 	Hash   string
+	IsJoin bool
 }

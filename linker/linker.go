@@ -3,8 +3,10 @@ package linker
 import (
 	"bufio"
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
+	ds "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/linker/config"
 	"sync"
 	"time"
@@ -311,6 +313,10 @@ func New(repo string, cfg interface{}) (Linker, error) {
 		failedCount: make(map[peer.ID]int64),
 		failedLock:  &sync.RWMutex{},
 	}, nil
+}
+
+func LinkKey(id peer.ID) ds.Key {
+	return ds.NewKey("/link/" + base64.RawStdEncoding.EncodeToString([]byte(id)))
 }
 
 var _ Linker = &link{}

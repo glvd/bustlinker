@@ -15,7 +15,7 @@ const peerName = "address"
 type PeerCache struct {
 	lock      *sync.RWMutex
 	addresses map[peer.ID]peer.AddrInfo
-	cache     Cacher
+	cache     Cache
 }
 
 func peerCache() *PeerCache {
@@ -105,23 +105,23 @@ func (c *PeerCache) UpdatePeerAddress(new peer.AddrInfo) bool {
 func (c *PeerCache) LoadAddress(ctx context.Context) (<-chan peer.AddrInfo, error) {
 	ai := make(chan peer.AddrInfo)
 	go func() {
-		defer close(ai)
+		//defer close(ai)
 
-		c.cache.Range(func(hash string, value string) bool {
-			log.Infow("per data ranging", "hash", hash, "value", value)
-			var info peer.AddrInfo
-			err := info.UnmarshalJSON([]byte(value))
-			if err != nil {
-				log.Errorw("unmarshal addr info failed in range", "err", err)
-				return false
-			}
-			select {
-			case <-ctx.Done():
-				return false
-			case ai <- info:
-				return true
-			}
-		})
+		//c.cache.Range(func(hash string, value string) bool {
+		//	log.Infow("per data ranging", "hash", hash, "value", value)
+		//	var info peer.AddrInfo
+		//	err := info.UnmarshalJSON([]byte(value))
+		//	if err != nil {
+		//		log.Errorw("unmarshal addr info failed in range", "err", err)
+		//		return false
+		//	}
+		//	select {
+		//	case <-ctx.Done():
+		//		return false
+		//	case ai <- info:
+		//		return true
+		//	}
+		//})
 	}()
 	return ai, nil
 }
@@ -129,21 +129,21 @@ func (c *PeerCache) LoadAddress(ctx context.Context) (<-chan peer.AddrInfo, erro
 // SaveNode ...
 func (c *PeerCache) SaveAddress(ctx context.Context) (err error) {
 	go func() {
-		for _, id := range c.Peers() {
-			select {
-			case <-ctx.Done():
-				return
-			default:
-				address, b := c.GetAddress(id)
-				if !b {
-					continue
-				}
-				err := c.cache.Store(id.Pretty(), address)
-				if err != nil {
-					return
-				}
-			}
-		}
+		//for _, id := range c.Peers() {
+		//	select {
+		//	case <-ctx.Done():
+		//		return
+		//	default:
+		//address, b := c.GetAddress(id)
+		//if !b {
+		//	continue
+		//}
+		//err := c.cache.Store(id.Pretty(), address)
+		//if err != nil {
+		//	return
+		//}
+		//}
+		//}
 	}()
 	return nil
 }

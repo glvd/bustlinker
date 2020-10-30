@@ -1,7 +1,6 @@
-package linker
+package data
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/ipfs/go-ipfs/linker/config"
 	"os"
@@ -23,34 +22,8 @@ type data struct {
 type Cache interface {
 }
 
-type CacheUpdater interface {
-	json.Unmarshaler
-	Do()
-	json.Marshaler
-}
-
-// DataHashInfo ...
-type DataHashInfo struct {
-	DataHash string `json:"data_hash"`
-}
-
-// HashCache ...
-func (v DataHashInfo) Hash() string {
-	return v.DataHash
-}
-
-// Marshal ...
-func (v DataHashInfo) Marshal() ([]byte, error) {
-	return json.Marshal(v)
-}
-
-// Unmarshal ...
-func (v *DataHashInfo) Unmarshal(b []byte) error {
-	return json.Unmarshal(b, v)
-}
-
-// NewCache ...
-func NewCache(cfg config.CacheConfig, path, name string) Cache {
+//New ...
+func New(cfg config.CacheConfig, path, name string) Cache {
 	path = filepath.Join(path, name)
 	_, err := os.Stat(path)
 	if err != nil && os.IsNotExist(err) {

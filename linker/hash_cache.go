@@ -1,6 +1,7 @@
 package linker
 
 import (
+	"github.com/ipfs/go-ipfs/linker/data"
 	"sync"
 
 	"github.com/ipfs/go-ipfs/linker/config"
@@ -14,7 +15,7 @@ const hashName = "hash"
 type HashCache struct {
 	lock   *sync.RWMutex
 	hashes map[string]map[peer.ID]bool
-	cache  Cache
+	cache  data.Cache
 }
 
 func hashCache() *HashCache {
@@ -27,7 +28,7 @@ func hashCache() *HashCache {
 func NewHash(cfg *config.Config, repo string, node *core.IpfsNode) *HashCache {
 	cache := hashCache()
 	log.Info("hash data initialized")
-	cache.cache = NewCache(cfg.Hash, repo, hashName)
+	cache.cache = data.New(cfg.Hash, repo, hashName)
 	return cache
 }
 

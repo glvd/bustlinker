@@ -35,8 +35,7 @@ var protocols = []string{
 var NewLine = []byte{'\n'}
 
 type Linker interface {
-	SetNode(node *core.IpfsNode) Linker
-	Start() error
+	Start(node *core.IpfsNode) error
 	//plugin.Plugin
 	//plugin.PluginDaemonInternal
 }
@@ -143,8 +142,9 @@ func (l *link) registerHandle() {
 	l.node.PeerHost.SetStreamHandler(l.newLinkHashHandle())
 }
 
-func (l *link) Start() error {
+func (l *link) Start(node *core.IpfsNode) error {
 	fmt.Println("Link start")
+	l.node = node
 
 	l.pinning = newPinning(l.node)
 	l.addresses = NewAddress(l.cfg, l.repo, l.node)

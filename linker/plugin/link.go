@@ -32,5 +32,5 @@ func (b *linkerPlugin) Init(env *plugin.Environment) error {
 }
 
 func (b *linkerPlugin) Start(node *core.IpfsNode) error {
-	return b.lnk.SetNode(node).Start()
+	return b.lnk.Start(node)
 }

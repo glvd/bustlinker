@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	ds "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/linker/config"
@@ -46,11 +45,8 @@ type link struct {
 	node        *core.IpfsNode
 	failedCount map[peer.ID]int64
 	failedLock  *sync.RWMutex
-
-	addresses *PeerCache
-	hashes    *HashCache
-	pinning   Pinning
-	repo      string
+	pinning     Pinning
+	repo        string
 }
 
 func (l *link) SetNode(node *core.IpfsNode) Linker {
@@ -147,29 +143,8 @@ func (l *link) Start(node *core.IpfsNode) error {
 	l.node = node
 
 	l.pinning = newPinning(l.node)
-	l.addresses = NewAddress(l.cfg, l.repo, l.node)
-	l.hashes = NewHash(l.cfg, l.repo, l.node)
 
 	l.registerHandle()
-	to := time.Duration(5 * time.Second)
-	ctx, cancel := context.WithTimeout(context.TODO(), to)
-	defer cancel()
-	address, err := l.addresses.LoadAddress(ctx)
-	if err != nil {
-		return err
-	}
-	t := time.NewTimer(to)
-UpdateCase:
-	for {
-		select {
-		case <-t.C:
-			break UpdateCase
-		case <-ctx.Done():
-			break UpdateCase
-		default:
-			l.addresses.UpdatePeerAddress(<-address)
-		}
-	}
 	go l.Syncing()
 	return nil
 }
@@ -202,9 +177,6 @@ func (l *link) getRemotePeerAddress(wg *sync.WaitGroup, conn network.Conn) {
 				continue
 			}
 			log.Debugw("receive address", "from", conn.RemotePeer().Pretty(), "addrinfo", ai.String(), "addr size", len(ai.Addrs))
-			if err := l.UpdatePeerAddress(ai); err != nil {
-				log.Error("update peer address failed:", err)
-			}
 		}
 	}
 }
@@ -224,21 +196,6 @@ func (l *link) UpdatePeerAddress(ai peer.AddrInfo) error {
 		return nil
 	}
 	log.Debug("stream connect failed:", err)
-	if l.addresses.UpdatePeerAddress(ai) {
-		count := l.getAddCount(ai.ID)
-		if count > l.cfg.MaxAttempts {
-			return errors.New("connect failed max")
-		}
-		api, err := coreapi.NewCoreAPI(l.node)
-		if err != nil {
-			return err
-		}
-		err = api.Swarm().Connect(l.ctx, ai)
-		if err != nil {
-			return err
-		}
-		log.Infow("connect success", "remote", ai.String())
-	}
 	return nil
 }
 
@@ -268,7 +225,6 @@ func (l *link) getRemoteHash(wg *sync.WaitGroup, conn network.Conn) {
 }
 
 func (l *link) UpdateHash(hash path.Path, id peer.ID) {
-	l.hashes.Add(hash.String(), id)
 	l.pinning.AddSync(hash.String())
 }
 

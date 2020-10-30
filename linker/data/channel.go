@@ -1,4 +1,4 @@
-package linker
+package data
 
 import "gorm.io/gorm"
 

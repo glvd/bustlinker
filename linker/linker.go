@@ -1,24 +1,16 @@
 package linker
 
 import (
-	"bufio"
 	"context"
 	"encoding/base64"
 	"fmt"
 	ds "github.com/ipfs/go-datastore"
-	"github.com/ipfs/go-ipfs/linker/config"
-	"sync"
-	"time"
-
 	"github.com/ipfs/go-ipfs/core"
-	"github.com/ipfs/go-ipfs/core/coreapi"
-	iface "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/ipfs/interface-go-ipfs-core/options"
-	"github.com/ipfs/interface-go-ipfs-core/path"
+	"github.com/ipfs/go-ipfs/linker/config"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/multiformats/go-multiaddr"
+	"sync"
 )
 
 const Version = "0.0.1"
@@ -49,49 +41,12 @@ type link struct {
 	repo        string
 }
 
-func (l *link) SetNode(node *core.IpfsNode) Linker {
-	l.node = node
-	return l
-}
-
-func (l *link) Syncing() {
-	go l.syncPin()
-	for {
-		wg := &sync.WaitGroup{}
-		for _, conn := range l.node.PeerHost.Network().Conns() {
-			if l.node.Identity == conn.RemotePeer() {
-				continue
-			}
-			wg.Add(1)
-			go l.getRemotePeerAddress(wg, conn)
-			wg.Add(1)
-			go l.getRemoteHash(wg, conn)
-		}
-		wg.Wait()
-		log.Debug("waiting for next loop")
-		time.Sleep(30 * time.Second)
-	}
-}
-
-func checkAddrExist(addrs []multiaddr.Multiaddr, addr multiaddr.Multiaddr) bool {
-	for i := range addrs {
-		if addr.Equal(addrs[i]) {
-			return true
-		}
-	}
-	return false
-}
-
 func (l *link) newLinkPeersHandle() (protocol.ID, func(stream network.Stream)) {
 	return LinkPeers, func(stream network.Stream) {
 		log.Debug("link peer called")
 		var err error
 		defer stream.Close()
 		remoteID := stream.Conn().RemotePeer()
-
-		if !checkAddrExist(l.node.Peerstore.Addrs(remoteID), stream.Conn().RemoteMultiaddr()) {
-			l.node.Peerstore.AddAddr(remoteID, stream.Conn().RemoteMultiaddr(), 7*24*time.Hour)
-		}
 
 		peers := l.node.PeerHost.Network().Peers()
 		log.Infow("get all peers", "total", len(peers))
@@ -145,112 +100,7 @@ func (l *link) Start(node *core.IpfsNode) error {
 	l.pinning = newPinning(l.node)
 
 	l.registerHandle()
-	go l.Syncing()
 	return nil
-}
-
-func (l *link) getRemotePeerAddress(wg *sync.WaitGroup, conn network.Conn) {
-	defer wg.Done()
-	s, err := l.node.PeerHost.NewStream(l.ctx, conn.RemotePeer(), LinkPeers)
-	if err != nil {
-		return
-	}
-	defer s.Close()
-
-	reader := bufio.NewReader(s)
-	for {
-		select {
-		case <-l.ctx.Done():
-			return
-		default:
-			line, _, err := reader.ReadLine()
-			if err != nil {
-				return
-			}
-			ai := peer.AddrInfo{}
-			err = ai.UnmarshalJSON(line)
-			if err != nil {
-				log.Error("unmarlshal json failed", "line", string(line), "error", err)
-				return
-			}
-			if ai.ID == l.node.Identity {
-				continue
-			}
-			log.Debugw("receive address", "from", conn.RemotePeer().Pretty(), "addrinfo", ai.String(), "addr size", len(ai.Addrs))
-		}
-	}
-}
-
-func (l *link) getAddCount(id peer.ID) int64 {
-	count := int64(0)
-	l.failedLock.Lock()
-	count, l.failedCount[id] = l.failedCount[id], l.failedCount[id]+1
-	l.failedLock.Unlock()
-	return count
-}
-
-func (l *link) UpdatePeerAddress(ai peer.AddrInfo) error {
-	stream, err := l.node.PeerHost.NewStream(l.ctx, ai.ID, LinkPeers)
-	if err == nil {
-		stream.Close()
-		return nil
-	}
-	log.Debug("stream connect failed:", err)
-	return nil
-}
-
-func (l *link) getRemoteHash(wg *sync.WaitGroup, conn network.Conn) {
-	defer wg.Done()
-	id := conn.RemotePeer()
-	s, err := l.node.PeerHost.NewStream(l.ctx, id, LinkHash)
-	if err != nil {
-		return
-	}
-	defer s.Close()
-
-	reader := bufio.NewReader(s)
-	for {
-		select {
-		case <-l.ctx.Done():
-			return
-		default:
-			line, _, err := reader.ReadLine()
-			if err != nil {
-				return
-			}
-			log.Debugw("received remote hash", "from", id, "hash", string(line))
-			l.UpdateHash(path.New(string(line)), id)
-		}
-	}
-}
-
-func (l *link) UpdateHash(hash path.Path, id peer.ID) {
-	l.pinning.AddSync(hash.String())
-}
-
-func (l *link) syncPin() {
-	api, err := coreapi.NewCoreAPI(l.node)
-	if err != nil {
-		return
-	}
-
-	t := time.NewTimer(time.Duration(l.cfg.Pinning.PerSeconds) * time.Second)
-	var pin iface.Pin
-	for {
-		select {
-		case <-t.C:
-			ls, err := api.Pin().Ls(l.ctx, options.Pin.Ls.Recursive())
-			if err != nil {
-				return
-			}
-			for pin = range ls {
-				log.Debugw("add to pin data", "hash", pin.Path().String())
-				l.pinning.Add(pin.Path().String())
-			}
-			//release:per/day:test:60*sec
-			t.Reset(60 * time.Second)
-		}
-	}
 }
 
 func New(repo string, cfg interface{}) (Linker, error) {

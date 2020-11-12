@@ -31,26 +31,26 @@ const (
 	profileOptionName   = "profile"
 )
 
-var errRepoExists = errors.New(`ipfs configuration file already exists!
+var errRepoExists = errors.New(`link configuration file already exists!
 Reinitializing would overwrite your keys.
 `)
 
 var initCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Initializes ipfs config file.",
+		Tagline: "Initializes link config file.",
 		ShortDescription: `
-Initializes ipfs configuration files and generates a new keypair.
+Initializes link configuration files and generates a new keypair.
 
-If you are going to run IPFS in server environment, you may want to
+If you are going to run LINK in server environment, you may want to
 initialize it using 'server' profile.
 
-For the list of available profiles see 'ipfs config profile --help'
+For the list of available profiles see 'link config profile --help'
 
-ipfs uses a repository in the local file system. By default, the repo is
-located at ~/.ipfs. To change the repo location, set the $IPFS_PATH
+link uses a repository in the local file system. By default, the repo is
+located at ~/.link. To change the repo location, set the $LINK_PATH
 environment variable:
 
-    export IPFS_PATH=/path/to/ipfsrepo
+    export LINK_PATH=/path/to/linkrepo
 `,
 	},
 	Arguments: []cmds.Argument{
@@ -78,8 +78,8 @@ environment variable:
 
 		log.Info("checking if daemon is running...")
 		if daemonLocked {
-			log.Debug("ipfs daemon is running")
-			e := "ipfs daemon is running. please stop it to run this command"
+			log.Debug("link daemon is running")
+			e := "link daemon is running. please stop it to run this command"
 			return cmds.ClientError(e)
 		}
 
@@ -153,7 +153,7 @@ func applyProfiles(conf *config.Config, profiles string) error {
 }
 
 func doInit(out io.Writer, repoRoot string, empty bool, identity *config.Identity, confProfiles string, conf *config.Config) error {
-	if _, err := fmt.Fprintf(out, "initializing IPFS node at %s\n", repoRoot); err != nil {
+	if _, err := fmt.Fprintf(out, "initializing LINK node at %s\n", repoRoot); err != nil {
 		return err
 	}
 
@@ -255,7 +255,7 @@ func addDefaultAssets(out io.Writer, repoRoot string) error {
 		return err
 	}
 
-	_, err = fmt.Fprintf(out, "\n\tipfs cat /ipfs/%s/readme\n\n", dkey)
+	_, err = fmt.Fprintf(out, "\n\tlink cat /link/%s/readme\n\n", dkey)
 	return err
 }
 

@@ -17,7 +17,7 @@ import (
 	version "github.com/ipfs/go-ipfs"
 	config "github.com/ipfs/go-ipfs-config"
 	cserial "github.com/ipfs/go-ipfs-config/serialize"
-	utilmain "github.com/ipfs/go-ipfs/cmd/ipfs/util"
+	utilmain "github.com/ipfs/go-ipfs/cmd/link/util"
 	oldcmds "github.com/ipfs/go-ipfs/commands"
 	"github.com/ipfs/go-ipfs/core"
 	commands "github.com/ipfs/go-ipfs/core/commands"
@@ -69,10 +69,10 @@ const (
 
 var daemonCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Run a network-connected IPFS node.",
+		Tagline: "Run a network-connected LINK node.",
 		ShortDescription: `
 'ipfs daemon' runs a persistent ipfs daemon that can serve commands
-over the network. Most applications that use IPFS will do so by
+over the network. Most applications that use LINK will do so by
 communicating with a daemon over the HTTP API. While the daemon is
 running, calls to 'ipfs' commands will be sent over the network to
 the daemon.
@@ -128,17 +128,17 @@ or send a SIGTERM signal to it (e.g. with 'kill'). It may take a while for the
 daemon to shutdown gracefully, but it can be killed forcibly by sending a
 second signal.
 
-IPFS_PATH environment variable
+LINK_PATH environment variable
 
 ipfs uses a repository in the local file system. By default, the repo is
-located at ~/.ipfs. To change the repo location, set the $IPFS_PATH
+located at ~/.ipfs. To change the repo location, set the $LINK_PATH
 environment variable:
 
-  export IPFS_PATH=/path/to/ipfsrepo
+  export LINK_PATH=/path/to/ipfsrepo
 
 Routing
 
-IPFS by default will use a DHT for content routing. There is a highly
+LINK by default will use a DHT for content routing. There is a highly
 experimental alternative that operates the DHT in a 'client only' mode that
 can be enabled by running the daemon as:
 
@@ -164,9 +164,9 @@ Headers.
 		cmds.StringOption(initConfigOptionKwd, "Path to existing configuration file to be loaded during --init"),
 		cmds.StringOption(initProfileOptionKwd, "Configuration profiles to apply for --init. See ipfs init --help for more"),
 		cmds.StringOption(routingOptionKwd, "Overrides the routing option").WithDefault(routingOptionDefaultKwd),
-		cmds.BoolOption(mountKwd, "Mounts IPFS to the filesystem"),
+		cmds.BoolOption(mountKwd, "Mounts LINK to the filesystem"),
 		cmds.BoolOption(writableKwd, "Enable writing objects (with POST, PUT and DELETE)"),
-		cmds.StringOption(ipfsMountKwd, "Path to the mountpoint for IPFS (if using --mount). Defaults to config setting."),
+		cmds.StringOption(ipfsMountKwd, "Path to the mountpoint for LINK (if using --mount). Defaults to config setting."),
 		cmds.StringOption(ipnsMountKwd, "Path to the mountpoint for IPNS (if using --mount). Defaults to config setting."),
 		cmds.BoolOption(unrestrictedApiAccessKwd, "Allow API access to unlisted hashes"),
 		cmds.BoolOption(unencryptTransportKwd, "Disable transport encryption (for debugging protocols)"),
@@ -421,7 +421,7 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 	// Add ipfs version info to prometheus metrics
 	var ipfsInfoMetric = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "ipfs_info",
-		Help: "IPFS version information.",
+		Help: "LINK version information.",
 	}, []string{"version", "commit"})
 
 	// Setting to 1 lets us multiply it with other stats to add the version labels
@@ -699,7 +699,7 @@ func mountFuse(req *cmds.Request, cctx *oldcmds.Context) error {
 
 	fsdir, found := req.Options[ipfsMountKwd].(string)
 	if !found {
-		fsdir = cfg.Mounts.IPFS
+		fsdir = cfg.Mounts.LINK
 	}
 
 	nsdir, found := req.Options[ipnsMountKwd].(string)
@@ -716,7 +716,7 @@ func mountFuse(req *cmds.Request, cctx *oldcmds.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("IPFS mounted at: %s\n", fsdir)
+	fmt.Printf("LINK mounted at: %s\n", fsdir)
 	fmt.Printf("IPNS mounted at: %s\n", nsdir)
 	return nil
 }

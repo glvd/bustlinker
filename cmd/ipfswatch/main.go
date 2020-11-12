@@ -22,8 +22,8 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
-var http = flag.Bool("http", false, "expose IPFS HTTP API")
-var repoPath = flag.String("repo", os.Getenv("IPFS_PATH"), "IPFS_PATH to use")
+var http = flag.Bool("http", false, "expose LINK HTTP API")
+var repoPath = flag.String("repo", os.Getenv("LINK_PATH"), "LINK_PATH to use")
 var watchPath = flag.String("path", ".", "the path to watch")
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
 
 	// precedence
 	// 1. --repo flag
-	// 2. IPFS_PATH environment variable
+	// 2. LINK_PATH environment variable
 	// 3. default repo path
 	var ipfsPath string
 	if *repoPath != "" {
@@ -52,7 +52,7 @@ func main() {
 func run(ipfsPath, watchPath string) error {
 
 	proc := process.WithParent(process.Background())
-	log.Printf("running IPFSWatch on '%s' using repo at '%s'...", watchPath, ipfsPath)
+	log.Printf("running LINKWatch on '%s' using repo at '%s'...", watchPath, ipfsPath)
 
 	ipfsPath, err := homedir.Expand(ipfsPath)
 	if err != nil {
@@ -124,7 +124,7 @@ func run(ipfsPath, watchPath string) error {
 					}
 				}
 			default:
-				// all events except for Remove result in an IPFS.Add, but only
+				// all events except for Remove result in an LINK.Add, but only
 				// directory creation triggers a new watch
 				switch e.Op {
 				case fsnotify.Create:

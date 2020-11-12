@@ -24,8 +24,8 @@ func TestManageFdLimit(t *testing.T) {
 func TestManageInvalidNFds(t *testing.T) {
 	t.Logf("Testing file descriptor invalidity")
 	var err error
-	if err = os.Unsetenv("IPFS_FD_MAX"); err != nil {
-		t.Fatal("Cannot unset the IPFS_FD_MAX env variable")
+	if err = os.Unsetenv("LINK_FD_MAX"); err != nil {
+		t.Fatal("Cannot unset the LINK_FD_MAX env variable")
 	}
 
 	rlimit := syscall.Rlimit{}
@@ -34,8 +34,8 @@ func TestManageInvalidNFds(t *testing.T) {
 	}
 
 	value := rlimit.Max + rlimit.Cur
-	if err = os.Setenv("IPFS_FD_MAX", fmt.Sprintf("%d", value)); err != nil {
-		t.Fatal("Cannot set the IPFS_FD_MAX env variable")
+	if err = os.Setenv("LINK_FD_MAX", fmt.Sprintf("%d", value)); err != nil {
+		t.Fatal("Cannot set the LINK_FD_MAX env variable")
 	}
 
 	t.Logf("setting ulimit to %d, max %d, cur %d", value, rlimit.Max, rlimit.Cur)
@@ -44,23 +44,23 @@ func TestManageInvalidNFds(t *testing.T) {
 		t.Errorf("ManageFdLimit should return an error: changed %t, new: %d", changed, new)
 	} else {
 		flag := strings.Contains(err.Error(),
-			"failed to raise ulimit to IPFS_FD_MAX")
+			"failed to raise ulimit to LINK_FD_MAX")
 		if !flag {
 			t.Error("ManageFdLimit returned unexpected error", err)
 		}
 	}
 
 	// unset all previous operations
-	if err = os.Unsetenv("IPFS_FD_MAX"); err != nil {
-		t.Fatal("Cannot unset the IPFS_FD_MAX env variable")
+	if err = os.Unsetenv("LINK_FD_MAX"); err != nil {
+		t.Fatal("Cannot unset the LINK_FD_MAX env variable")
 	}
 }
 
 func TestManageFdLimitWithEnvSet(t *testing.T) {
-	t.Logf("Testing file descriptor manager with IPFS_FD_MAX set")
+	t.Logf("Testing file descriptor manager with LINK_FD_MAX set")
 	var err error
-	if err = os.Unsetenv("IPFS_FD_MAX"); err != nil {
-		t.Fatal("Cannot unset the IPFS_FD_MAX env variable")
+	if err = os.Unsetenv("LINK_FD_MAX"); err != nil {
+		t.Fatal("Cannot unset the LINK_FD_MAX env variable")
 	}
 
 	rlimit := syscall.Rlimit{}
@@ -69,8 +69,8 @@ func TestManageFdLimitWithEnvSet(t *testing.T) {
 	}
 
 	value := rlimit.Max - rlimit.Cur + 1
-	if err = os.Setenv("IPFS_FD_MAX", fmt.Sprintf("%d", value)); err != nil {
-		t.Fatal("Cannot set the IPFS_FD_MAX env variable")
+	if err = os.Setenv("LINK_FD_MAX", fmt.Sprintf("%d", value)); err != nil {
+		t.Fatal("Cannot set the LINK_FD_MAX env variable")
 	}
 
 	if _, _, err = ManageFdLimit(); err != nil {
@@ -78,7 +78,7 @@ func TestManageFdLimitWithEnvSet(t *testing.T) {
 	}
 
 	// unset all previous operations
-	if err = os.Unsetenv("IPFS_FD_MAX"); err != nil {
-		t.Fatal("Cannot unset the IPFS_FD_MAX env variable")
+	if err = os.Unsetenv("LINK_FD_MAX"); err != nil {
+		t.Fatal("Cannot unset the LINK_FD_MAX env variable")
 	}
 }

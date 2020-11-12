@@ -12,7 +12,7 @@ import (
 	"runtime/pprof"
 	"time"
 
-	util "github.com/ipfs/go-ipfs/cmd/ipfs/util"
+	util "github.com/ipfs/go-ipfs/cmd/link/util"
 	oldcmds "github.com/ipfs/go-ipfs/commands"
 	core "github.com/ipfs/go-ipfs/core"
 	corecmds "github.com/ipfs/go-ipfs/core/commands"
@@ -34,15 +34,15 @@ import (
 )
 
 // log is the command logger
-var log = logging.Logger("cmd/ipfs")
+var log = logging.Logger("cmd/link")
 
 // declared as a var for testing purposes
 var dnsResolver = madns.DefaultResolver
 
 const (
-	EnvEnableProfiling = "IPFS_PROF"
-	cpuProfile         = "ipfs.cpuprof"
-	heapProfile        = "ipfs.memprof"
+	EnvEnableProfiling = "LINK_PROF"
+	cpuProfile         = "link.cpuprof"
+	heapProfile        = "link.memprof"
 )
 
 func loadPlugins(repoPath string) (*loader.PluginLoader, error) {
@@ -181,7 +181,7 @@ func insideGUI() bool {
 func checkDebug(req *cmds.Request) {
 	// check if user wants to debug. option OR env var.
 	debug, _ := req.Options["debug"].(bool)
-	if debug || os.Getenv("IPFS_LOGGING") == "debug" {
+	if debug || os.Getenv("LINK_LOGGING") == "debug" {
 		u.Debug = true
 		logging.SetDebugLogging()
 	}

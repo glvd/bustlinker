@@ -30,8 +30,8 @@ const (
 
 var VersionCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline:          "Show ipfs version information.",
-		ShortDescription: "Returns the current version of ipfs and exits.",
+		Tagline:          "Show link version information.",
+		ShortDescription: "Returns the current version of link and exits.",
 	},
 	Subcommands: map[string]*cmds.Command{
 		"deps": depsVersionCommand,
@@ -62,7 +62,7 @@ var VersionCmd = &cmds.Command{
 				if version.Commit != "" {
 					ver += "-" + version.Commit
 				}
-				out := fmt.Sprintf("go-ipfs version: %s\n"+
+				out := fmt.Sprintf("bustlinker version: %s\n"+
 					"Repo version: %s\nSystem version: %s\nGolang version: %s\n",
 					ver, version.Repo, version.System, version.Golang)
 				fmt.Fprint(w, out)
@@ -87,7 +87,7 @@ var VersionCmd = &cmds.Command{
 				return nil
 			}
 
-			fmt.Fprint(w, fmt.Sprintf("ipfs version %s%s\n", version.Version, commitTxt))
+			fmt.Fprint(w, fmt.Sprintf("link version %s%s\n", version.Version, commitTxt))
 			return nil
 		}),
 	},

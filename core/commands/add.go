@@ -51,13 +51,13 @@ const adderOutChanSize = 8
 
 var AddCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Add a file or directory to ipfs.",
+		Tagline: "Add a file or directory to link.",
 		ShortDescription: `
-Adds contents of <path> to ipfs. Use -r to add directories (recursively).
+Adds contents of <path> to link. Use -r to add directories (recursively).
 `,
 		LongDescription: `
-Adds contents of <path> to ipfs. Use -r to add directories.
-Note that directories are added recursively, to form the ipfs
+Adds contents of <path> to link. Use -r to add directories.
+Note that directories are added recursively, to form the link
 MerkleDAG.
 
 If the daemon is not running, it will just add locally.
@@ -69,15 +69,15 @@ recursive option) in a directory. This directory contains only
 the files which have been added, and means that the file retains
 its filename. For example:
 
-  > ipfs add example.jpg
+  > link add example.jpg
   added QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH example.jpg
-  > ipfs add example.jpg -w
+  > link add example.jpg -w
   added QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH example.jpg
   added QmaG4FuMqEBnQNn3C8XJ5bpW8kLs7zq2ZXgHptJHbKDDVx
 
 You can now refer to the added file in a gateway, like so:
 
-  /ipfs/QmaG4FuMqEBnQNn3C8XJ5bpW8kLs7zq2ZXgHptJHbKDDVx/example.jpg
+  /link/QmaG4FuMqEBnQNn3C8XJ5bpW8kLs7zq2ZXgHptJHbKDDVx/example.jpg
 
 The chunker option, '-s', specifies the chunking strategy that dictates
 how to break files into blocks. Blocks with same content can
@@ -92,7 +92,7 @@ The following examples use very small byte sizes to demonstrate the
 properties of the different chunkers on a small file. You'll likely
 want to use a 1024 times larger chunk sizes for most files.
 
-  > ipfs add --chunker=size-2048 ipfs-logo.svg
+  > link add --chunker=size-2048 ipfs-logo.svg
   added QmafrLBfzRLV4XSH1XcaMMeaXEUhDJjmtDfsYU95TrWG87 ipfs-logo.svg
   > ipfs add --chunker=rabin-512-1024-2048 ipfs-logo.svg
   added Qmf1hDN65tR55Ubh2RN1FPxr69xq3giVBz1KApsresY8Gn ipfs-logo.svg

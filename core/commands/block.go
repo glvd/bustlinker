@@ -30,7 +30,7 @@ var BlockCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Interact with raw IPFS blocks.",
 		ShortDescription: `
-'ipfs block' is a plumbing command used to manipulate raw IPFS blocks.
+'link block' is a plumbing command used to manipulate raw IPFS blocks.
 Reads from stdin or writes to stdout, and <key> is a base58 encoded
 multihash.
 `,
@@ -48,7 +48,7 @@ var blockStatCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Print information of a raw IPFS block.",
 		ShortDescription: `
-'ipfs block stat' is a plumbing command for retrieving information
+'link block stat' is a plumbing command for retrieving information
 on raw IPFS blocks. It outputs the following to stdout:
 
 	Key  - the base58 encoded multihash
@@ -89,7 +89,7 @@ var blockGetCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Get a raw IPFS block.",
 		ShortDescription: `
-'ipfs block get' is a plumbing command for retrieving raw IPFS blocks.
+'link block get' is a plumbing command for retrieving raw IPFS blocks.
 It outputs to stdout, and <key> is a base58 encoded multihash.
 `,
 	},
@@ -122,7 +122,7 @@ var blockPutCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Store input as an IPFS block.",
 		ShortDescription: `
-'ipfs block put' is a plumbing command for storing raw IPFS blocks.
+'link block put' is a plumbing command for storing raw IPFS blocks.
 It reads from stdin, and outputs the block's CID to stdout.
 
 Unless specified, this command returns dag-pb CIDv0 CIDs. Setting 'mhtype' to anything
@@ -211,7 +211,7 @@ var blockRmCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Remove IPFS block(s).",
 		ShortDescription: `
-'ipfs block rm' is a plumbing command for removing raw ipfs blocks.
+'link block rm' is a plumbing command for removing raw link blocks.
 It takes a list of base58 encoded multihashes to remove.
 `,
 	},

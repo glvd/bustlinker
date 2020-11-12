@@ -8,8 +8,6 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
-	"runtime"
-	"sort"
 	"sync"
 
 	multierror "github.com/hashicorp/go-multierror"
@@ -359,8 +357,9 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 	node.IsDaemon = true
 
 	if node.PNetFingerprint != nil {
-		fmt.Println("Swarm is limited to private network of peers with the swarm key")
-		fmt.Printf("Swarm key fingerprint: %x\n", node.PNetFingerprint)
+		//fmt.Println("Swarm is limited to private network of peers with the swarm key")
+		//fmt.Printf("Swarm key fingerprint: %x\n", node.PNetFingerprint)
+		fmt.Printf("Private key fingerprint: %x\n", node.PNetFingerprint)
 	}
 
 	printSwarmAddrs(node)
@@ -500,15 +499,15 @@ func serveHTTPApi(req *cmds.Request, cctx *oldcmds.Context) (<-chan error, error
 		listeners = append(listeners, apiLis)
 	}
 
-	for _, listener := range listeners {
-		// we might have listened to /tcp/0 - let's see what we are listing on
-		fmt.Printf("API server listening on %s\n", listener.Multiaddr())
-		// Browsers require TCP.
-		switch listener.Addr().Network() {
-		case "tcp", "tcp4", "tcp6":
-			fmt.Printf("WebUI: http://%s/webui\n", listener.Addr())
-		}
-	}
+	//for _, listener := range listeners {
+	// we might have listened to /tcp/0 - let's see what we are listing on
+	//fmt.Printf("API server listening on %s\n", listener.Multiaddr())
+	// Browsers require TCP.
+	//switch listener.Addr().Network() {
+	//case "tcp", "tcp4", "tcp6":
+	//fmt.Printf("WebUI: http://%s/webui\n", listener.Addr())
+	//}
+	//}
 
 	// by default, we don't let you load arbitrary ipfs objects through the api,
 	// because this would open up the api to scripting vulnerabilities.
@@ -572,27 +571,27 @@ func printSwarmAddrs(node *core.IpfsNode) {
 		return
 	}
 
-	var lisAddrs []string
-	ifaceAddrs, err := node.PeerHost.Network().InterfaceListenAddresses()
-	if err != nil {
-		log.Errorf("failed to read listening addresses: %s", err)
-	}
-	for _, addr := range ifaceAddrs {
-		lisAddrs = append(lisAddrs, addr.String())
-	}
-	sort.Strings(lisAddrs)
-	for _, addr := range lisAddrs {
-		fmt.Printf("Swarm listening on %s\n", addr)
-	}
+	//var lisAddrs []string
+	//ifaceAddrs, err := node.PeerHost.Network().InterfaceListenAddresses()
+	//if err != nil {
+	//	log.Errorf("failed to read listening addresses: %s", err)
+	//}
+	//for _, addr := range ifaceAddrs {
+	//	lisAddrs = append(lisAddrs, addr.String())
+	//}
+	//sort.Strings(lisAddrs)
+	//for _, addr := range lisAddrs {
+	//	fmt.Printf("Swarm listening on %s\n", addr)
+	//}
 
-	var addrs []string
-	for _, addr := range node.PeerHost.Addrs() {
-		addrs = append(addrs, addr.String())
-	}
-	sort.Strings(addrs)
-	for _, addr := range addrs {
-		fmt.Printf("Swarm announcing %s\n", addr)
-	}
+	//var addrs []string
+	//for _, addr := range node.PeerHost.Addrs() {
+	//	addrs = append(addrs, addr.String())
+	//}
+	//sort.Strings(addrs)
+	//for _, addr := range addrs {
+	//	fmt.Printf("Swarm announcing %s\n", addr)
+	//}
 
 }
 
@@ -789,8 +788,8 @@ func printVersion() {
 	if version.CurrentCommit != "" {
 		v += "-" + version.CurrentCommit
 	}
-	fmt.Printf("go-ipfs version: %s\n", v)
-	fmt.Printf("Repo version: %d\n", fsrepo.RepoVersion)
-	fmt.Printf("System version: %s\n", runtime.GOARCH+"/"+runtime.GOOS)
-	fmt.Printf("Golang version: %s\n", runtime.Version())
+	fmt.Printf("bustlinker version: %s\n", v)
+	//fmt.Printf("Repo version: %d\n", fsrepo.RepoVersion)
+	//fmt.Printf("System version: %s\n", runtime.GOARCH+"/"+runtime.GOOS)
+	//fmt.Printf("Golang version: %s\n", runtime.Version())
 }

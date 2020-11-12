@@ -19,7 +19,7 @@ var LogCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Interact with the daemon log output.",
 		ShortDescription: `
-'ipfs log' contains utility commands to affect or read the logging
+'link log' contains utility commands to affect or read the logging
 output of a running daemon.
 
 There are also two environmental variables that direct the logging 
@@ -86,7 +86,7 @@ var logLsCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "List the logging subsystems.",
 		ShortDescription: `
-'ipfs log ls' is a utility command used to list the logging
+'link log ls' is a utility command used to list the logging
 subsystems of a running daemon.
 `,
 	},

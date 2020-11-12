@@ -51,8 +51,8 @@ Prints out information about your computer to aid in easier debugging.
 			return err
 		}
 
-		info["ipfs_version"] = version.CurrentVersionNumber
-		info["ipfs_commit"] = version.CurrentCommit
+		info["link_version"] = version.CurrentVersionNumber
+		info["link_commit"] = version.CurrentCommit
 		return cmds.EmitOnce(res, info)
 	},
 }
@@ -81,9 +81,9 @@ func envVarInfo(out map[string]interface{}) error {
 }
 
 func ipfsPath() string {
-	p := os.Getenv("IPFS_PATH")
+	p := os.Getenv("LINK_PATH")
 	if p == "" {
-		p = path.Join(os.Getenv("HOME"), ".ipfs")
+		p = path.Join(os.Getenv("HOME"), ".link")
 	}
 	return p
 }

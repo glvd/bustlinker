@@ -26,9 +26,9 @@ var urlAdd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Add URL via urlstore.",
 		LongDescription: `
-DEPRECATED: Use 'ipfs add --nocopy --cid-version=1 URL'.
+DEPRECATED: Use 'link add --nocopy --cid-version=1 URL'.
 
-Add URLs to ipfs without storing the data locally.
+Add URLs to link without storing the data locally.
 
 The URL provided must be stable and ideally on a web server under your
 control.

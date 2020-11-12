@@ -15,31 +15,31 @@ func TestGetOutputPath(t *testing.T) {
 		outPath string
 	}{
 		{
-			args: []string{"/ipns/multiformats.io/"},
+			args: []string{"/blns/multiformats.io/"},
 			opts: map[string]interface{}{
 				"output": "takes-precedence",
 			},
 			outPath: "takes-precedence",
 		},
 		{
-			args: []string{"/ipns/multiformats.io/", "some-other-arg-to-be-ignored"},
+			args: []string{"/blns/multiformats.io/", "some-other-arg-to-be-ignored"},
 			opts: cmds.OptMap{
 				"output": "takes-precedence",
 			},
 			outPath: "takes-precedence",
 		},
 		{
-			args:    []string{"/ipns/multiformats.io/"},
+			args:    []string{"/blns/multiformats.io/"},
 			outPath: "multiformats.io",
 			opts:    cmds.OptMap{},
 		},
 		{
-			args:    []string{"/ipns/multiformats.io/logo.svg/"},
+			args:    []string{"/blns/multiformats.io/logo.svg/"},
 			outPath: "logo.svg",
 			opts:    cmds.OptMap{},
 		},
 		{
-			args:    []string{"/ipns/multiformats.io", "some-other-arg-to-be-ignored"},
+			args:    []string{"/blns/multiformats.io", "some-other-arg-to-be-ignored"},
 			outPath: "multiformats.io",
 			opts:    cmds.OptMap{},
 		},

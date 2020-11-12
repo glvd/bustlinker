@@ -39,8 +39,8 @@ func TestEncoderFromPath(t *testing.T) {
 	test(p+"/a/b/c", enc)
 	test("/link/"+p, enc)
 	test("/link/"+p+"/b", enc)
-	test("/ipld/"+p, enc)
-	test("/ipns/"+p, enc) // even IPNS should work.
+	test("/blld/"+p, enc)
+	test("/blns/"+p, enc) // even IPNS should work.
 
 	p = "bafyreifrcnyjokuw4i4ggkzg534tjlc25lqgt3ttznflmyv5fftdgu52hm"
 	enc = cidenc.Encoder{
@@ -49,16 +49,16 @@ func TestEncoderFromPath(t *testing.T) {
 	}
 	test(p, enc)
 	test("/link/"+p, enc)
-	test("/ipld/"+p, enc)
+	test("/blld/"+p, enc)
 
 	for _, badPath := range []string{
-		"/ipld/",
-		"/ipld",
-		"/ipld//",
-		"ipld//",
-		"ipld",
+		"/blld/",
+		"/blld",
+		"/blld//",
+		"blld//",
+		"blld",
 		"",
-		"ipns",
+		"blns",
 		"/link/asdf",
 		"/link/...",
 		"...",

@@ -31,25 +31,25 @@ records can point to other DNS links, IPFS objects, IPNS keys, etc.
 This command resolves those links to the referenced object.
 
 Note: This command can only recursively resolve DNS links,
-it will fail to recursively resolve through IPNS keys etc.
+it will fail to recursively resolve through BLNS keys etc.
 For general-purpose recursive resolution, use ipfs name resolve -r.
 
 For example, with this DNS TXT record:
 
 	> dig +short TXT _dnslink.ipfs.io
-	dnslink=/ipfs/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
+	dnslink=/link/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
 
 The resolver will give:
 
-	> ipfs dns ipfs.io
-	/ipfs/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
+	> link dns ipfs.io
+	/link/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
 
 The resolver can recursively resolve:
 
 	> dig +short TXT recursive.ipfs.io
-	dnslink=/ipns/ipfs.io
-	> ipfs dns -r recursive.ipfs.io
-	/ipfs/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
+	dnslink=/blns/ipfs.io
+	> link dns -r recursive.ipfs.io
+	/link/QmRzTuh2Lpuz7Gr39stNr6mTFdqAghsZec1JoUnfySUzcy
 `,
 	},
 

@@ -31,7 +31,7 @@ import (
 
 const (
 	ipfsPathPrefix = "/ipfs/"
-	ipnsPathPrefix = "/ipns/"
+	ipnsPathPrefix = "/blns/"
 )
 
 // gatewayHandler is a HTTP handler that serves IPFS objects (accessible by default at /ipfs/<path>)
@@ -170,8 +170,8 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	// HostnameOption might have constructed an IPNS/IPFS path using the Host header.
 	// In this case, we need the original path for constructing redirects
 	// and links that match the requested URL.
-	// For example, http://example.net would become /ipns/example.net, and
-	// the redirects and links would end up as http://example.net/ipns/example.net
+	// For example, http://example.net would become /blns/example.net, and
+	// the redirects and links would end up as http://example.net/blns/example.net
 	requestURI, err := url.ParseRequestURI(r.RequestURI)
 	if err != nil {
 		webError(w, "failed to parse request path", err, http.StatusInternalServerError)
@@ -247,7 +247,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	// set these headers _after_ the error, for we may just not have it
 	// and don't want the client to cache a 500 response...
 	// and only if it's /ipfs!
-	// TODO: break this out when we split /ipfs /ipns routes.
+	// TODO: break this out when we split /ipfs /blns routes.
 	modtime := time.Now()
 
 	if f, ok := dr.(files.File); ok {
@@ -695,7 +695,7 @@ func internalWebError(w http.ResponseWriter, err error) {
 
 func getFilename(s string) string {
 	if (strings.HasPrefix(s, ipfsPathPrefix) || strings.HasPrefix(s, ipnsPathPrefix)) && strings.Count(gopath.Clean(s), "/") <= 2 {
-		// Don't want to treat ipfs.io in /ipns/ipfs.io as a filename.
+		// Don't want to treat ipfs.io in /blns/ipfs.io as a filename.
 		return ""
 	}
 	return gopath.Base(s)

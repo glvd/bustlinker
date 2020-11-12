@@ -6,7 +6,7 @@ import (
 	mbase "github.com/multiformats/go-multibase"
 )
 
-const ipnsKeyFormatOptionName = "ipns-base"
+const ipnsKeyFormatOptionName = "blns-base"
 
 var OptionIPNSBase = cmds.StringOption(ipnsKeyFormatOptionName, "Encoding used for keys: Can either be a multibase encoded CID or a base58btc encoded multihash. Takes {b58mh|base36|k|base32|b...}.").WithDefault("base36")
 

@@ -22,8 +22,8 @@ import (
 
 var ErrNotDHT = errors.New("routing service is not a DHT")
 
-// TODO: Factor into `ipfs dht` and `ipfs routing`.
-// Everything *except `query` goes into `ipfs routing`.
+// TODO: Factor into `link dht` and `link routing`.
+// Everything *except `query` goes into `link routing`.
 
 var DhtCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
@@ -525,17 +525,17 @@ var putValueDhtCmd = &cmds.Command{
 Given a key of the form /foo/bar and a valid value for that key, this will write
 that value to the routing system with that key.
 
-Keys have two parts: a keytype (foo) and the key name (bar). IPNS uses the
-/ipns keytype, and expects the key name to be a Peer ID. IPNS entries are
+Keys have two parts: a keytype (foo) and the key name (bar). BLNS uses the
+/blns keytype, and expects the key name to be a Peer ID. BLNS entries are
 specifically formatted (protocol buffer).
 
-You may only use keytypes that are supported in your ipfs binary: currently
-this is only /ipns. Unless you have a relatively deep understanding of the
-go-ipfs routing internals, you likely want to be using 'ipfs name publish' instead
+You may only use keytypes that are supported in your link binary: currently
+this is only /blns. Unless you have a relatively deep understanding of the
+bustlinker routing internals, you likely want to be using 'link name publish' instead
 of this.
 
 The value must be a valid value for the given key type. For example, if the key
-is /ipns/QmFoo, the value must be IPNS record (protobuf) signed with the key
+is /blns/QmFoo, the value must be IPNS record (protobuf) signed with the key
 identified by QmFoo.
 `,
 	},
@@ -677,7 +677,7 @@ func escapeDhtKey(s string) (string, error) {
 	parts := path.SplitList(s)
 	if len(parts) != 3 ||
 		parts[0] != "" ||
-		!(parts[1] == "ipns" || parts[1] == "pk") {
+		!(parts[1] == "blns" || parts[1] == "pk") {
 		return "", errors.New("invalid key")
 	}
 

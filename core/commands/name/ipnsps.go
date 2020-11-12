@@ -99,10 +99,10 @@ var ipnspsSubsCmd = &cmds.Command{
 			}
 			pid, err := peer.IDFromString(k)
 			if err != nil {
-				log.Errorf("ipns key not a valid peer ID: %s", err)
+				log.Errorf("blns key not a valid peer ID: %s", err)
 				continue
 			}
-			paths = append(paths, "/ipns/"+keyEnc.FormatID(pid))
+			paths = append(paths, "/blns/"+keyEnc.FormatID(pid))
 		}
 
 		return cmds.EmitOnce(res, &stringList{paths})
@@ -128,13 +128,13 @@ var ipnspsCancelCmd = &cmds.Command{
 		}
 
 		name := req.Arguments[0]
-		name = strings.TrimPrefix(name, "/ipns/")
+		name = strings.TrimPrefix(name, "/blns/")
 		pid, err := peer.Decode(name)
 		if err != nil {
 			return cmds.Errorf(cmds.ErrClient, err.Error())
 		}
 
-		ok, err := n.PSRouter.Cancel("/ipns/" + string(pid))
+		ok, err := n.PSRouter.Cancel("/blns/" + string(pid))
 		if err != nil {
 			return err
 		}

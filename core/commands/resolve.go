@@ -44,17 +44,17 @@ EXAMPLES
 
 Resolve the value of your identity:
 
-  $ ipfs resolve /ipns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+  $ ipfs resolve /blns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
   /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 
 Resolve the value of another name:
 
-  $ ipfs resolve /ipns/QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n
-  /ipns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+  $ ipfs resolve /blns/QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n
+  /blns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
 
 Resolve the value of another name recursively:
 
-  $ ipfs resolve -r /ipns/QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n
+  $ ipfs resolve -r /blns/QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n
   /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 
 Resolve the value of an IPFS DAG path:
@@ -82,8 +82,8 @@ Resolve the value of an IPFS DAG path:
 		name := req.Arguments[0]
 		recursive, _ := req.Options[resolveRecursiveOptionName].(bool)
 
-		// the case when ipns is resolved step by step
-		if strings.HasPrefix(name, "/ipns/") && !recursive {
+		// the case when blns is resolved step by step
+		if strings.HasPrefix(name, "/blns/") && !recursive {
 			rc, rcok := req.Options[resolveDhtRecordCountOptionName].(uint)
 			dhtt, dhttok := req.Options[resolveDhtTimeoutOptionName].(string)
 			ropts := []options.NameResolveOption{
@@ -113,7 +113,7 @@ Resolve the value of an IPFS DAG path:
 
 		var enc cidenc.Encoder
 		switch {
-		case !cmdenv.CidBaseDefined(req) && !strings.HasPrefix(name, "/ipns/"):
+		case !cmdenv.CidBaseDefined(req) && !strings.HasPrefix(name, "/blns/"):
 			// Not specified, check the path.
 			enc, err = cmdenv.CidEncoderFromPath(name)
 			if err == nil {
@@ -128,7 +128,7 @@ Resolve the value of an IPFS DAG path:
 			}
 		}
 
-		// else, ipfs path or ipns with recursive flag
+		// else, ipfs path or blns with recursive flag
 		rp, err := api.ResolvePath(req.Context, path.New(name))
 		if err != nil {
 			return err

@@ -53,7 +53,7 @@ is the total size of the file contents. For directories, the child
 size is the IPFS link size.
 
 The path can be a prefixless ref; in this case, we assume it to be an
-/ipfs ref and not /ipns.
+/ipfs ref and not /blns.
 
 Example:
 

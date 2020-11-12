@@ -103,7 +103,7 @@ func PubsubRouter(mctx helpers.MetricsCtx, lc fx.Lifecycle, in p2pPSRoutingIn) (
 			Routing: &routinghelpers.Compose{
 				ValueStore: &routinghelpers.LimitedValueStore{
 					ValueStore: psRouter,
-					Namespaces: []string{"ipns"},
+					Namespaces: []string{"blns"},
 				},
 			},
 			Priority: 100,

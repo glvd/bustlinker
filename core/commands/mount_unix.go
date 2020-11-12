@@ -15,34 +15,34 @@ import (
 
 const (
 	mountIPFSPathOptionName = "ipfs-path"
-	mountIPNSPathOptionName = "ipns-path"
+	mountIPNSPathOptionName = "blns-path"
 )
 
 var MountCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Mounts IPFS to the filesystem (read-only).",
 		ShortDescription: `
-Mount IPFS at a read-only mountpoint on the OS (default: /ipfs and /ipns).
+Mount IPFS at a read-only mountpoint on the OS (default: /ipfs and /blns).
 All IPFS objects will be accessible under that directory. Note that the
 root will not be listable, as it is virtual. Access known paths directly.
 
-You may have to create /ipfs and /ipns before using 'ipfs mount':
+You may have to create /ipfs and /blns before using 'ipfs mount':
 
-> sudo mkdir /ipfs /ipns
-> sudo chown $(whoami) /ipfs /ipns
+> sudo mkdir /ipfs /blns
+> sudo chown $(whoami) /ipfs /blns
 > ipfs daemon &
 > ipfs mount
 `,
 		LongDescription: `
-Mount IPFS at a read-only mountpoint on the OS. The default, /ipfs and /ipns,
+Mount IPFS at a read-only mountpoint on the OS. The default, /ipfs and /blns,
 are set in the configuration file, but can be overridden by the options.
 All IPFS objects will be accessible under this directory. Note that the
 root will not be listable, as it is virtual. Access known paths directly.
 
-You may have to create /ipfs and /ipns before using 'ipfs mount':
+You may have to create /ipfs and /blns before using 'ipfs mount':
 
-> sudo mkdir /ipfs /ipns
-> sudo chown $(whoami) /ipfs /ipns
+> sudo mkdir /ipfs /blns
+> sudo chown $(whoami) /ipfs /blns
 > ipfs daemon &
 > ipfs mount
 
@@ -63,7 +63,7 @@ baz
 > ipfs daemon &
 > ipfs mount
 IPFS mounted at: /ipfs
-IPNS mounted at: /ipns
+IPNS mounted at: /blns
 > cd /ipfs/QmSh5e7S6fdcu75LAbXNZAFY2nGyZUJXyLCJDvn2zRkWyC
 > ls
 bar

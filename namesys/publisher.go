@@ -20,7 +20,7 @@ import (
 	base32 "github.com/whyrusleeping/base32"
 )
 
-const ipnsPrefix = "/ipns/"
+const ipnsPrefix = "/blns/"
 
 const DefaultRecordEOL = 24 * time.Hour
 
@@ -50,7 +50,7 @@ func (p *IpnsPublisher) Publish(ctx context.Context, k ci.PrivKey, value path.Pa
 }
 
 func IpnsDsKey(id peer.ID) ds.Key {
-	return ds.NewKey("/ipns/" + base32.RawStdEncoding.EncodeToString([]byte(id)))
+	return ds.NewKey("/blns/" + base32.RawStdEncoding.EncodeToString([]byte(id)))
 }
 
 // PublishedNames returns the latest IPNS records published by this node and
@@ -90,7 +90,7 @@ func (p *IpnsPublisher) ListPublished(ctx context.Context) (map[peer.ID]*pb.Ipns
 			k := result.Key[len(ipnsPrefix):]
 			pid, err := base32.RawStdEncoding.DecodeString(k)
 			if err != nil {
-				log.Errorf("ipns ds key invalid: %s", result.Key)
+				log.Errorf("blns ds key invalid: %s", result.Key)
 				continue
 			}
 			records[peer.ID(pid)] = e
@@ -188,7 +188,7 @@ func (p *IpnsPublisher) updateRecord(ctx context.Context, k ci.PrivKey, value pa
 	return entry, nil
 }
 
-// PublishWithEOL is a temporary stand in for the ipns records implementation
+// PublishWithEOL is a temporary stand in for the blns records implementation
 // see here for more details: https://github.com/ipfs/specs/tree/master/records
 func (p *IpnsPublisher) PublishWithEOL(ctx context.Context, k ci.PrivKey, value path.Path, eol time.Time) error {
 	record, err := p.updateRecord(ctx, k, value, eol)
@@ -203,7 +203,7 @@ func (p *IpnsPublisher) PublishWithEOL(ctx context.Context, k ci.PrivKey, value 
 // as such, i'm using the context to wire it through to avoid changing too
 // much code along the way.
 func checkCtxTTL(ctx context.Context) (time.Duration, bool) {
-	v := ctx.Value("ipns-publish-ttl")
+	v := ctx.Value("blns-publish-ttl")
 	if v == nil {
 		return 0, false
 	}

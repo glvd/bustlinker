@@ -22,7 +22,7 @@ const DefaultIpnsCacheSize = 128
 func RecordValidator(ps peerstore.Peerstore) record.Validator {
 	return record.NamespacedValidator{
 		"pk":   record.PublicKeyValidator{},
-		"ipns": ipns.Validator{KeyBook: ps},
+		"blns": ipns.Validator{KeyBook: ps},
 	}
 }
 

@@ -169,11 +169,11 @@ func TestGatewayGet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ns["/ipns/example.com"] = path.FromString(k.String())
-	ns["/ipns/working.example.com"] = path.FromString(k.String())
-	ns["/ipns/double.example.com"] = path.FromString("/ipns/working.example.com")
-	ns["/ipns/triple.example.com"] = path.FromString("/ipns/double.example.com")
-	ns["/ipns/broken.example.com"] = path.FromString("/ipns/" + k.Cid().String())
+	ns["/blns/example.com"] = path.FromString(k.String())
+	ns["/blns/working.example.com"] = path.FromString(k.String())
+	ns["/blns/double.example.com"] = path.FromString("/ipns/working.example.com")
+	ns["/blns/triple.example.com"] = path.FromString("/ipns/double.example.com")
+	ns["/blns/broken.example.com"] = path.FromString("/ipns/" + k.Cid().String())
 	// We picked .man because:
 	// 1. It's a valid TLD.
 	// 2. Go treats it as the file extension for "man" files (even though
@@ -193,17 +193,17 @@ func TestGatewayGet(t *testing.T) {
 		{"127.0.0.1:8080", "/", http.StatusNotFound, "404 page not found\n"},
 		{"127.0.0.1:8080", "/" + k.Cid().String(), http.StatusNotFound, "404 page not found\n"},
 		{"127.0.0.1:8080", k.String(), http.StatusOK, "fnord"},
-		{"127.0.0.1:8080", "/ipns/nxdomain.example.com", http.StatusNotFound, "ipfs resolve -r /ipns/nxdomain.example.com: " + namesys.ErrResolveFailed.Error() + "\n"},
-		{"127.0.0.1:8080", "/ipns/%0D%0A%0D%0Ahello", http.StatusNotFound, "ipfs resolve -r /ipns/%0D%0A%0D%0Ahello: " + namesys.ErrResolveFailed.Error() + "\n"},
-		{"127.0.0.1:8080", "/ipns/example.com", http.StatusOK, "fnord"},
+		{"127.0.0.1:8080", "/blns/nxdomain.example.com", http.StatusNotFound, "link resolve -r /ipns/nxdomain.example.com: " + namesys.ErrResolveFailed.Error() + "\n"},
+		{"127.0.0.1:8080", "/blns/%0D%0A%0D%0Ahello", http.StatusNotFound, "link resolve -r /ipns/%0D%0A%0D%0Ahello: " + namesys.ErrResolveFailed.Error() + "\n"},
+		{"127.0.0.1:8080", "/blns/example.com", http.StatusOK, "fnord"},
 		{"example.com", "/", http.StatusOK, "fnord"},
 
 		{"working.example.com", "/", http.StatusOK, "fnord"},
 		{"double.example.com", "/", http.StatusOK, "fnord"},
 		{"triple.example.com", "/", http.StatusOK, "fnord"},
-		{"working.example.com", k.String(), http.StatusNotFound, "ipfs resolve -r /ipns/working.example.com" + k.String() + ": no link named \"ipfs\" under " + k.Cid().String() + "\n"},
-		{"broken.example.com", "/", http.StatusNotFound, "ipfs resolve -r /ipns/broken.example.com/: " + namesys.ErrResolveFailed.Error() + "\n"},
-		{"broken.example.com", k.String(), http.StatusNotFound, "ipfs resolve -r /ipns/broken.example.com" + k.String() + ": " + namesys.ErrResolveFailed.Error() + "\n"},
+		{"working.example.com", k.String(), http.StatusNotFound, "link resolve -r /blns/working.example.com" + k.String() + ": no link named \"ipfs\" under " + k.Cid().String() + "\n"},
+		{"broken.example.com", "/", http.StatusNotFound, "link resolve -r /blns/broken.example.com/: " + namesys.ErrResolveFailed.Error() + "\n"},
+		{"broken.example.com", k.String(), http.StatusNotFound, "link resolve -r /blns/broken.example.com" + k.String() + ": " + namesys.ErrResolveFailed.Error() + "\n"},
 		// This test case ensures we don't treat the TLD as a file extension.
 		{"example.man", "/", http.StatusOK, "fnord"},
 	} {

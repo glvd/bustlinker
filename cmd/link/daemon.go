@@ -699,7 +699,7 @@ func mountFuse(req *cmds.Request, cctx *oldcmds.Context) error {
 
 	fsdir, found := req.Options[ipfsMountKwd].(string)
 	if !found {
-		fsdir = cfg.Mounts.LINK
+		fsdir = cfg.Mounts.IPFS
 	}
 
 	nsdir, found := req.Options[ipnsMountKwd].(string)

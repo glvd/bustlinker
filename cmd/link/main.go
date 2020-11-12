@@ -119,7 +119,7 @@ func mainRet() int {
 
 	// output depends on executable name passed in os.Args
 	// so we need to make sure it's stable
-	os.Args[0] = "ipfs"
+	os.Args[0] = "link"
 
 	buildEnv := func(ctx context.Context, req *cmds.Request) (cmds.Environment, error) {
 		checkDebug(req)

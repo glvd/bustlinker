@@ -92,17 +92,17 @@ The following examples use very small byte sizes to demonstrate the
 properties of the different chunkers on a small file. You'll likely
 want to use a 1024 times larger chunk sizes for most files.
 
-  > link add --chunker=size-2048 ipfs-logo.svg
-  added QmafrLBfzRLV4XSH1XcaMMeaXEUhDJjmtDfsYU95TrWG87 ipfs-logo.svg
-  > ipfs add --chunker=rabin-512-1024-2048 ipfs-logo.svg
-  added Qmf1hDN65tR55Ubh2RN1FPxr69xq3giVBz1KApsresY8Gn ipfs-logo.svg
+  > link add --chunker=size-2048 link-logo.svg
+  added QmafrLBfzRLV4XSH1XcaMMeaXEUhDJjmtDfsYU95TrWG87 link-logo.svg
+  > link add --chunker=rabin-512-1024-2048 link-logo.svg
+  added Qmf1hDN65tR55Ubh2RN1FPxr69xq3giVBz1KApsresY8Gn link-logo.svg
 
 You can now check what blocks have been created by:
 
-  > ipfs object links QmafrLBfzRLV4XSH1XcaMMeaXEUhDJjmtDfsYU95TrWG87
+  > link object links QmafrLBfzRLV4XSH1XcaMMeaXEUhDJjmtDfsYU95TrWG87
   QmY6yj1GsermExDXoosVE3aSPxdMNYr6aKuw3nA8LoWPRS 2059
   Qmf7ZQeSxq2fJVJbCmgTrLLVN9tDR9Wy5k75DxQKuz5Gyt 1195
-  > ipfs object links Qmf1hDN65tR55Ubh2RN1FPxr69xq3giVBz1KApsresY8Gn
+  > link object links Qmf1hDN65tR55Ubh2RN1FPxr69xq3giVBz1KApsresY8Gn
   QmY6yj1GsermExDXoosVE3aSPxdMNYr6aKuw3nA8LoWPRS 2059
   QmerURi9k4XzKCaaPbsK6BL5pMEjF7PGphjDvkkjDtsVf3 868
   QmQB28iwSriSUSMqG2nXDTLtdPHgWb4rebBrU7Q1j4vxPv 338

@@ -92,14 +92,14 @@ func mainRet() int {
 	intrh, ctx := util.SetupInterruptHandler(ctx)
 	defer intrh.Close()
 
-	// Handle `ipfs version` or `ipfs help`
+	// Handle `link version` or `link help`
 	if len(os.Args) > 1 {
-		// Handle `ipfs --version'
+		// Handle `link --version'
 		if os.Args[1] == "--version" {
 			os.Args[1] = "version"
 		}
 
-		//Handle `ipfs help` and `ipfs help <sub-command>`
+		//Handle `link help` and `link help <sub-command>`
 		if os.Args[1] == "help" {
 			if len(os.Args) > 2 {
 				os.Args = append(os.Args[:1], os.Args[2:]...)

@@ -34,7 +34,7 @@ The URL provided must be stable and ideally on a web server under your
 control.
 
 The file is added using raw-leaves but otherwise using the default
-settings for 'ipfs add'.
+settings for 'link add'.
 `,
 	},
 	Options: []cmds.Option{
@@ -47,7 +47,7 @@ settings for 'ipfs add'.
 	Type: &BlockStat{},
 
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
-		log.Error("The 'ipfs urlstore' command is deprecated, please use 'ipfs add --nocopy --cid-version=1")
+		log.Error("The 'link urlstore' command is deprecated, please use 'link add --nocopy --cid-version=1")
 
 		urlString := req.Arguments[0]
 		if !filestore.IsURL(req.Arguments[0]) {

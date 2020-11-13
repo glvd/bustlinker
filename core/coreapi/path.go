@@ -9,7 +9,7 @@ import (
 
 	"github.com/ipfs/go-cid"
 	ipld "github.com/ipfs/go-ipld-format"
-	ipfspath "github.com/ipfs/go-path"
+	linkpath "github.com/ipfs/go-path"
 	"github.com/ipfs/go-path/resolver"
 	uio "github.com/ipfs/go-unixfs/io"
 	coreiface "github.com/ipfs/interface-go-ipfs-core"
@@ -41,7 +41,7 @@ func (api *CoreAPI) ResolvePath(ctx context.Context, p path.Path) (path.Resolved
 		return nil, err
 	}
 
-	ipath := ipfspath.Path(p.String())
+	ipath := linkpath.Path(p.String())
 	ipath, err := resolve.ResolveBLNS(ctx, api.namesys, ipath)
 	if err == resolve.ErrNoNamesys {
 		return nil, coreiface.ErrOffline
@@ -52,7 +52,7 @@ func (api *CoreAPI) ResolvePath(ctx context.Context, p path.Path) (path.Resolved
 	var resolveOnce resolver.ResolveOnce
 
 	switch ipath.Segments()[0] {
-	case "ipfs":
+	case "link":
 		resolveOnce = uio.ResolveUnixfsOnce
 	case "ipld":
 		resolveOnce = resolver.ResolveSingle

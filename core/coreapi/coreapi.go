@@ -3,11 +3,11 @@ Package coreapi provides direct access to the core commands in LINK. If you are
 embedding LINK directly in your Go program, this package is the public
 interface you should use to read and write files or otherwise control LINK.
 
-If you are running LINK as a separate process, you should use `go-ipfs-api` to
-work with it via HTTP. As we finalize the interfaces here, `go-ipfs-api` will
+If you are running LINK as a separate process, you should use `go-link-api` to
+work with it via HTTP. As we finalize the interfaces here, `go-link-api` will
 transparently adopt them so you can use the same code with either package.
 
-**NOTE: this package is experimental.** `go-ipfs` has mainly been developed
+**NOTE: this package is experimental.** `go-link` has mainly been developed
 as a standalone application and library-style use of this package is still new.
 Interfaces here aren't yet completely stable.
 */
@@ -77,7 +77,7 @@ type CoreAPI struct {
 	parentOpts options.ApiSettings
 }
 
-// NewCoreAPI creates new instance of LINK CoreAPI backed by go-ipfs Node.
+// NewCoreAPI creates new instance of LINK CoreAPI backed by go-link Node.
 func NewCoreAPI(n *core.IpfsNode, opts ...options.ApiOption) (coreiface.CoreAPI, error) {
 	parentOpts, err := options.ApiOptions()
 	if err != nil {
@@ -87,17 +87,17 @@ func NewCoreAPI(n *core.IpfsNode, opts ...options.ApiOption) (coreiface.CoreAPI,
 	return (&CoreAPI{nd: n, parentOpts: *parentOpts}).WithOptions(opts...)
 }
 
-// Unixfs returns the UnixfsAPI interface implementation backed by the go-ipfs node
+// Unixfs returns the UnixfsAPI interface implementation backed by the go-link node
 func (api *CoreAPI) Unixfs() coreiface.UnixfsAPI {
 	return (*UnixfsAPI)(api)
 }
 
-// Block returns the BlockAPI interface implementation backed by the go-ipfs node
+// Block returns the BlockAPI interface implementation backed by the go-link node
 func (api *CoreAPI) Block() coreiface.BlockAPI {
 	return (*BlockAPI)(api)
 }
 
-// Dag returns the DagAPI interface implementation backed by the go-ipfs node
+// Dag returns the DagAPI interface implementation backed by the go-link node
 func (api *CoreAPI) Dag() coreiface.APIDagService {
 	return &dagAPI{
 		api.dag,
@@ -105,27 +105,27 @@ func (api *CoreAPI) Dag() coreiface.APIDagService {
 	}
 }
 
-// Name returns the NameAPI interface implementation backed by the go-ipfs node
+// Name returns the NameAPI interface implementation backed by the go-link node
 func (api *CoreAPI) Name() coreiface.NameAPI {
 	return (*NameAPI)(api)
 }
 
-// Key returns the KeyAPI interface implementation backed by the go-ipfs node
+// Key returns the KeyAPI interface implementation backed by the go-link node
 func (api *CoreAPI) Key() coreiface.KeyAPI {
 	return (*KeyAPI)(api)
 }
 
-// Object returns the ObjectAPI interface implementation backed by the go-ipfs node
+// Object returns the ObjectAPI interface implementation backed by the go-link node
 func (api *CoreAPI) Object() coreiface.ObjectAPI {
 	return (*ObjectAPI)(api)
 }
 
-// Pin returns the PinAPI interface implementation backed by the go-ipfs node
+// Pin returns the PinAPI interface implementation backed by the go-link node
 func (api *CoreAPI) Pin() coreiface.PinAPI {
 	return (*PinAPI)(api)
 }
 
-// Dht returns the DhtAPI interface implementation backed by the go-ipfs node
+// Dht returns the DhtAPI interface implementation backed by the go-link node
 func (api *CoreAPI) Dht() coreiface.DhtAPI {
 	return (*DhtAPI)(api)
 }

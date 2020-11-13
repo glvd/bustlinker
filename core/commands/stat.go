@@ -57,9 +57,9 @@ queried using this method are outlined in the specification:
 https://github.com/libp2p/specs/blob/master/7-properties.md#757-protocol-multicodecs
 
 Example protocol options:
-  - /ipfs/id/1.0.0
-  - /ipfs/bitswap
-  - /ipfs/dht
+  - /link/id/1.0.0
+  - /link/bitswap
+  - /link/dht
 
 Example:
 

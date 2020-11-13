@@ -6,9 +6,9 @@ var CurrentCommit string
 // CurrentVersionNumber is the current application's version literal
 const CurrentVersionNumber = "0.8.0-dev"
 
-const ApiVersion = "/go-ipfs/" + CurrentVersionNumber + "/"
+const ApiVersion = "/bustlinker/" + CurrentVersionNumber + "/"
 
 // UserAgent is the libp2p user agent used by go-ipfs.
 //
 // Note: This will end in `/` when no commit is available. This is expected.
-var UserAgent = "go-ipfs/" + CurrentVersionNumber + "/" + CurrentCommit
+var UserAgent = "bustlinker/" + CurrentVersionNumber + "/" + CurrentCommit

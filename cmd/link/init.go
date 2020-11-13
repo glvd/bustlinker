@@ -193,11 +193,11 @@ func doInit(out io.Writer, repoRoot string, empty bool, identity *config.Identit
 		return err
 	}
 
-	if !empty {
-		if err := addDefaultAssets(out, repoRoot); err != nil {
-			return err
-		}
-	}
+	//if !empty {
+	//	if err := addDefaultAssets(out, repoRoot); err != nil {
+	//		return err
+	//	}
+	//}
 
 	return initializeIpnsKeyspace(repoRoot)
 }

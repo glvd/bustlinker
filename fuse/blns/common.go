@@ -1,4 +1,4 @@
-package ipns
+package blns
 
 import (
 	"context"

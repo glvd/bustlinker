@@ -17,7 +17,7 @@ import (
 	nsopts "github.com/ipfs/interface-go-ipfs-core/options/namesys"
 )
 
-var log = logging.Logger("core/commands/ipns")
+var log = logging.Logger("core/commands/blns")
 
 type ResolvedPath struct {
 	Path path.Path

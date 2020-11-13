@@ -1,8 +1,8 @@
 // +build !nofuse,!openbsd,!netbsd
 
-// package fuse/ipns implements a fuse filesystem that interfaces
-// with ipns, the naming system for ipfs.
-package ipns
+// package fuse/blns implements a fuse filesystem that interfaces
+// with blns, the naming system for link.
+package blns
 
 import (
 	"context"
@@ -33,7 +33,7 @@ func init() {
 	}
 }
 
-var log = logging.Logger("fuse/ipns")
+var log = logging.Logger("fuse/blns")
 
 // FileSystem is the readwrite BLNS Fuse Filesystem.
 type FileSystem struct {
@@ -42,17 +42,17 @@ type FileSystem struct {
 }
 
 // NewFileSystem constructs new fs using given core.IpfsNode instance.
-func NewFileSystem(ctx context.Context, ipfs iface.CoreAPI, ipfspath, ipnspath string) (*FileSystem, error) {
-	key, err := ipfs.Key().Self(ctx)
+func NewFileSystem(ctx context.Context, link iface.CoreAPI, linkpath, blnspath string) (*FileSystem, error) {
+	key, err := link.Key().Self(ctx)
 	if err != nil {
 		return nil, err
 	}
-	root, err := CreateRoot(ctx, ipfs, map[string]iface.Key{"local": key}, ipfspath, ipnspath)
+	root, err := CreateRoot(ctx, link, map[string]iface.Key{"local": key}, linkpath, blnspath)
 	if err != nil {
 		return nil, err
 	}
 
-	return &FileSystem{Ipfs: ipfs, RootNode: root}, nil
+	return &FileSystem{Ipfs: link, RootNode: root}, nil
 }
 
 // Root constructs the Root of the filesystem, a Root object.
@@ -73,7 +73,7 @@ type Root struct {
 	Ipfs iface.CoreAPI
 	Keys map[string]iface.Key
 
-	// Used for symlinking into ipfs
+	// Used for symlinking into link
 	IpfsRoot  string
 	IpnsRoot  string
 	LocalDirs map[string]fs.Node
@@ -82,15 +82,15 @@ type Root struct {
 	LocalLinks map[string]*Link
 }
 
-func ipnsPubFunc(ipfs iface.CoreAPI, key iface.Key) mfs.PubFunc {
+func blnsPubFunc(link iface.CoreAPI, key iface.Key) mfs.PubFunc {
 	return func(ctx context.Context, c cid.Cid) error {
-		_, err := ipfs.Name().Publish(ctx, path.IpfsPath(c), options.Name.Key(key.Name()))
+		_, err := link.Name().Publish(ctx, path.IpfsPath(c), options.Name.Key(key.Name()))
 		return err
 	}
 }
 
-func loadRoot(ctx context.Context, ipfs iface.CoreAPI, key iface.Key) (*mfs.Root, fs.Node, error) {
-	node, err := ipfs.ResolveNode(ctx, key.Path())
+func loadRoot(ctx context.Context, link iface.CoreAPI, key iface.Key) (*mfs.Root, fs.Node, error) {
+	node, err := link.ResolveNode(ctx, key.Path())
 	switch err {
 	case nil:
 	case iface.ErrResolveFailed:
@@ -105,7 +105,7 @@ func loadRoot(ctx context.Context, ipfs iface.CoreAPI, key iface.Key) (*mfs.Root
 		return nil, nil, dag.ErrNotProtobuf
 	}
 
-	root, err := mfs.NewRoot(ctx, ipfs.Dag(), pbnode, ipnsPubFunc(ipfs, key))
+	root, err := mfs.NewRoot(ctx, link.Dag(), pbnode, blnsPubFunc(link, key))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -113,12 +113,12 @@ func loadRoot(ctx context.Context, ipfs iface.CoreAPI, key iface.Key) (*mfs.Root
 	return root, &Directory{dir: root.GetDirectory()}, nil
 }
 
-func CreateRoot(ctx context.Context, ipfs iface.CoreAPI, keys map[string]iface.Key, ipfspath, ipnspath string) (*Root, error) {
+func CreateRoot(ctx context.Context, link iface.CoreAPI, keys map[string]iface.Key, linkpath, blnspath string) (*Root, error) {
 	ldirs := make(map[string]fs.Node)
 	roots := make(map[string]*mfs.Root)
 	links := make(map[string]*Link)
 	for alias, k := range keys {
-		root, fsn, err := loadRoot(ctx, ipfs, k)
+		root, fsn, err := loadRoot(ctx, link, k)
 		if err != nil {
 			return nil, err
 		}
@@ -135,9 +135,9 @@ func CreateRoot(ctx context.Context, ipfs iface.CoreAPI, keys map[string]iface.K
 	}
 
 	return &Root{
-		Ipfs:       ipfs,
-		IpfsRoot:   ipfspath,
-		IpnsRoot:   ipnspath,
+		Ipfs:       link,
+		IpfsRoot:   linkpath,
+		IpnsRoot:   blnspath,
 		Keys:       keys,
 		LocalDirs:  ldirs,
 		LocalLinks: links,
@@ -176,19 +176,19 @@ func (s *Root) Lookup(ctx context.Context, name string) (fs.Node, error) {
 		}
 	}
 
-	// other links go through ipns resolution and are symlinked into the ipfs mountpoint
-	ipnsName := "/ipns/" + name
-	resolved, err := s.Ipfs.Name().Resolve(ctx, ipnsName)
+	// other links go through blns resolution and are symlinked into the link mountpoint
+	blnsName := "/blns/" + name
+	resolved, err := s.Ipfs.Name().Resolve(ctx, blnsName)
 	if err != nil {
-		log.Warnf("ipns: namesys resolve error: %s", err)
+		log.Warnf("blns: namesys resolve error: %s", err)
 		return nil, fuse.ENOENT
 	}
 
-	if resolved.Namespace() != "ipfs" {
-		return nil, errors.New("invalid path from ipns record")
+	if resolved.Namespace() != "link" {
+		return nil, errors.New("invalid path from blns record")
 	}
 
-	return &Link{s.IpfsRoot + "/" + strings.TrimPrefix(resolved.String(), "/ipfs/")}, nil
+	return &Link{s.IpfsRoot + "/" + strings.TrimPrefix(resolved.String(), "/link/")}, nil
 }
 
 func (r *Root) Close() error {
@@ -259,7 +259,7 @@ func (fi *FileNode) Attr(ctx context.Context, a *fuse.Attr) error {
 	size, err := fi.fi.Size()
 	if err != nil {
 		// In this case, the dag node in question may not be unixfs
-		return fmt.Errorf("fuse/ipns: failed to get file.Size(): %s", err)
+		return fmt.Errorf("fuse/blns: failed to get file.Size(): %s", err)
 	}
 	a.Mode = os.FileMode(0666)
 	a.Size = uint64(size)
@@ -531,15 +531,15 @@ func min(a, b int) int {
 }
 
 // to check that out Node implements all the interfaces we want
-type ipnsRoot interface {
+type blnsRoot interface {
 	fs.Node
 	fs.HandleReadDirAller
 	fs.NodeStringLookuper
 }
 
-var _ ipnsRoot = (*Root)(nil)
+var _ blnsRoot = (*Root)(nil)
 
-type ipnsDirectory interface {
+type blnsDirectory interface {
 	fs.HandleReadDirAller
 	fs.Node
 	fs.NodeCreater
@@ -549,20 +549,20 @@ type ipnsDirectory interface {
 	fs.NodeStringLookuper
 }
 
-var _ ipnsDirectory = (*Directory)(nil)
+var _ blnsDirectory = (*Directory)(nil)
 
-type ipnsFile interface {
+type blnsFile interface {
 	fs.HandleFlusher
 	fs.HandleReader
 	fs.HandleWriter
 	fs.HandleReleaser
 }
 
-type ipnsFileNode interface {
+type blnsFileNode interface {
 	fs.Node
 	fs.NodeFsyncer
 	fs.NodeOpener
 }
 
-var _ ipnsFileNode = (*FileNode)(nil)
-var _ ipnsFile = (*File)(nil)
+var _ blnsFileNode = (*FileNode)(nil)
+var _ blnsFile = (*File)(nil)

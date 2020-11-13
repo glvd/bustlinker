@@ -1,6 +1,6 @@
 // +build !nofuse,!openbsd,!netbsd
 
-package ipns
+package blns
 
 import (
 	"bytes"

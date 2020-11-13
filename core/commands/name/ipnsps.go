@@ -12,11 +12,11 @@ import (
 	record "github.com/libp2p/go-libp2p-record"
 )
 
-type ipnsPubsubState struct {
+type blnsPubsubState struct {
 	Enabled bool
 }
 
-type ipnsPubsubCancel struct {
+type blnsPubsubCancel struct {
 	Canceled bool
 }
 
@@ -35,13 +35,13 @@ Note: this command is experimental and subject to change as the system is refine
 `,
 	},
 	Subcommands: map[string]*cmds.Command{
-		"state":  ipnspsStateCmd,
-		"subs":   ipnspsSubsCmd,
-		"cancel": ipnspsCancelCmd,
+		"state":  blnspsStateCmd,
+		"subs":   blnspsSubsCmd,
+		"cancel": blnspsCancelCmd,
 	},
 }
 
-var ipnspsStateCmd = &cmds.Command{
+var blnspsStateCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Query the state of BLNS pubsub",
 	},
@@ -51,11 +51,11 @@ var ipnspsStateCmd = &cmds.Command{
 			return err
 		}
 
-		return cmds.EmitOnce(res, &ipnsPubsubState{n.PSRouter != nil})
+		return cmds.EmitOnce(res, &blnsPubsubState{n.PSRouter != nil})
 	},
-	Type: ipnsPubsubState{},
+	Type: blnsPubsubState{},
 	Encoders: cmds.EncoderMap{
-		cmds.Text: cmds.MakeTypedEncoder(func(req *cmds.Request, w io.Writer, ips *ipnsPubsubState) error {
+		cmds.Text: cmds.MakeTypedEncoder(func(req *cmds.Request, w io.Writer, ips *blnsPubsubState) error {
 			var state string
 			if ips.Enabled {
 				state = "enabled"
@@ -69,7 +69,7 @@ var ipnspsStateCmd = &cmds.Command{
 	},
 }
 
-var ipnspsSubsCmd = &cmds.Command{
+var blnspsSubsCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Show current name subscriptions",
 	},
@@ -93,7 +93,7 @@ var ipnspsSubsCmd = &cmds.Command{
 		var paths []string
 		for _, key := range n.PSRouter.GetSubscriptions() {
 			ns, k, err := record.SplitKey(key)
-			if err != nil || ns != "ipns" {
+			if err != nil || ns != "blns" {
 				// Not necessarily an error.
 				continue
 			}
@@ -113,7 +113,7 @@ var ipnspsSubsCmd = &cmds.Command{
 	},
 }
 
-var ipnspsCancelCmd = &cmds.Command{
+var blnspsCancelCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Cancel a name subscription",
 	},
@@ -138,14 +138,14 @@ var ipnspsCancelCmd = &cmds.Command{
 		if err != nil {
 			return err
 		}
-		return cmds.EmitOnce(res, &ipnsPubsubCancel{ok})
+		return cmds.EmitOnce(res, &blnsPubsubCancel{ok})
 	},
 	Arguments: []cmds.Argument{
 		cmds.StringArg("name", true, false, "Name to cancel the subscription for."),
 	},
-	Type: ipnsPubsubCancel{},
+	Type: blnsPubsubCancel{},
 	Encoders: cmds.EncoderMap{
-		cmds.Text: cmds.MakeTypedEncoder(func(req *cmds.Request, w io.Writer, ipc *ipnsPubsubCancel) error {
+		cmds.Text: cmds.MakeTypedEncoder(func(req *cmds.Request, w io.Writer, ipc *blnsPubsubCancel) error {
 			var state string
 			if ipc.Canceled {
 				state = "canceled"

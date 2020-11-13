@@ -19,18 +19,18 @@ import (
 
 type NameAPI CoreAPI
 
-type ipnsEntry struct {
+type blnsEntry struct {
 	name  string
 	value path.Path
 }
 
-// Name returns the ipnsEntry name.
-func (e *ipnsEntry) Name() string {
+// Name returns the blnsEntry name.
+func (e *blnsEntry) Name() string {
 	return e.name
 }
 
-// Value returns the ipnsEntry value.
-func (e *ipnsEntry) Value() path.Path {
+// Value returns the blnsEntry value.
+func (e *blnsEntry) Value() path.Path {
 	return e.value
 }
 
@@ -61,7 +61,7 @@ func (api *NameAPI) Publish(ctx context.Context, p path.Path, opts ...caopts.Nam
 	}
 
 	if options.TTL != nil {
-		ctx = context.WithValue(ctx, "ipns-publish-ttl", *options.TTL)
+		ctx = context.WithValue(ctx, "blns-publish-ttl", *options.TTL)
 	}
 
 	eol := time.Now().Add(options.ValidTime)
@@ -75,7 +75,7 @@ func (api *NameAPI) Publish(ctx context.Context, p path.Path, opts ...caopts.Nam
 		return nil, err
 	}
 
-	return &ipnsEntry{
+	return &blnsEntry{
 		name:  coreiface.FormatKeyID(pid),
 		value: p,
 	}, nil
@@ -98,8 +98,8 @@ func (api *NameAPI) Search(ctx context.Context, name string, opts ...caopts.Name
 		resolver = namesys.NewNameSystem(api.routing, api.repo.Datastore(), 0)
 	}
 
-	if !strings.HasPrefix(name, "/ipns/") {
-		name = "/ipns/" + name
+	if !strings.HasPrefix(name, "/blns/") {
+		name = "/blns/" + name
 	}
 
 	out := make(chan coreiface.IpnsResult)

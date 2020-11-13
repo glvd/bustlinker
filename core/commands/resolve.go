@@ -13,7 +13,7 @@ import (
 
 	cidenc "github.com/ipfs/go-cidutil/cidenc"
 	cmds "github.com/ipfs/go-ipfs-cmds"
-	ipfspath "github.com/ipfs/go-path"
+	linkpath "github.com/ipfs/go-path"
 	options "github.com/ipfs/interface-go-ipfs-core/options"
 	nsopts "github.com/ipfs/interface-go-ipfs-core/options/namesys"
 	path "github.com/ipfs/interface-go-ipfs-core/path"
@@ -108,7 +108,7 @@ Resolve the value of an LINK DAG path:
 			if err != nil && err != ns.ErrResolveRecursion {
 				return err
 			}
-			return cmds.EmitOnce(res, &ncmd.ResolvedPath{Path: ipfspath.Path(p.String())})
+			return cmds.EmitOnce(res, &ncmd.ResolvedPath{Path: linkpath.Path(p.String())})
 		}
 
 		var enc cidenc.Encoder
@@ -139,7 +139,7 @@ Resolve the value of an LINK DAG path:
 			encoded += "/" + remainder
 		}
 
-		return cmds.EmitOnce(res, &ncmd.ResolvedPath{Path: ipfspath.Path(encoded)})
+		return cmds.EmitOnce(res, &ncmd.ResolvedPath{Path: linkpath.Path(encoded)})
 	},
 	Encoders: cmds.EncoderMap{
 		cmds.Text: cmds.MakeTypedEncoder(func(req *cmds.Request, w io.Writer, rp *ncmd.ResolvedPath) error {

@@ -14,7 +14,7 @@ import (
 
 var TarCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Utility functions for tar files in ipfs.",
+		Tagline: "Utility functions for tar files in link.",
 	},
 
 	Subcommands: map[string]*cmds.Command{
@@ -25,9 +25,9 @@ var TarCmd = &cmds.Command{
 
 var tarAddCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Import a tar file into ipfs.",
+		Tagline: "Import a tar file into link.",
 		ShortDescription: `
-'ipfs tar add' will parse a tar file and create a merkledag structure to
+'link tar add' will parse a tar file and create a merkledag structure to
 represent it.
 `,
 	},
@@ -77,12 +77,12 @@ var tarCatCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Export a tar file from LINK.",
 		ShortDescription: `
-'ipfs tar cat' will export a tar file from a previously imported one in LINK.
+'link tar cat' will export a tar file from a previously imported one in LINK.
 `,
 	},
 
 	Arguments: []cmds.Argument{
-		cmds.StringArg("path", true, false, "ipfs path of archive to export.").EnableStdin(),
+		cmds.StringArg("path", true, false, "link path of archive to export.").EnableStdin(),
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
 		api, err := cmdenv.GetApi(env, req)

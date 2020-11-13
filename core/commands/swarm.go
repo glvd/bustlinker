@@ -42,7 +42,7 @@ var SwarmCmd = &cmds.Command{
 		ShortDescription: `
 'link swarm' is a tool to manipulate the network swarm. The swarm is the
 component that opens, listens for, and maintains connections to other
-ipfs peers in the internet.
+link peers in the internet.
 `,
 	},
 	Subcommands: map[string]*cmds.Command{
@@ -133,9 +133,9 @@ var swarmPeersCmd = &cmds.Command{
 	},
 	Encoders: cmds.EncoderMap{
 		cmds.Text: cmds.MakeTypedEncoder(func(req *cmds.Request, w io.Writer, ci *connInfos) error {
-			pipfs := ma.ProtocolWithCode(ma.P_P2P).Name
+			plink := ma.ProtocolWithCode(ma.P_P2P).Name
 			for _, info := range ci.Peers {
-				fmt.Fprintf(w, "%s/%s/%s", info.Addr, pipfs, info.Peer)
+				fmt.Fprintf(w, "%s/%s/%s", info.Addr, plink, info.Peer)
 				if info.Latency != "" {
 					fmt.Fprintf(w, " %s", info.Latency)
 				}
@@ -400,7 +400,7 @@ format is an LINK multiaddr:
 
 link swarm disconnect /ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
 
-The disconnect is not permanent; if ipfs needs to talk to that address later,
+The disconnect is not permanent; if link needs to talk to that address later,
 it will reconnect.
 `,
 	},
@@ -480,7 +480,7 @@ func resolveAddresses(ctx context.Context, addrs []string) ([]ma.Multiaddr, erro
 			return nil, err
 		}
 
-		// check whether address ends in `ipfs/Qm...`
+		// check whether address ends in `link/Qm...`
 		if _, last := ma.SplitLast(maddr); last.Protocol().Code == ma.P_P2P {
 			maddrs = append(maddrs, maddr)
 			continue
@@ -493,7 +493,7 @@ func resolveAddresses(ctx context.Context, addrs []string) ([]ma.Multiaddr, erro
 				resolveErrC <- err
 				return
 			}
-			// filter out addresses that still doesn't end in `ipfs/Qm...`
+			// filter out addresses that still doesn't end in `link/Qm...`
 			found := 0
 			for _, raddr := range raddrs {
 				if _, last := ma.SplitLast(raddr); last != nil && last.Protocol().Code == ma.P_P2P {
@@ -502,7 +502,7 @@ func resolveAddresses(ctx context.Context, addrs []string) ([]ma.Multiaddr, erro
 				}
 			}
 			if found == 0 {
-				resolveErrC <- fmt.Errorf("found no ipfs peers at %s", maddr)
+				resolveErrC <- fmt.Errorf("found no link peers at %s", maddr)
 			}
 		}(maddr)
 	}

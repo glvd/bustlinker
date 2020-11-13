@@ -19,7 +19,7 @@ func ExternalBinary(instructions string) *cmds.Command {
 		External: true,
 		NoRemote: true,
 		Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
-			binname := strings.Join(append([]string{"ipfs"}, req.Path...), "-")
+			binname := strings.Join(append([]string{"link"}, req.Path...), "-")
 			_, err := exec.LookPath(binname)
 			if err != nil {
 				// special case for '--help' on uninstalled binaries.

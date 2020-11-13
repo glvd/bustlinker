@@ -53,6 +53,16 @@ type link struct {
 }
 
 func (l *link) SetNode(node *core.IpfsNode) Linker {
+	if l.cfg == nil {
+		v := config.InitConfig(l.repo)
+		err := config.StoreConfig(l.repo, v)
+		if err != nil {
+			log.Errorf("set node error(%v)", err)
+			return l
+		}
+		l.cfg = v
+	}
+
 	l.node = node
 	return l
 }
@@ -143,6 +153,9 @@ func (l *link) registerHandle() {
 
 func (l *link) Start() error {
 	fmt.Println("Link start")
+	if l.cfg == nil {
+
+	}
 
 	l.pinning = newPinning(l.node)
 	l.addresses = NewAddress(l.cfg, l.repo, l.node)
@@ -296,14 +309,22 @@ func (l *link) syncPin() {
 }
 
 func New(repo string, cfg interface{}) (Linker, error) {
-	v, b := cfg.(*config.Config)
-	if cfg == nil || !b {
-		v = config.InitConfig(repo)
-		err := config.StoreConfig(repo, v)
-		if err != nil {
-			return nil, err
-		}
+	var v *config.Config
+	//var b bool
+	tmp, b := cfg.(*config.Config)
+	if b {
+		v = tmp
 	}
+	//if cfg == nil || !b {
+	//	v = config.InitConfig(repo)
+	//	err := config.StoreConfig(repo, v)
+	//	if err != nil {
+	//		panic(err)
+	//		return nil, err
+	//	}
+	//}
+	//
+
 	return &link{
 		ctx:         context.TODO(),
 		repo:        repo,

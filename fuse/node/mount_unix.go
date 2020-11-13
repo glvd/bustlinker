@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	core "github.com/ipfs/go-ipfs/core"
-	ipns "github.com/ipfs/go-ipfs/fuse/ipns"
+	blns "github.com/ipfs/go-ipfs/fuse/blns"
 	mount "github.com/ipfs/go-ipfs/fuse/mount"
 	rofs "github.com/ipfs/go-ipfs/fuse/readonly"
 
@@ -81,7 +81,7 @@ func doMount(node *core.IpfsNode, fsdir, nsdir string) error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			nsmount, err2 = ipns.Mount(node, nsdir, fsdir)
+			nsmount, err2 = blns.Mount(node, nsdir, fsdir)
 		}()
 	}
 

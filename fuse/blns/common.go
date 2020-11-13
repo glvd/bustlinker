@@ -10,7 +10,7 @@ import (
 	ci "github.com/libp2p/go-libp2p-core/crypto"
 )
 
-// InitializeKeyspace sets the ipns record for the given key to
+// InitializeKeyspace sets the blns record for the given key to
 // point to an empty directory.
 func InitializeKeyspace(n *core.IpfsNode, key ci.PrivKey) error {
 	ctx, cancel := context.WithCancel(n.Context())

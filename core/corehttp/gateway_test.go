@@ -44,7 +44,7 @@ func (m mockNamesys) Resolve(ctx context.Context, name string, opts ...nsopts.Re
 		// max uint
 		depth = ^uint(0)
 	}
-	for strings.HasPrefix(name, "/ipns/") {
+	for strings.HasPrefix(name, "/blns/") {
 		if depth == 0 {
 			return value, namesys.ErrResolveRecursion
 		}
@@ -141,7 +141,7 @@ func newTestServerAndNode(t *testing.T, ns mockNamesys) (*httptest.Server, iface
 	dh.Handler, err = makeHandler(n,
 		ts.Listener,
 		HostnameOption(),
-		GatewayOption(false, "/ipfs", "/ipns"),
+		GatewayOption(false, "/ipfs", "/blns"),
 		VersionOption(),
 	)
 	if err != nil {
@@ -171,9 +171,9 @@ func TestGatewayGet(t *testing.T) {
 	}
 	ns["/blns/example.com"] = path.FromString(k.String())
 	ns["/blns/working.example.com"] = path.FromString(k.String())
-	ns["/blns/double.example.com"] = path.FromString("/ipns/working.example.com")
-	ns["/blns/triple.example.com"] = path.FromString("/ipns/double.example.com")
-	ns["/blns/broken.example.com"] = path.FromString("/ipns/" + k.Cid().String())
+	ns["/blns/double.example.com"] = path.FromString("/blns/working.example.com")
+	ns["/blns/triple.example.com"] = path.FromString("/blns/double.example.com")
+	ns["/blns/broken.example.com"] = path.FromString("/blns/" + k.Cid().String())
 	// We picked .man because:
 	// 1. It's a valid TLD.
 	// 2. Go treats it as the file extension for "man" files (even though
@@ -181,7 +181,7 @@ func TestGatewayGet(t *testing.T) {
 	//
 	// Unfortunately, this may not work on all platforms as file type
 	// detection is platform dependent.
-	ns["/ipns/example.man"] = path.FromString(k.String())
+	ns["/blns/example.man"] = path.FromString(k.String())
 
 	t.Log(ts.URL)
 	for i, test := range []struct {
@@ -193,8 +193,8 @@ func TestGatewayGet(t *testing.T) {
 		{"127.0.0.1:8080", "/", http.StatusNotFound, "404 page not found\n"},
 		{"127.0.0.1:8080", "/" + k.Cid().String(), http.StatusNotFound, "404 page not found\n"},
 		{"127.0.0.1:8080", k.String(), http.StatusOK, "fnord"},
-		{"127.0.0.1:8080", "/blns/nxdomain.example.com", http.StatusNotFound, "link resolve -r /ipns/nxdomain.example.com: " + namesys.ErrResolveFailed.Error() + "\n"},
-		{"127.0.0.1:8080", "/blns/%0D%0A%0D%0Ahello", http.StatusNotFound, "link resolve -r /ipns/%0D%0A%0D%0Ahello: " + namesys.ErrResolveFailed.Error() + "\n"},
+		{"127.0.0.1:8080", "/blns/nxdomain.example.com", http.StatusNotFound, "link resolve -r /blns/nxdomain.example.com: " + namesys.ErrResolveFailed.Error() + "\n"},
+		{"127.0.0.1:8080", "/blns/%0D%0A%0D%0Ahello", http.StatusNotFound, "link resolve -r /blns/%0D%0A%0D%0Ahello: " + namesys.ErrResolveFailed.Error() + "\n"},
 		{"127.0.0.1:8080", "/blns/example.com", http.StatusOK, "fnord"},
 		{"example.com", "/", http.StatusOK, "fnord"},
 
@@ -258,7 +258,7 @@ func TestPretty404(t *testing.T) {
 	}
 
 	host := "example.net"
-	ns["/ipns/"+host] = path.FromString(k.String())
+	ns["/blns/"+host] = path.FromString(k.String())
 
 	for _, test := range []struct {
 		path   string
@@ -270,7 +270,7 @@ func TestPretty404(t *testing.T) {
 		{"/nope", "text/html", http.StatusNotFound, "Custom 404"},
 		{"/nope", "text/*", http.StatusNotFound, "Custom 404"},
 		{"/nope", "*/*", http.StatusNotFound, "Custom 404"},
-		{"/nope", "application/json", http.StatusNotFound, "ipfs resolve -r /ipns/example.net/nope: no link named \"nope\" under QmcmnF7XG5G34RdqYErYDwCKNFQ6jb8oKVR21WAJgubiaj\n"},
+		{"/nope", "application/json", http.StatusNotFound, "ipfs resolve -r /blns/example.net/nope: no link named \"nope\" under QmcmnF7XG5G34RdqYErYDwCKNFQ6jb8oKVR21WAJgubiaj\n"},
 		{"/deeper/nope", "text/html", http.StatusNotFound, "Deep custom 404"},
 		{"/deeper/", "text/html", http.StatusOK, ""},
 		{"/deeper", "text/html", http.StatusOK, ""},
@@ -309,7 +309,7 @@ func TestBLNSHostnameRedirect(t *testing.T) {
 	ts, api, ctx := newTestServerAndNode(t, ns)
 	t.Logf("test server url: %s", ts.URL)
 
-	// create /ipns/example.net/foo/index.html
+	// create /blns/example.net/foo/index.html
 
 	f1 := files.NewMapDirectory(map[string]files.Node{
 		"_": files.NewBytesFile([]byte("_")),
@@ -324,7 +324,7 @@ func TestBLNSHostnameRedirect(t *testing.T) {
 	}
 
 	t.Logf("k: %s\n", k)
-	ns["/ipns/example.net"] = path.FromString(k.String())
+	ns["/blns/example.net"] = path.FromString(k.String())
 
 	// make request to directory containing index.html
 	req, err := http.NewRequest(http.MethodGet, ts.URL+"/foo", nil)
@@ -406,7 +406,7 @@ func TestBLNSHostnameBacklinks(t *testing.T) {
 		}),
 	})
 
-	// create /ipns/example.net/foo/
+	// create /blns/example.net/foo/
 	k, err := api.Unixfs().Add(ctx, f1)
 	if err != nil {
 		t.Fatal(err)
@@ -423,7 +423,7 @@ func TestBLNSHostnameBacklinks(t *testing.T) {
 	}
 
 	t.Logf("k: %s\n", k)
-	ns["/ipns/example.net"] = path.FromString(k.String())
+	ns["/blns/example.net"] = path.FromString(k.String())
 
 	// make request to directory listing
 	req, err := http.NewRequest(http.MethodGet, ts.URL+"/foo%3F%20%23%3C%27/", nil)
@@ -445,7 +445,7 @@ func TestBLNSHostnameBacklinks(t *testing.T) {
 	s := string(body)
 	t.Logf("body: %s\n", string(body))
 
-	if !matchPathOrBreadcrumbs(s, "/ipns/<a href=\"/ipns/example.net\">example.net</a>/<a href=\"/ipns/example.net/foo%3F%20%23%3C%27\">foo? #&lt;&#39;</a>") {
+	if !matchPathOrBreadcrumbs(s, "/blns/<a href=\"/blns/example.net\">example.net</a>/<a href=\"/ipns/example.net/foo%3F%20%23%3C%27\">foo? #&lt;&#39;</a>") {
 		t.Fatalf("expected a path in directory listing")
 	}
 	if !strings.Contains(s, "<a href=\"/foo%3F%20%23%3C%27/./..\">") {

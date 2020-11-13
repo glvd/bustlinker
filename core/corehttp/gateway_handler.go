@@ -31,7 +31,7 @@ import (
 
 const (
 	ipfsPathPrefix = "/ipfs/"
-	ipnsPathPrefix = "/blns/"
+	blnsPathPrefix = "/blns/"
 )
 
 // gatewayHandler is a HTTP handler that serves LINK objects (accessible by default at /ipfs/<path>)
@@ -694,7 +694,7 @@ func internalWebError(w http.ResponseWriter, err error) {
 }
 
 func getFilename(s string) string {
-	if (strings.HasPrefix(s, ipfsPathPrefix) || strings.HasPrefix(s, ipnsPathPrefix)) && strings.Count(gopath.Clean(s), "/") <= 2 {
+	if (strings.HasPrefix(s, ipfsPathPrefix) || strings.HasPrefix(s, blnsPathPrefix)) && strings.Count(gopath.Clean(s), "/") <= 2 {
 		// Don't want to treat ipfs.io in /blns/ipfs.io as a filename.
 		return ""
 	}

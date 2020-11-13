@@ -224,11 +224,11 @@ func Online(bcfg *BuildCfg, cfg *config.Config) fx.Option {
 
 	// Namesys params
 
-	ipnsCacheSize := cfg.Ipns.ResolveCacheSize
-	if ipnsCacheSize == 0 {
-		ipnsCacheSize = DefaultIpnsCacheSize
+	blnsCacheSize := cfg.Ipns.ResolveCacheSize
+	if blnsCacheSize == 0 {
+		blnsCacheSize = DefaultIpnsCacheSize
 	}
-	if ipnsCacheSize < 0 {
+	if blnsCacheSize < 0 {
 		return fx.Error(fmt.Errorf("cannot specify negative resolve cache size"))
 	}
 
@@ -264,7 +264,7 @@ func Online(bcfg *BuildCfg, cfg *config.Config) fx.Option {
 	return fx.Options(
 		fx.Provide(OnlineExchange(shouldBitswapProvide)),
 		maybeProvide(Graphsync, cfg.Experimental.GraphsyncEnabled),
-		fx.Provide(Namesys(ipnsCacheSize)),
+		fx.Provide(Namesys(blnsCacheSize)),
 		fx.Provide(Peering),
 		PeerWith(cfg.Peering.Peers...),
 

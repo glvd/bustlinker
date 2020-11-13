@@ -23,7 +23,7 @@ import (
 	nsopts "github.com/ipfs/interface-go-ipfs-core/options/namesys"
 )
 
-var defaultPaths = []string{"/ipfs/", "/ipns/", "/api/", "/p2p/", "/version"}
+var defaultPaths = []string{"/ipfs/", "/blns/", "/api/", "/p2p/", "/version"}
 
 var pathGatewaySpec = &config.GatewaySpec{
 	Paths:         defaultPaths,
@@ -128,7 +128,7 @@ func HostnameOption() ServeOption {
 				// Try DNSLink, if it was not explicitly disabled for the hostname
 				if !gw.NoDNSLink && isDNSLinkRequest(r.Context(), coreAPI, host) {
 					// rewrite path and handle as DNSLink
-					r.URL.Path = "/ipns/" + stripPort(host) + r.URL.Path
+					r.URL.Path = "/blns/" + stripPort(host) + r.URL.Path
 					childMux.ServeHTTP(w, r)
 					return
 				}
@@ -212,7 +212,7 @@ func HostnameOption() ServeOption {
 			// 3. does DNSLink record exist in DNS?
 			if !cfg.Gateway.NoDNSLink && isDNSLinkRequest(r.Context(), coreAPI, host) {
 				// rewrite path and handle as DNSLink
-				r.URL.Path = "/ipns/" + stripPort(host) + r.URL.Path
+				r.URL.Path = "/blns/" + stripPort(host) + r.URL.Path
 				childMux.ServeHTTP(w, r)
 				return
 			}
@@ -303,7 +303,7 @@ func isKnownHostname(hostname string, knownGateways gatewayHosts) (gw *config.Ga
 func knownSubdomainDetails(hostname string, knownGateways gatewayHosts) (gw *config.GatewaySpec, knownHostname, ns, rootID string, ok bool) {
 	labels := strings.Split(hostname, ".")
 	// Look for FQDN of a known gateway hostname.
-	// Example: given "dist.ipfs.io.ipns.dweb.link":
+	// Example: given "dist.ipfs.io.blns.dweb.link":
 	// 1. Lookup "link" TLD in knownGateways: negative
 	// 2. Lookup "dweb.link" in knownGateways: positive
 	//
@@ -336,7 +336,7 @@ func isDNSLinkRequest(ctx context.Context, ipfs iface.CoreAPI, host string) bool
 	if len(fqdn) == 0 && !isd.IsDomain(fqdn) {
 		return false
 	}
-	name := "/ipns/" + fqdn
+	name := "/blns/" + fqdn
 	// check if DNSLink exists
 	depth := options.Name.ResolveOption(nsopts.Depth(1))
 	_, err := ipfs.Name().Resolve(ctx, name, depth)
@@ -345,7 +345,7 @@ func isDNSLinkRequest(ctx context.Context, ipfs iface.CoreAPI, host string) bool
 
 func isSubdomainNamespace(ns string) bool {
 	switch ns {
-	case "ipfs", "ipns", "p2p", "ipld":
+	case "ipfs", "blns", "p2p", "ipld":
 		return true
 	default:
 		return false
@@ -354,7 +354,7 @@ func isSubdomainNamespace(ns string) bool {
 
 func isPeerIDNamespace(ns string) bool {
 	switch ns {
-	case "ipns", "p2p":
+	case "blns", "p2p":
 		return true
 	default:
 		return false
@@ -439,9 +439,9 @@ func toSubdomainURL(hostname, path string, r *http.Request) (redirURL string, er
 		multicodec := rootCID.Type()
 		var base mbase.Encoding = mbase.Base32
 
-		// Normalizations specific to /ipns/{libp2p-key}
+		// Normalizations specific to /blns/{libp2p-key}
 		if isPeerIDNamespace(ns) {
-			// Using Base36 for /ipns/ for consistency
+			// Using Base36 for /blns/ for consistency
 			// Context: https://github.com/ipfs/go-ipfs/pull/7441#discussion_r452372828
 			base = mbase.Base36
 

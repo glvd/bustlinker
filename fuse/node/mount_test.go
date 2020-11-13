@@ -14,7 +14,7 @@ import (
 	"context"
 
 	core "github.com/ipfs/go-ipfs/core"
-	ipns "github.com/ipfs/go-ipfs/fuse/ipns"
+	blns "github.com/ipfs/go-ipfs/fuse/blns"
 	mount "github.com/ipfs/go-ipfs/fuse/mount"
 
 	ci "github.com/libp2p/go-libp2p-testing/ci"
@@ -47,7 +47,7 @@ func TestExternalUnmount(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = ipns.InitializeKeyspace(node, node.PrivateKey)
+	err = blns.InitializeKeyspace(node, node.PrivateKey)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -59,11 +59,11 @@ func TestExternalUnmount(t *testing.T) {
 	}
 
 	ipfsDir := dir + "/ipfs"
-	ipnsDir := dir + "/blns"
+	blnsDir := dir + "/blns"
 	mkdir(t, ipfsDir)
-	mkdir(t, ipnsDir)
+	mkdir(t, blnsDir)
 
-	err = Mount(node, ipfsDir, ipnsDir)
+	err = Mount(node, ipfsDir, blnsDir)
 	if err != nil {
 		if strings.Contains(err.Error(), "unable to check fuse version") || err == fuse.ErrOSXFUSENotFound {
 			t.Skip(err)

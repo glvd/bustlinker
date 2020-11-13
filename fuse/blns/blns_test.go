@@ -187,7 +187,7 @@ func TestIpnsBasicIO(t *testing.T) {
 	}
 }
 
-// Test to make sure file changes persist over mounts of ipns
+// Test to make sure file changes persist over mounts of blns
 func TestFilePersistence(t *testing.T) {
 	if testing.Short() {
 		t.SkipNow()

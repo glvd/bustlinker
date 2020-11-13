@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
+	blns "github.com/ipfs/go-blns"
 	ds "github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
 	offroute "github.com/ipfs/go-ipfs-routing/offline"
-	blns "github.com/ipfs/go-ipns"
 	path "github.com/ipfs/go-path"
 	unixfs "github.com/ipfs/go-unixfs"
 	opts "github.com/ipfs/interface-go-ipfs-core/options/namesys"

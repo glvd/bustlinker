@@ -44,7 +44,7 @@ const (
 	initConfigOptionKwd       = "init-config"
 	initProfileOptionKwd      = "init-profile"
 	ipfsMountKwd              = "mount-link"
-	ipnsMountKwd              = "mount-blns"
+	blnsMountKwd              = "mount-blns"
 	migrateKwd                = "migrate"
 	mountKwd                  = "mount"
 	offlineKwd                = "offline" // global option
@@ -165,7 +165,7 @@ Headers.
 		cmds.BoolOption(mountKwd, "Mounts LINK to the filesystem"),
 		cmds.BoolOption(writableKwd, "Enable writing objects (with POST, PUT and DELETE)"),
 		cmds.StringOption(ipfsMountKwd, "Path to the mountpoint for LINK (if using --mount). Defaults to config setting."),
-		cmds.StringOption(ipnsMountKwd, "Path to the mountpoint for BLNS (if using --mount). Defaults to config setting."),
+		cmds.StringOption(blnsMountKwd, "Path to the mountpoint for BLNS (if using --mount). Defaults to config setting."),
 		cmds.BoolOption(unrestrictedApiAccessKwd, "Allow API access to unlisted hashes"),
 		cmds.BoolOption(unencryptTransportKwd, "Disable transport encryption (for debugging protocols)"),
 		cmds.BoolOption(enableGCKwd, "Enable automatic periodic repo garbage collection"),
@@ -302,7 +302,7 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 	defer repo.Close()
 
 	offline, _ := req.Options[offlineKwd].(bool)
-	ipnsps, _ := req.Options[enableBLNSPubSubKwd].(bool)
+	blnsps, _ := req.Options[enableBLNSPubSubKwd].(bool)
 	pubsub, _ := req.Options[enablePubSubKwd].(bool)
 	if _, hasMplex := req.Options[enableMultiplexKwd]; hasMplex {
 		log.Errorf("The mplex multiplexer has been enabled by default and the experimental %s flag has been removed.")
@@ -317,7 +317,7 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 		DisableEncryptedConnections: unencrypted,
 		ExtraOpts: map[string]bool{
 			"pubsub": pubsub,
-			"blnsps": ipnsps,
+			"blnsps": blnsps,
 		},
 		//TODO(Kubuxu): refactor Online vs Offline by adding Permanent vs Ephemeral
 	}
@@ -701,7 +701,7 @@ func mountFuse(req *cmds.Request, cctx *oldcmds.Context) error {
 		fsdir = cfg.Mounts.LINK
 	}
 
-	nsdir, found := req.Options[ipnsMountKwd].(string)
+	nsdir, found := req.Options[blnsMountKwd].(string)
 	if !found {
 		nsdir = cfg.Mounts.BLNS
 	}

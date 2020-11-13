@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/ipfs/go-ipfs-util"
-	"github.com/ipfs/go-ipns"
+	blns "github.com/ipfs/go-ipns"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peerstore"
 	"github.com/libp2p/go-libp2p-core/routing"
@@ -22,7 +22,7 @@ const DefaultIpnsCacheSize = 128
 func RecordValidator(ps peerstore.Peerstore) record.Validator {
 	return record.NamespacedValidator{
 		"pk":   record.PublicKeyValidator{},
-		"blns": ipns.Validator{KeyBook: ps},
+		"blns": blns.Validator{KeyBook: ps},
 	}
 }
 

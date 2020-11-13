@@ -46,7 +46,7 @@ import (
 	"github.com/ipfs/go-ipfs/core/node/libp2p"
 	"github.com/ipfs/go-ipfs/fuse/mount"
 	"github.com/ipfs/go-ipfs/namesys"
-	ipnsrp "github.com/ipfs/go-ipfs/namesys/republisher"
+	blnsrp "github.com/ipfs/go-ipfs/namesys/republisher"
 	"github.com/ipfs/go-ipfs/p2p"
 	"github.com/ipfs/go-ipfs/peering"
 	"github.com/ipfs/go-ipfs/repo"
@@ -91,7 +91,7 @@ type IpfsNode struct {
 	Exchange      exchange.Interface      // the block exchange + strategy (bitswap)
 	Namesys       namesys.NameSystem      // the name system, resolves paths to hashes
 	Provider      provider.System         // the value provider system
-	IpnsRepub     *ipnsrp.Republisher     `optional:"true"`
+	IpnsRepub     *blnsrp.Republisher     `optional:"true"`
 	GraphExchange graphsync.GraphExchange `optional:"true"`
 
 	PubSub   *pubsub.PubSub             `optional:"true"`

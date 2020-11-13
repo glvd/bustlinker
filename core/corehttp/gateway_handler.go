@@ -30,12 +30,12 @@ import (
 )
 
 const (
-	ipfsPathPrefix = "/ipfs/"
+	linkPathPrefix = "/link/"
 	blnsPathPrefix = "/blns/"
 )
 
-// gatewayHandler is a HTTP handler that serves LINK objects (accessible by default at /ipfs/<path>)
-// (it serves requests like GET /ipfs/QmVRzPKPzNtSrEzBFm2UZfxmPAgnaLke4DMcerbsGGSaFe/link)
+// gatewayHandler is a HTTP handler that serves LINK objects (accessible by default at /link/<path>)
+// (it serves requests like GET /link/QmVRzPKPzNtSrEzBFm2UZfxmPAgnaLke4DMcerbsGGSaFe/link)
 type gatewayHandler struct {
 	config GatewayConfig
 	api    coreiface.CoreAPI
@@ -76,8 +76,8 @@ func parseIpfsPath(p string) (cid.Cid, string, error) {
 
 	// Check the path.
 	rsegs := rootPath.Segments()
-	if rsegs[0] != "ipfs" {
-		return cid.Cid{}, "", fmt.Errorf("WritableGateway: only ipfs paths supported")
+	if rsegs[0] != "link" {
+		return cid.Cid{}, "", fmt.Errorf("WritableGateway: only link paths supported")
 	}
 
 	rootCid, err := cid.Decode(rsegs[1])
@@ -182,7 +182,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	// Service Worker registration request
 	if r.Header.Get("Service-Worker") == "script" {
 		// Disallow Service Worker registration on namespace roots
-		// https://github.com/ipfs/go-ipfs/issues/4025
+		// https://github.com/link/go-link/issues/4025
 		matched, _ := regexp.MatchString(`^/ip[fn]s/[^/]+$`, r.URL.Path)
 		if matched {
 			err := fmt.Errorf("registration is not allowed for this scope")
@@ -193,7 +193,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 
 	parsedPath := ipath.New(urlPath)
 	if err := parsedPath.IsValid(); err != nil {
-		webError(w, "invalid ipfs path", err, http.StatusBadRequest)
+		webError(w, "invalid link path", err, http.StatusBadRequest)
 		return
 	}
 
@@ -202,14 +202,14 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	switch err {
 	case nil:
 	case coreiface.ErrOffline:
-		webError(w, "ipfs resolve -r "+escapedURLPath, err, http.StatusServiceUnavailable)
+		webError(w, "link resolve -r "+escapedURLPath, err, http.StatusServiceUnavailable)
 		return
 	default:
 		if i.servePretty404IfPresent(w, r, parsedPath) {
 			return
 		}
 
-		webError(w, "ipfs resolve -r "+escapedURLPath, err, http.StatusNotFound)
+		webError(w, "link resolve -r "+escapedURLPath, err, http.StatusNotFound)
 		return
 	}
 
@@ -251,7 +251,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	modtime := time.Now()
 
 	if f, ok := dr.(files.File); ok {
-		if strings.HasPrefix(urlPath, ipfsPathPrefix) {
+		if strings.HasPrefix(urlPath, linkPathPrefix) {
 			w.Header().Set("Cache-Control", "public, max-age=29030400, immutable")
 
 			// set modtime to a really long time ago, since files are immutable and should stay cached
@@ -588,7 +588,7 @@ func (i *gatewayHandler) putHandler(w http.ResponseWriter, r *http.Request) {
 
 	i.addUserHeaders(w) // ok, _now_ write user's headers.
 	w.Header().Set("LINK-Hash", newcid.String())
-	http.Redirect(w, r, gopath.Join(ipfsPathPrefix, newcid.String(), newPath), http.StatusCreated)
+	http.Redirect(w, r, gopath.Join(linkPathPrefix, newcid.String(), newPath), http.StatusCreated)
 }
 
 func (i *gatewayHandler) deleteHandler(w http.ResponseWriter, r *http.Request) {
@@ -660,7 +660,7 @@ func (i *gatewayHandler) deleteHandler(w http.ResponseWriter, r *http.Request) {
 	i.addUserHeaders(w) // ok, _now_ write user's headers.
 	w.Header().Set("LINK-Hash", ncid.String())
 	// note: StatusCreated is technically correct here as we created a new resource.
-	http.Redirect(w, r, gopath.Join(ipfsPathPrefix+ncid.String(), directory), http.StatusCreated)
+	http.Redirect(w, r, gopath.Join(linkPathPrefix+ncid.String(), directory), http.StatusCreated)
 }
 
 func (i *gatewayHandler) addUserHeaders(w http.ResponseWriter) {
@@ -694,7 +694,7 @@ func internalWebError(w http.ResponseWriter, err error) {
 }
 
 func getFilename(s string) string {
-	if (strings.HasPrefix(s, ipfsPathPrefix) || strings.HasPrefix(s, blnsPathPrefix)) && strings.Count(gopath.Clean(s), "/") <= 2 {
+	if (strings.HasPrefix(s, linkPathPrefix) || strings.HasPrefix(s, blnsPathPrefix)) && strings.Count(gopath.Clean(s), "/") <= 2 {
 		// Don't want to treat ipfs.io in /blns/ipfs.io as a filename.
 		return ""
 	}

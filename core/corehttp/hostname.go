@@ -23,7 +23,7 @@ import (
 	nsopts "github.com/ipfs/interface-go-ipfs-core/options/namesys"
 )
 
-var defaultPaths = []string{"/ipfs/", "/blns/", "/api/", "/p2p/", "/version"}
+var defaultPaths = []string{"/link/", "/blns/", "/api/", "/p2p/", "/version"}
 
 var pathGatewaySpec = &config.GatewaySpec{
 	Paths:         defaultPaths,
@@ -37,8 +37,8 @@ var subdomainGatewaySpec = &config.GatewaySpec{
 
 var defaultKnownGateways = map[string]*config.GatewaySpec{
 	"localhost":       subdomainGatewaySpec,
-	"ipfs.io":         pathGatewaySpec,
-	"gateway.ipfs.io": pathGatewaySpec,
+	"link.io":         pathGatewaySpec,
+	"gateway.link.io": pathGatewaySpec,
 	"dweb.link":       subdomainGatewaySpec,
 }
 

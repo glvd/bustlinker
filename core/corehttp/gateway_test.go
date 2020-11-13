@@ -29,8 +29,8 @@ import (
 	id "github.com/libp2p/go-libp2p/p2p/protocol/identify"
 )
 
-// `ipfs object new unixfs-dir`
-var emptyDir = "/ipfs/QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn"
+// `link object new unixfs-dir`
+var emptyDir = "/link/QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn"
 
 type mockNamesys map[string]path.Path
 
@@ -141,7 +141,7 @@ func newTestServerAndNode(t *testing.T, ns mockNamesys) (*httptest.Server, iface
 	dh.Handler, err = makeHandler(n,
 		ts.Listener,
 		HostnameOption(),
-		GatewayOption(false, "/ipfs", "/blns"),
+		GatewayOption(false, "/link", "/blns"),
 		VersionOption(),
 	)
 	if err != nil {
@@ -201,7 +201,7 @@ func TestGatewayGet(t *testing.T) {
 		{"working.example.com", "/", http.StatusOK, "fnord"},
 		{"double.example.com", "/", http.StatusOK, "fnord"},
 		{"triple.example.com", "/", http.StatusOK, "fnord"},
-		{"working.example.com", k.String(), http.StatusNotFound, "link resolve -r /blns/working.example.com" + k.String() + ": no link named \"ipfs\" under " + k.Cid().String() + "\n"},
+		{"working.example.com", k.String(), http.StatusNotFound, "link resolve -r /blns/working.example.com" + k.String() + ": no link named \"link\" under " + k.Cid().String() + "\n"},
 		{"broken.example.com", "/", http.StatusNotFound, "link resolve -r /blns/broken.example.com/: " + namesys.ErrResolveFailed.Error() + "\n"},
 		{"broken.example.com", k.String(), http.StatusNotFound, "link resolve -r /blns/broken.example.com" + k.String() + ": " + namesys.ErrResolveFailed.Error() + "\n"},
 		// This test case ensures we don't treat the TLD as a file extension.
@@ -246,9 +246,9 @@ func TestPretty404(t *testing.T) {
 	ts, api, ctx := newTestServerAndNode(t, ns)
 
 	f1 := files.NewMapDirectory(map[string]files.Node{
-		"ipfs-404.html": files.NewBytesFile([]byte("Custom 404")),
+		"link-404.html": files.NewBytesFile([]byte("Custom 404")),
 		"deeper": files.NewMapDirectory(map[string]files.Node{
-			"ipfs-404.html": files.NewBytesFile([]byte("Deep custom 404")),
+			"link-404.html": files.NewBytesFile([]byte("Deep custom 404")),
 		}),
 	})
 
@@ -266,11 +266,11 @@ func TestPretty404(t *testing.T) {
 		status int
 		text   string
 	}{
-		{"/ipfs-404.html", "text/html", http.StatusOK, "Custom 404"},
+		{"/link-404.html", "text/html", http.StatusOK, "Custom 404"},
 		{"/nope", "text/html", http.StatusNotFound, "Custom 404"},
 		{"/nope", "text/*", http.StatusNotFound, "Custom 404"},
 		{"/nope", "*/*", http.StatusNotFound, "Custom 404"},
-		{"/nope", "application/json", http.StatusNotFound, "ipfs resolve -r /blns/example.net/nope: no link named \"nope\" under QmcmnF7XG5G34RdqYErYDwCKNFQ6jb8oKVR21WAJgubiaj\n"},
+		{"/nope", "application/json", http.StatusNotFound, "link resolve -r /blns/example.net/nope: no link named \"nope\" under QmcmnF7XG5G34RdqYErYDwCKNFQ6jb8oKVR21WAJgubiaj\n"},
 		{"/deeper/nope", "text/html", http.StatusNotFound, "Deep custom 404"},
 		{"/deeper/", "text/html", http.StatusOK, ""},
 		{"/deeper", "text/html", http.StatusOK, ""},

@@ -1,9 +1,9 @@
 /*
-Package coreapi provides direct access to the core commands in IPFS. If you are
-embedding IPFS directly in your Go program, this package is the public
-interface you should use to read and write files or otherwise control IPFS.
+Package coreapi provides direct access to the core commands in LINK. If you are
+embedding LINK directly in your Go program, this package is the public
+interface you should use to read and write files or otherwise control LINK.
 
-If you are running IPFS as a separate process, you should use `go-ipfs-api` to
+If you are running LINK as a separate process, you should use `go-ipfs-api` to
 work with it via HTTP. As we finalize the interfaces here, `go-ipfs-api` will
 transparently adopt them so you can use the same code with either package.
 
@@ -77,7 +77,7 @@ type CoreAPI struct {
 	parentOpts options.ApiSettings
 }
 
-// NewCoreAPI creates new instance of IPFS CoreAPI backed by go-ipfs Node.
+// NewCoreAPI creates new instance of LINK CoreAPI backed by go-ipfs Node.
 func NewCoreAPI(n *core.IpfsNode, opts ...options.ApiOption) (coreiface.CoreAPI, error) {
 	parentOpts, err := options.ApiOptions()
 	if err != nil {
@@ -192,7 +192,7 @@ func (api *CoreAPI) WithOptions(opts ...options.ApiOption) (coreiface.CoreAPI, e
 
 	subApi.checkPublishAllowed = func() error {
 		if n.Mounts.Ipns != nil && n.Mounts.Ipns.IsActive() {
-			return errors.New("cannot manually publish while IPNS is mounted")
+			return errors.New("cannot manually publish while BLNS is mounted")
 		}
 		return nil
 	}

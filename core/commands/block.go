@@ -28,9 +28,9 @@ func (bs BlockStat) String() string {
 
 var BlockCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Interact with raw IPFS blocks.",
+		Tagline: "Interact with raw LINK blocks.",
 		ShortDescription: `
-'link block' is a plumbing command used to manipulate raw IPFS blocks.
+'link block' is a plumbing command used to manipulate raw LINK blocks.
 Reads from stdin or writes to stdout, and <key> is a base58 encoded
 multihash.
 `,
@@ -46,10 +46,10 @@ multihash.
 
 var blockStatCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Print information of a raw IPFS block.",
+		Tagline: "Print information of a raw LINK block.",
 		ShortDescription: `
 'link block stat' is a plumbing command for retrieving information
-on raw IPFS blocks. It outputs the following to stdout:
+on raw LINK blocks. It outputs the following to stdout:
 
 	Key  - the base58 encoded multihash
 	Size - the size of the block in bytes
@@ -87,9 +87,9 @@ on raw IPFS blocks. It outputs the following to stdout:
 
 var blockGetCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Get a raw IPFS block.",
+		Tagline: "Get a raw LINK block.",
 		ShortDescription: `
-'link block get' is a plumbing command for retrieving raw IPFS blocks.
+'link block get' is a plumbing command for retrieving raw LINK blocks.
 It outputs to stdout, and <key> is a base58 encoded multihash.
 `,
 	},
@@ -120,9 +120,9 @@ const (
 
 var blockPutCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Store input as an IPFS block.",
+		Tagline: "Store input as an LINK block.",
 		ShortDescription: `
-'link block put' is a plumbing command for storing raw IPFS blocks.
+'link block put' is a plumbing command for storing raw LINK blocks.
 It reads from stdin, and outputs the block's CID to stdout.
 
 Unless specified, this command returns dag-pb CIDv0 CIDs. Setting 'mhtype' to anything
@@ -131,7 +131,7 @@ other than 'sha2-256' or format to anything other than 'v0' will result in CIDv1
 	},
 
 	Arguments: []cmds.Argument{
-		cmds.FileArg("data", true, true, "The data to be stored as an IPFS block.").EnableStdin(),
+		cmds.FileArg("data", true, true, "The data to be stored as an LINK block.").EnableStdin(),
 	},
 	Options: []cmds.Option{
 		cmds.StringOption(blockFormatOptionName, "f", "cid format for blocks to be created with."),
@@ -209,7 +209,7 @@ const (
 
 var blockRmCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Remove IPFS block(s).",
+		Tagline: "Remove LINK block(s).",
 		ShortDescription: `
 'link block rm' is a plumbing command for removing raw link blocks.
 It takes a list of base58 encoded multihashes to remove.

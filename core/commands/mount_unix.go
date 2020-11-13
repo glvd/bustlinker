@@ -14,16 +14,16 @@ import (
 )
 
 const (
-	mountIPFSPathOptionName = "ipfs-path"
-	mountIPNSPathOptionName = "blns-path"
+	mountLINKPathOptionName = "ipfs-path"
+	mountBLNSPathOptionName = "blns-path"
 )
 
 var MountCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Mounts IPFS to the filesystem (read-only).",
+		Tagline: "Mounts LINK to the filesystem (read-only).",
 		ShortDescription: `
-Mount IPFS at a read-only mountpoint on the OS (default: /ipfs and /blns).
-All IPFS objects will be accessible under that directory. Note that the
+Mount LINK at a read-only mountpoint on the OS (default: /ipfs and /blns).
+All LINK objects will be accessible under that directory. Note that the
 root will not be listable, as it is virtual. Access known paths directly.
 
 You may have to create /ipfs and /blns before using 'ipfs mount':
@@ -34,9 +34,9 @@ You may have to create /ipfs and /blns before using 'ipfs mount':
 > ipfs mount
 `,
 		LongDescription: `
-Mount IPFS at a read-only mountpoint on the OS. The default, /ipfs and /blns,
+Mount LINK at a read-only mountpoint on the OS. The default, /ipfs and /blns,
 are set in the configuration file, but can be overridden by the options.
-All IPFS objects will be accessible under this directory. Note that the
+All LINK objects will be accessible under this directory. Note that the
 root will not be listable, as it is virtual. Access known paths directly.
 
 You may have to create /ipfs and /blns before using 'ipfs mount':
@@ -62,8 +62,8 @@ baz
 # mount
 > ipfs daemon &
 > ipfs mount
-IPFS mounted at: /ipfs
-IPNS mounted at: /blns
+LINK mounted at: /ipfs
+BLNS mounted at: /blns
 > cd /ipfs/QmSh5e7S6fdcu75LAbXNZAFY2nGyZUJXyLCJDvn2zRkWyC
 > ls
 bar
@@ -76,8 +76,8 @@ baz
 `,
 	},
 	Options: []cmds.Option{
-		cmds.StringOption(mountIPFSPathOptionName, "f", "The path where IPFS should be mounted."),
-		cmds.StringOption(mountIPNSPathOptionName, "n", "The path where IPNS should be mounted."),
+		cmds.StringOption(mountLINKPathOptionName, "f", "The path where LINK should be mounted."),
+		cmds.StringOption(mountBLNSPathOptionName, "n", "The path where BLNS should be mounted."),
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
 		cfg, err := cmdenv.GetConfig(env)
@@ -95,15 +95,15 @@ baz
 			return ErrNotOnline
 		}
 
-		fsdir, found := req.Options[mountIPFSPathOptionName].(string)
+		fsdir, found := req.Options[mountLINKPathOptionName].(string)
 		if !found {
-			fsdir = cfg.Mounts.IPFS // use default value
+			fsdir = cfg.Mounts.LINK // use default value
 		}
 
 		// get default mount points
-		nsdir, found := req.Options[mountIPNSPathOptionName].(string)
+		nsdir, found := req.Options[mountBLNSPathOptionName].(string)
 		if !found {
-			nsdir = cfg.Mounts.IPNS // NB: be sure to not redeclare!
+			nsdir = cfg.Mounts.BLNS // NB: be sure to not redeclare!
 		}
 
 		err = nodeMount.Mount(nd, fsdir, nsdir)
@@ -112,15 +112,15 @@ baz
 		}
 
 		var output config.Mounts
-		output.IPFS = fsdir
-		output.IPNS = nsdir
+		output.LINK = fsdir
+		output.BLNS = nsdir
 		return cmds.EmitOnce(res, &output)
 	},
 	Type: config.Mounts{},
 	Encoders: cmds.EncoderMap{
 		cmds.Text: cmds.MakeTypedEncoder(func(req *cmds.Request, w io.Writer, mounts *config.Mounts) error {
-			fmt.Fprintf(w, "IPFS mounted at: %s\n", mounts.IPFS)
-			fmt.Fprintf(w, "IPNS mounted at: %s\n", mounts.IPNS)
+			fmt.Fprintf(w, "LINK mounted at: %s\n", mounts.LINK)
+			fmt.Fprintf(w, "BLNS mounted at: %s\n", mounts.BLNS)
 
 			return nil
 		}),

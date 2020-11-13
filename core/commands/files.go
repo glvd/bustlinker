@@ -36,7 +36,7 @@ var FilesCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Interact with unixfs files.",
 		ShortDescription: `
-Files is an API for manipulating IPFS objects as if they were a Unix
+Files is an API for manipulating LINK objects as if they were a Unix
 filesystem.
 
 The files facility interacts with MFS (Mutable File System). MFS acts as a
@@ -321,17 +321,17 @@ func walkBlock(ctx context.Context, dagserv ipld.DAGService, nd ipld.Node) (bool
 
 var filesCpCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Copy any IPFS files and directories into MFS (or copy within MFS).",
+		Tagline: "Copy any LINK files and directories into MFS (or copy within MFS).",
 		ShortDescription: `
-"ipfs files cp" can be used to copy any IPFS file or directory (usually in the
+"ipfs files cp" can be used to copy any LINK file or directory (usually in the
 form /ipfs/<CID>, but also any resolvable path), into the Mutable File System
 (MFS).
 
 It can also be used to copy files within MFS, but in the case when an
-IPFS-path matches an existing MFS path, the IPFS path wins.
+LINK-path matches an existing MFS path, the LINK path wins.
 
 In order to add content to MFS from disk, you can use "ipfs add" to obtain the
-IPFS Content Identifier and then "ipfs files cp" to copy it into MFS:
+LINK Content Identifier and then "ipfs files cp" to copy it into MFS:
 
 $ ipfs add --quieter --pin=false <your file>
 # ...
@@ -340,7 +340,7 @@ $ ipfs cp /ipfs/<CID> /your/desired/mfs/path
 `,
 	},
 	Arguments: []cmds.Argument{
-		cmds.StringArg("source", true, false, "Source IPFS or MFS path to copy."),
+		cmds.StringArg("source", true, false, "Source LINK or MFS path to copy."),
 		cmds.StringArg("dest", true, false, "Destination within MFS."),
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {

@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	coverDir := os.Getenv("IPFS_COVER_DIR")
+	coverDir := os.Getenv("LINK_COVER_DIR")
 	if len(coverDir) == 0 {
-		fmt.Println("IPFS_COVER_DIR not defined")
+		fmt.Println("LINK_COVER_DIR not defined")
 		os.Exit(1)
 	}
 	coverFile, err := ioutil.TempFile(coverDir, "coverage-")
@@ -37,7 +37,7 @@ func main() {
 	p.Stdin = os.Stdin
 	p.Stdout = os.Stdout
 	p.Stderr = os.Stderr
-	p.Env = append(os.Environ(), "IPFS_COVER_RET_FILE="+retFile.Name())
+	p.Env = append(os.Environ(), "LINK_COVER_RET_FILE="+retFile.Name())
 
 	p.SysProcAttr = &syscall.SysProcAttr{
 		Pdeathsig: syscall.SIGTERM,

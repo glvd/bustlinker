@@ -39,7 +39,7 @@ type plEvent struct {
 // Log all the PeerIDs we see
 //
 // Usage:
-//   GOLOG_FILE=~/peer.log IPFS_LOGGING_FMT=json ipfs daemon
+//   GOLOG_FILE=~/peer.log LINK_LOGGING_FMT=json ipfs daemon
 // Output:
 //   {"level":"info","ts":"2020-02-10T13:54:26.639Z","logger":"plugin/peerlog","caller":"peerlog/peerlog.go:51","msg":"connected","peer":"QmS2H72gdrekXJggGdE9SunXPntBqdkJdkXQJjuxcH8Cbt"}
 //   {"level":"info","ts":"2020-02-10T13:54:59.095Z","logger":"plugin/peerlog","caller":"peerlog/peerlog.go:56","msg":"identified","peer":"QmS2H72gdrekXJggGdE9SunXPntBqdkJdkXQJjuxcH8Cbt","agent":"go-ipfs/0.5.0/"}
@@ -153,7 +153,7 @@ func (pl *peerLogPlugin) emit(evt eventType, p peer.ID) {
 }
 
 func (pl *peerLogPlugin) Start(node *core.IpfsNode) error {
-	// Ensure logs from this plugin get printed regardless of global IPFS_LOGGING value
+	// Ensure logs from this plugin get printed regardless of global LINK_LOGGING value
 	if err := logging.SetLogLevel("plugin/peerlog", "info"); err != nil {
 		return fmt.Errorf("failed to set log level: %w", err)
 	}

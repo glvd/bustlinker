@@ -40,7 +40,7 @@ func TestEncoderFromPath(t *testing.T) {
 	test("/link/"+p, enc)
 	test("/link/"+p+"/b", enc)
 	test("/blld/"+p, enc)
-	test("/blns/"+p, enc) // even IPNS should work.
+	test("/blns/"+p, enc) // even BLNS should work.
 
 	p = "bafyreifrcnyjokuw4i4ggkzg534tjlc25lqgt3ttznflmyv5fftdgu52hm"
 	enc = cidenc.Encoder{

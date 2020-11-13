@@ -32,9 +32,9 @@ const (
 
 var GetCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Download IPFS objects.",
+		Tagline: "Download LINK objects.",
 		ShortDescription: `
-Stores to disk the data contained an IPFS or IPNS object(s) at the given path.
+Stores to disk the data contained an LINK or BLNS object(s) at the given path.
 
 By default, the output will be stored at './<ipfs-path>', but an alternate
 path can be specified with '--output=<path>' or '-o=<path>'.
@@ -47,7 +47,7 @@ may also specify the level of compression by specifying '-l=<1-9>'.
 	},
 
 	Arguments: []cmds.Argument{
-		cmds.StringArg("ipfs-path", true, false, "The path to the IPFS object(s) to be outputted.").EnableStdin(),
+		cmds.StringArg("ipfs-path", true, false, "The path to the LINK object(s) to be outputted.").EnableStdin(),
 	},
 	Options: []cmds.Option{
 		cmds.StringOption(outputOptionName, "o", "The path where the output should be stored."),

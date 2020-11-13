@@ -79,9 +79,9 @@ the limit will not be respected by the network.
 
 var patchSetDataCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Set the data field of an IPFS object.",
+		Tagline: "Set the data field of an LINK object.",
 		ShortDescription: `
-Set the data of an IPFS object from stdin or with the contents of a file.
+Set the data of an LINK object from stdin or with the contents of a file.
 
 Example:
 
@@ -180,7 +180,7 @@ to a file containing 'bar', and returns the hash of the new object.
 	Arguments: []cmds.Argument{
 		cmds.StringArg("root", true, false, "The hash of the node to modify."),
 		cmds.StringArg("name", true, false, "Name of link to create."),
-		cmds.StringArg("ref", true, false, "IPFS object to add link to."),
+		cmds.StringArg("ref", true, false, "LINK object to add link to."),
 	},
 	Options: []cmds.Option{
 		cmds.BoolOption(createOptionName, "p", "Create intermediary nodes."),

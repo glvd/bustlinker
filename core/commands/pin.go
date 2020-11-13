@@ -55,7 +55,7 @@ const (
 var addPinCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline:          "Pin objects to local storage.",
-		ShortDescription: "Stores an IPFS object(s) from a given path locally to disk.",
+		ShortDescription: "Stores an LINK object(s) from a given path locally to disk.",
 	},
 
 	Arguments: []cmds.Argument{

@@ -438,7 +438,7 @@ Outputs the best value for the given key.
 
 There may be several different values for a given key stored in the routing
 system; in this context 'best' means the record that is most desirable. There is
-no one metric for 'best': it depends entirely on the key type. For IPNS, 'best'
+no one metric for 'best': it depends entirely on the key type. For BLNS, 'best'
 is the record that is both valid and has the highest sequence number (freshest).
 Different key types can specify other 'best' rules.
 `,
@@ -535,7 +535,7 @@ bustlinker routing internals, you likely want to be using 'link name publish' in
 of this.
 
 The value must be a valid value for the given key type. For example, if the key
-is /blns/QmFoo, the value must be IPNS record (protobuf) signed with the key
+is /blns/QmFoo, the value must be BLNS record (protobuf) signed with the key
 identified by QmFoo.
 `,
 	},

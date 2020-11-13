@@ -24,16 +24,16 @@ var errNoEntry = errors.New("no previous entry")
 
 var log = logging.Logger("ipns-repub")
 
-// DefaultRebroadcastInterval is the default interval at which we rebroadcast IPNS records
+// DefaultRebroadcastInterval is the default interval at which we rebroadcast BLNS records
 var DefaultRebroadcastInterval = time.Hour * 4
 
-// InitialRebroadcastDelay is the delay before first broadcasting IPNS records on start
+// InitialRebroadcastDelay is the delay before first broadcasting BLNS records on start
 var InitialRebroadcastDelay = time.Minute * 1
 
-// FailureRetryInterval is the interval at which we retry IPNS records broadcasts (when they fail)
+// FailureRetryInterval is the interval at which we retry BLNS records broadcasts (when they fail)
 var FailureRetryInterval = time.Minute * 5
 
-// DefaultRecordLifetime is the default lifetime for IPNS records
+// DefaultRecordLifetime is the default lifetime for BLNS records
 const DefaultRecordLifetime = time.Hour * 24
 
 type Republisher struct {
@@ -91,7 +91,7 @@ func (rp *Republisher) republishEntries(p goprocess.Process) error {
 	// TODO: Use rp.ipns.ListPublished(). We can't currently *do* that
 	// because:
 	// 1. There's no way to get keys from the keystore by ID.
-	// 2. We don't actually have access to the IPNS publisher.
+	// 2. We don't actually have access to the BLNS publisher.
 	err := rp.republishEntry(ctx, rp.self)
 	if err != nil {
 		return err
@@ -127,7 +127,7 @@ func (rp *Republisher) republishEntry(ctx context.Context, priv ic.PrivKey) erro
 	log.Debugf("republishing ipns entry for %s", id)
 
 	// Look for it locally only
-	e, err := rp.getLastIPNSEntry(id)
+	e, err := rp.getLastBLNSEntry(id)
 	if err != nil {
 		if err == errNoEntry {
 			return nil
@@ -149,7 +149,7 @@ func (rp *Republisher) republishEntry(ctx context.Context, priv ic.PrivKey) erro
 	return rp.ns.PublishWithEOL(ctx, priv, p, eol)
 }
 
-func (rp *Republisher) getLastIPNSEntry(id peer.ID) (*pb.IpnsEntry, error) {
+func (rp *Republisher) getLastBLNSEntry(id peer.ID) (*pb.IpnsEntry, error) {
 	// Look for it locally only
 	val, err := rp.ds.Get(namesys.IpnsDsKey(id))
 	switch err {

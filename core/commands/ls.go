@@ -49,7 +49,7 @@ var LsCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "List directory contents for Unix filesystem objects.",
 		ShortDescription: `
-Displays the contents of an IPFS or IPNS object(s) at the given path, with
+Displays the contents of an LINK or BLNS object(s) at the given path, with
 the following format:
 
   <link base58 hash> <link size in bytes> <link name>
@@ -59,7 +59,7 @@ The JSON output contains type information.
 	},
 
 	Arguments: []cmds.Argument{
-		cmds.StringArg("ipfs-path", true, true, "The path to the IPFS object(s) to list links from.").EnableStdin(),
+		cmds.StringArg("ipfs-path", true, true, "The path to the LINK object(s) to list links from.").EnableStdin(),
 	},
 	Options: []cmds.Option{
 		cmds.BoolOption(lsHeadersOptionNameTime, "v", "Print table headers (Hash, Size, Name)."),

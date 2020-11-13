@@ -133,7 +133,7 @@ var swarmPeersCmd = &cmds.Command{
 	},
 	Encoders: cmds.EncoderMap{
 		cmds.Text: cmds.MakeTypedEncoder(func(req *cmds.Request, w io.Writer, ci *connInfos) error {
-			pipfs := ma.ProtocolWithCode(ma.P_IPFS).Name
+			pipfs := ma.ProtocolWithCode(ma.P_P2P).Name
 			for _, info := range ci.Peers {
 				fmt.Fprintf(w, "%s/%s/%s", info.Addr, pipfs, info.Peer)
 				if info.Latency != "" {
@@ -351,7 +351,7 @@ var swarmConnectCmd = &cmds.Command{
 		ShortDescription: `
 'ipfs swarm connect' opens a new direct connection to a peer address.
 
-The address format is an IPFS multiaddr:
+The address format is an LINK multiaddr:
 
 ipfs swarm connect /ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
 `,
@@ -396,7 +396,7 @@ var swarmDisconnectCmd = &cmds.Command{
 		Tagline: "Close connection to a given address.",
 		ShortDescription: `
 'ipfs swarm disconnect' closes a connection to a peer address. The address
-format is an IPFS multiaddr:
+format is an LINK multiaddr:
 
 ipfs swarm disconnect /ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
 
@@ -481,7 +481,7 @@ func resolveAddresses(ctx context.Context, addrs []string) ([]ma.Multiaddr, erro
 		}
 
 		// check whether address ends in `ipfs/Qm...`
-		if _, last := ma.SplitLast(maddr); last.Protocol().Code == ma.P_IPFS {
+		if _, last := ma.SplitLast(maddr); last.Protocol().Code == ma.P_P2P {
 			maddrs = append(maddrs, maddr)
 			continue
 		}
@@ -496,7 +496,7 @@ func resolveAddresses(ctx context.Context, addrs []string) ([]ma.Multiaddr, erro
 			// filter out addresses that still doesn't end in `ipfs/Qm...`
 			found := 0
 			for _, raddr := range raddrs {
-				if _, last := ma.SplitLast(raddr); last != nil && last.Protocol().Code == ma.P_IPFS {
+				if _, last := ma.SplitLast(raddr); last != nil && last.Protocol().Code == ma.P_P2P {
 					maddrC <- raddr
 					found++
 				}

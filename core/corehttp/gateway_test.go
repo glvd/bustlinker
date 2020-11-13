@@ -304,7 +304,7 @@ func TestPretty404(t *testing.T) {
 	}
 }
 
-func TestIPNSHostnameRedirect(t *testing.T) {
+func TestBLNSHostnameRedirect(t *testing.T) {
 	ns := mockNamesys{}
 	ts, api, ctx := newTestServerAndNode(t, ns)
 	t.Logf("test server url: %s", ts.URL)
@@ -391,7 +391,7 @@ func TestIPNSHostnameRedirect(t *testing.T) {
 	}
 }
 
-func TestIPNSHostnameBacklinks(t *testing.T) {
+func TestBLNSHostnameBacklinks(t *testing.T) {
 	ns := mockNamesys{}
 	ts, api, ctx := newTestServerAndNode(t, ns)
 	t.Logf("test server url: %s", ts.URL)

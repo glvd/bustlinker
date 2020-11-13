@@ -144,7 +144,7 @@ func parseIpfsAddr(addr string) (*peer.AddrInfo, error) {
 		return pi, nil
 	}
 
-	// resolve multiaddr whose protocol is not ma.P_IPFS
+	// resolve multiaddr whose protocol is not ma.P_LINK
 	ctx, cancel := context.WithTimeout(context.Background(), resolveTimeout)
 	defer cancel()
 	addrs, err := madns.Resolve(ctx, multiaddr)

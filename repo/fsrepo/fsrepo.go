@@ -59,7 +59,7 @@ type NoRepoError struct {
 var _ error = NoRepoError{}
 
 func (err NoRepoError) Error() string {
-	return fmt.Sprintf("no IPFS repo found in %s.\nplease run: 'ipfs init'", err.Path)
+	return fmt.Sprintf("no LINK repo found in %s.\nplease run: 'ipfs init'", err.Path)
 }
 
 const apiFile = "api"
@@ -93,7 +93,7 @@ var (
 	onlyOne repo.OnlyOne
 )
 
-// FSRepo represents an IPFS FileSystem Repo. It is safe for use by multiple
+// FSRepo represents an LINK FileSystem Repo. It is safe for use by multiple
 // callers.
 type FSRepo struct {
 	// has Close been called already

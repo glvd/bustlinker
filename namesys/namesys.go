@@ -18,14 +18,14 @@ import (
 	routing "github.com/libp2p/go-libp2p-core/routing"
 )
 
-// mpns (a multi-protocol NameSystem) implements generic IPFS naming.
+// mpns (a multi-protocol NameSystem) implements generic LINK naming.
 //
 // Uses several Resolvers:
-// (a) IPFS routing naming: SFS-like PKI names.
+// (a) LINK routing naming: SFS-like PKI names.
 // (b) dns domains: resolves using links in DNS TXT records
 // (c) proquints: interprets string as the raw byte data.
 //
-// It can only publish to: (a) IPFS routing naming.
+// It can only publish to: (a) LINK routing naming.
 //
 type mpns struct {
 	dnsResolver, proquintResolver, ipnsResolver resolver
@@ -35,7 +35,7 @@ type mpns struct {
 	cache     *lru.Cache
 }
 
-// NewNameSystem will construct the IPFS naming system based on Routing
+// NewNameSystem will construct the LINK naming system based on Routing
 func NewNameSystem(r routing.ValueStore, ds ds.Datastore, cachesize int) NameSystem {
 	var (
 		cache     *lru.Cache
@@ -48,8 +48,8 @@ func NewNameSystem(r routing.ValueStore, ds ds.Datastore, cachesize int) NameSys
 	// Prewarm namesys cache with static records for deterministic tests and debugging.
 	// Useful for testing things like DNSLink without real DNS lookup.
 	// Example:
-	// IPFS_NS_MAP="dnslink-test.example.com:/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
-	if list := os.Getenv("IPFS_NS_MAP"); list != "" {
+	// LINK_NS_MAP="dnslink-test.example.com:/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
+	if list := os.Getenv("LINK_NS_MAP"); list != "" {
 		staticMap = make(map[string]path.Path)
 		for _, pair := range strings.Split(list, ",") {
 			mapping := strings.SplitN(pair, ":", 2)
@@ -130,7 +130,7 @@ func (ns *mpns) resolveOnceAsync(ctx context.Context, name string, options opts.
 	var res resolver
 	ipnsKey, err := peer.Decode(key)
 
-	// CIDs in IPNS are expected to have libp2p-key multicodec
+	// CIDs in BLNS are expected to have libp2p-key multicodec
 	// We ease the transition by returning a more meaningful error with a valid CID
 	if err != nil && err.Error() == "can't convert CID of type protobuf to a peer ID" {
 		ipnsCid, cidErr := cid.Decode(key)

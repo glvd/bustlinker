@@ -24,12 +24,12 @@ type stringList struct {
 	Strings []string
 }
 
-// IpnsPubsubCmd is the subcommand that allows us to manage the IPNS pubsub system
+// IpnsPubsubCmd is the subcommand that allows us to manage the BLNS pubsub system
 var IpnsPubsubCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "IPNS pubsub management",
+		Tagline: "BLNS pubsub management",
 		ShortDescription: `
-Manage and inspect the state of the IPNS pubsub resolver.
+Manage and inspect the state of the BLNS pubsub resolver.
 
 Note: this command is experimental and subject to change as the system is refined
 `,
@@ -43,7 +43,7 @@ Note: this command is experimental and subject to change as the system is refine
 
 var ipnspsStateCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Query the state of IPNS pubsub",
+		Tagline: "Query the state of BLNS pubsub",
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
 		n, err := cmdenv.GetNode(env)
@@ -74,10 +74,10 @@ var ipnspsSubsCmd = &cmds.Command{
 		Tagline: "Show current name subscriptions",
 	},
 	Options: []cmds.Option{
-		ke.OptionIPNSBase,
+		ke.OptionBLNSBase,
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
-		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionIPNSBase.Name()].(string))
+		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionBLNSBase.Name()].(string))
 		if err != nil {
 			return err
 		}
@@ -88,7 +88,7 @@ var ipnspsSubsCmd = &cmds.Command{
 		}
 
 		if n.PSRouter == nil {
-			return cmds.Errorf(cmds.ErrClient, "IPNS pubsub subsystem is not enabled")
+			return cmds.Errorf(cmds.ErrClient, "BLNS pubsub subsystem is not enabled")
 		}
 		var paths []string
 		for _, key := range n.PSRouter.GetSubscriptions() {
@@ -124,7 +124,7 @@ var ipnspsCancelCmd = &cmds.Command{
 		}
 
 		if n.PSRouter == nil {
-			return cmds.Errorf(cmds.ErrClient, "IPNS pubsub subsystem is not enabled")
+			return cmds.Errorf(cmds.ErrClient, "BLNS pubsub subsystem is not enabled")
 		}
 
 		name := req.Arguments[0]

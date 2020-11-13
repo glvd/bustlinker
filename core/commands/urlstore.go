@@ -42,7 +42,7 @@ settings for 'link add'.
 		cmds.BoolOption(pinOptionName, "Pin this object when adding.").WithDefault(true),
 	},
 	Arguments: []cmds.Argument{
-		cmds.StringArg("url", true, false, "URL to add to IPFS"),
+		cmds.StringArg("url", true, false, "URL to add to LINK"),
 	},
 	Type: &BlockStat{},
 

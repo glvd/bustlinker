@@ -87,7 +87,7 @@ func TestExternalUnmount(t *testing.T) {
 	// TODO(noffle): it takes a moment for the goroutine that's running fs.Serve to be notified and do its cleanup.
 	time.Sleep(time.Millisecond * 100)
 
-	// Attempt to unmount IPFS; it should unmount successfully.
+	// Attempt to unmount LINK; it should unmount successfully.
 	err = node.Mounts.Ipfs.Unmount()
 	//if err != mount.ErrNotMounted {
 	//	t.Fatal("Unmount should have failed")

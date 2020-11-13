@@ -26,7 +26,7 @@ import (
 )
 
 func init() {
-	if os.Getenv("IPFS_FUSE_DEBUG") != "" {
+	if os.Getenv("LINK_FUSE_DEBUG") != "" {
 		fuse.Debug = func(msg interface{}) {
 			fmt.Println(msg)
 		}
@@ -35,7 +35,7 @@ func init() {
 
 var log = logging.Logger("fuse/ipns")
 
-// FileSystem is the readwrite IPNS Fuse Filesystem.
+// FileSystem is the readwrite BLNS Fuse Filesystem.
 type FileSystem struct {
 	Ipfs     iface.CoreAPI
 	RootNode *Root

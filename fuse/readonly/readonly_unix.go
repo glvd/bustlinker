@@ -24,7 +24,7 @@ import (
 
 var log = logging.Logger("fuse/ipfs")
 
-// FileSystem is the readonly IPFS Fuse Filesystem.
+// FileSystem is the readonly LINK Fuse Filesystem.
 type FileSystem struct {
 	Ipfs *core.IpfsNode
 }

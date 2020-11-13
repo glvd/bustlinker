@@ -75,9 +75,9 @@ represent it.
 
 var tarCatCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Export a tar file from IPFS.",
+		Tagline: "Export a tar file from LINK.",
 		ShortDescription: `
-'ipfs tar cat' will export a tar file from a previously imported one in IPFS.
+'ipfs tar cat' will export a tar file from a previously imported one in LINK.
 `,
 	},
 

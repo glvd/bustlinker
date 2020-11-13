@@ -48,8 +48,8 @@ ADVANCED COMMANDS
   daemon        Start a long-running daemon process
   mount         Mount an LINK read-only mount point
   resolve       Resolve any type of name
-  name          Publish and resolve IPNS names
-  key           Create and list IPNS name keypairs
+  name          Publish and resolve BLNS names
+  key           Create and list BLNS name keypairs
   dns           Resolve DNS links
   pin           Pin objects to local storage
   repo          Manipulate the LINK repository

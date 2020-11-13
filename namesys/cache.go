@@ -7,7 +7,7 @@ import (
 )
 
 func (ns *mpns) cacheGet(name string) (path.Path, bool) {
-	// existence of optional mapping defined via IPFS_NS_MAP is checked first
+	// existence of optional mapping defined via LINK_NS_MAP is checked first
 	if ns.staticMap != nil {
 		val, ok := ns.staticMap[name]
 		if ok {

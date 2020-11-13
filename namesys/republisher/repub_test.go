@@ -14,7 +14,7 @@ import (
 
 	ds "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipns"
-	"github.com/ipfs/go-ipns/pb"
+	ipns_pb "github.com/ipfs/go-ipns/pb"
 	path "github.com/ipfs/go-path"
 
 	"github.com/ipfs/go-ipfs/core"
@@ -187,7 +187,7 @@ func TestLongEOLRepublish(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	entry, err := getLastIPNSEntry(publisher.Repo.Datastore(), publisher.Identity)
+	entry, err := getLastBLNSEntry(publisher.Repo.Datastore(), publisher.Identity)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -202,7 +202,7 @@ func TestLongEOLRepublish(t *testing.T) {
 	}
 }
 
-func getLastIPNSEntry(dstore ds.Datastore, id peer.ID) (*ipns_pb.IpnsEntry, error) {
+func getLastBLNSEntry(dstore ds.Datastore, id peer.ID) (*ipns_pb.IpnsEntry, error) {
 	// Look for it locally only
 	val, err := dstore.Get(namesys.IpnsDsKey(id))
 	if err != nil {

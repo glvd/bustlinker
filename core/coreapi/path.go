@@ -42,7 +42,7 @@ func (api *CoreAPI) ResolvePath(ctx context.Context, p path.Path) (path.Resolved
 	}
 
 	ipath := ipfspath.Path(p.String())
-	ipath, err := resolve.ResolveIPNS(ctx, api.namesys, ipath)
+	ipath, err := resolve.ResolveBLNS(ctx, api.namesys, ipath)
 	if err == resolve.ErrNoNamesys {
 		return nil, coreiface.ErrOffline
 	} else if err != nil {

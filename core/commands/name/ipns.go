@@ -33,15 +33,15 @@ const (
 
 var IpnsCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Resolve IPNS names.",
+		Tagline: "Resolve BLNS names.",
 		ShortDescription: `
-IPNS is a PKI namespace, where names are the hashes of public keys, and
+BLNS is a PKI namespace, where names are the hashes of public keys, and
 the private key enables publishing new (signed) values. In both publish
 and resolve, the default name used is the node's own PeerID,
 which is the hash of its public key.
 `,
 		LongDescription: `
-IPNS is a PKI namespace, where names are the hashes of public keys, and
+BLNS is a PKI namespace, where names are the hashes of public keys, and
 the private key enables publishing new (signed) values. In both publish
 and resolve, the default name used is the node's own PeerID,
 which is the hash of its public key.
@@ -70,10 +70,10 @@ Resolve the value of a dnslink:
 	},
 
 	Arguments: []cmds.Argument{
-		cmds.StringArg("name", false, false, "The IPNS name to resolve. Defaults to your node's peerID."),
+		cmds.StringArg("name", false, false, "The BLNS name to resolve. Defaults to your node's peerID."),
 	},
 	Options: []cmds.Option{
-		cmds.BoolOption(recursiveOptionName, "r", "Resolve until the result is not an IPNS name.").WithDefault(true),
+		cmds.BoolOption(recursiveOptionName, "r", "Resolve until the result is not an BLNS name.").WithDefault(true),
 		cmds.BoolOption(nocacheOptionName, "n", "Do not use cached entries."),
 		cmds.UintOption(dhtRecordCountOptionName, "dhtrc", "Number of records to request for DHT resolution."),
 		cmds.StringOption(dhtTimeoutOptionName, "dhtt", "Max time to collect values during DHT resolution eg \"30s\". Pass 0 for no timeout."),

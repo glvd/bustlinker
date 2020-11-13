@@ -171,7 +171,7 @@ func DirectAddCat(data []byte, conf testutil.LatencyConfig) error {
 }
 
 func SkipUnlessEpic(t *testing.T) {
-	if os.Getenv("IPFS_EPIC_TEST") == "" {
+	if os.Getenv("LINK_EPIC_TEST") == "" {
 		t.SkipNow()
 	}
 }

@@ -25,7 +25,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 )
 
-/// ------ Setting up the IPFS Repo
+/// ------ Setting up the LINK Repo
 
 func setupPlugins(externalPluginsPath string) error {
 	// Load any external plugins if available on externalPluginsPath
@@ -69,7 +69,7 @@ func createTempRepo(ctx context.Context) (string, error) {
 
 /// ------ Spawning the node
 
-// Creates an IPFS node and returns its coreAPI
+// Creates an LINK node and returns its coreAPI
 func createNode(ctx context.Context, repoPath string) (icore.CoreAPI, error) {
 	// Open the repo
 	repo, err := fsrepo.Open(repoPath)
@@ -123,7 +123,7 @@ func spawnEphemeral(ctx context.Context) (icore.CoreAPI, error) {
 		return nil, fmt.Errorf("failed to create temp repo: %s", err)
 	}
 
-	// Spawning an ephemeral IPFS node
+	// Spawning an ephemeral LINK node
 	return createNode(ctx, repoPath)
 }
 
@@ -200,9 +200,9 @@ func getUnixfsNode(path string) (files.Node, error) {
 /// -------
 
 func main() {
-	/// --- Part I: Getting a IPFS node running
+	/// --- Part I: Getting a LINK node running
 
-	fmt.Println("-- Getting an IPFS node running -- ")
+	fmt.Println("-- Getting an LINK node running -- ")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -212,7 +212,7 @@ func main() {
 		fmt.Println("Spawning node on default repo")
 		ipfs, err := spawnDefault(ctx)
 		if err != nil {
-			fmt.Println("No IPFS repo available on the default path")
+			fmt.Println("No LINK repo available on the default path")
 		}
 	*/
 
@@ -223,9 +223,9 @@ func main() {
 		panic(fmt.Errorf("failed to spawn ephemeral node: %s", err))
 	}
 
-	fmt.Println("IPFS node is running")
+	fmt.Println("LINK node is running")
 
-	/// --- Part II: Adding a file and a directory to IPFS
+	/// --- Part II: Adding a file and a directory to LINK
 
 	fmt.Println("\n-- Adding and getting back files & directories --")
 
@@ -243,7 +243,7 @@ func main() {
 		panic(fmt.Errorf("Could not add File: %s", err))
 	}
 
-	fmt.Printf("Added file to IPFS with CID %s\n", cidFile.String())
+	fmt.Printf("Added file to LINK with CID %s\n", cidFile.String())
 
 	someDirectory, err := getUnixfsNode(inputPathDirectory)
 	if err != nil {
@@ -255,7 +255,7 @@ func main() {
 		panic(fmt.Errorf("Could not add Directory: %s", err))
 	}
 
-	fmt.Printf("Added directory to IPFS with CID %s\n", cidDirectory.String())
+	fmt.Printf("Added directory to LINK with CID %s\n", cidDirectory.String())
 
 	/// --- Part III: Getting the file and directory you added back
 
@@ -273,7 +273,7 @@ func main() {
 		panic(fmt.Errorf("Could not write out the fetched CID: %s", err))
 	}
 
-	fmt.Printf("Got file back from IPFS (IPFS path: %s) and wrote it to %s\n", cidFile.String(), outputPathFile)
+	fmt.Printf("Got file back from LINK (LINK path: %s) and wrote it to %s\n", cidFile.String(), outputPathFile)
 
 	rootNodeDirectory, err := ipfs.Unixfs().Get(ctx, cidDirectory)
 	if err != nil {
@@ -285,20 +285,20 @@ func main() {
 		panic(fmt.Errorf("Could not write out the fetched CID: %s", err))
 	}
 
-	fmt.Printf("Got directory back from IPFS (IPFS path: %s) and wrote it to %s\n", cidDirectory.String(), outputPathDirectory)
+	fmt.Printf("Got directory back from LINK (LINK path: %s) and wrote it to %s\n", cidDirectory.String(), outputPathDirectory)
 
-	/// --- Part IV: Getting a file from the IPFS Network
+	/// --- Part IV: Getting a file from the LINK Network
 
 	fmt.Println("\n-- Going to connect to a few nodes in the Network as bootstrappers --")
 
 	bootstrapNodes := []string{
-		// IPFS Bootstrapper nodes.
+		// LINK Bootstrapper nodes.
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
 
-		// IPFS Cluster Pinning nodes
+		// LINK Cluster Pinning nodes
 		"/ip4/138.201.67.219/tcp/4001/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
 		"/ip4/138.201.67.219/udp/4001/quic/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
 		"/ip4/138.201.67.220/tcp/4001/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
@@ -308,7 +308,7 @@ func main() {
 		"/ip4/94.130.135.167/tcp/4001/p2p/QmUEMvxS2e7iDrereVYc5SWPauXPyNwxcy9BXZrC1QTcHE",
 		"/ip4/94.130.135.167/udp/4001/quic/p2p/QmUEMvxS2e7iDrereVYc5SWPauXPyNwxcy9BXZrC1QTcHE",
 
-		// You can add more nodes here, for example, another IPFS node you might have running locally, mine was:
+		// You can add more nodes here, for example, another LINK node you might have running locally, mine was:
 		// "/ip4/127.0.0.1/tcp/4010/p2p/QmZp2fhDLxjYue2RiUvLwT9MWdnbDxam32qYFnGmxZDh5L",
 		// "/ip4/127.0.0.1/udp/4010/quic/p2p/QmZp2fhDLxjYue2RiUvLwT9MWdnbDxam32qYFnGmxZDh5L",
 	}

@@ -11,15 +11,15 @@ type IpnsEntry struct {
 
 var NameCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Publish and resolve IPNS names.",
+		Tagline: "Publish and resolve BLNS names.",
 		ShortDescription: `
-IPNS is a PKI namespace, where names are the hashes of public keys, and
+BLNS is a PKI namespace, where names are the hashes of public keys, and
 the private key enables publishing new (signed) values. In both publish
 and resolve, the default name used is the node's own PeerID,
 which is the hash of its public key.
 `,
 		LongDescription: `
-IPNS is a PKI namespace, where names are the hashes of public keys, and
+BLNS is a PKI namespace, where names are the hashes of public keys, and
 the private key enables publishing new (signed) values. In both publish
 and resolve, the default name used is the node's own PeerID,
 which is the hash of its public key.

@@ -34,7 +34,7 @@ const (
 	ipnsPathPrefix = "/blns/"
 )
 
-// gatewayHandler is a HTTP handler that serves IPFS objects (accessible by default at /ipfs/<path>)
+// gatewayHandler is a HTTP handler that serves LINK objects (accessible by default at /ipfs/<path>)
 // (it serves requests like GET /ipfs/QmVRzPKPzNtSrEzBFm2UZfxmPAgnaLke4DMcerbsGGSaFe/link)
 type gatewayHandler struct {
 	config GatewayConfig
@@ -167,7 +167,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 		}
 	}
 
-	// HostnameOption might have constructed an IPNS/IPFS path using the Host header.
+	// HostnameOption might have constructed an BLNS/LINK path using the Host header.
 	// In this case, we need the original path for constructing redirects
 	// and links that match the requested URL.
 	// For example, http://example.net would become /blns/example.net, and
@@ -241,7 +241,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	i.addUserHeaders(w) // ok, _now_ write user's headers.
-	w.Header().Set("X-IPFS-Path", urlPath)
+	w.Header().Set("X-LINK-Path", urlPath)
 	w.Header().Set("Etag", responseEtag)
 
 	// set these headers _after_ the error, for we may just not have it
@@ -495,7 +495,7 @@ func (i *gatewayHandler) postHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	i.addUserHeaders(w) // ok, _now_ write user's headers.
-	w.Header().Set("IPFS-Hash", p.Cid().String())
+	w.Header().Set("LINK-Hash", p.Cid().String())
 	http.Redirect(w, r, p.String(), http.StatusCreated)
 }
 
@@ -587,7 +587,7 @@ func (i *gatewayHandler) putHandler(w http.ResponseWriter, r *http.Request) {
 	newcid := nnode.Cid()
 
 	i.addUserHeaders(w) // ok, _now_ write user's headers.
-	w.Header().Set("IPFS-Hash", newcid.String())
+	w.Header().Set("LINK-Hash", newcid.String())
 	http.Redirect(w, r, gopath.Join(ipfsPathPrefix, newcid.String(), newPath), http.StatusCreated)
 }
 
@@ -658,7 +658,7 @@ func (i *gatewayHandler) deleteHandler(w http.ResponseWriter, r *http.Request) {
 	ncid := nnode.Cid()
 
 	i.addUserHeaders(w) // ok, _now_ write user's headers.
-	w.Header().Set("IPFS-Hash", ncid.String())
+	w.Header().Set("LINK-Hash", ncid.String())
 	// note: StatusCreated is technically correct here as we created a new resource.
 	http.Redirect(w, r, gopath.Join(ipfsPathPrefix+ncid.String(), directory), http.StatusCreated)
 }

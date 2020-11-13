@@ -24,17 +24,17 @@ const ipnsPrefix = "/blns/"
 
 const DefaultRecordEOL = 24 * time.Hour
 
-// IpnsPublisher is capable of publishing and resolving names to the IPFS
+// IpnsPublisher is capable of publishing and resolving names to the LINK
 // routing system.
 type IpnsPublisher struct {
 	routing routing.ValueStore
 	ds      ds.Datastore
 
-	// Used to ensure we assign IPNS records *sequential* sequence numbers.
+	// Used to ensure we assign BLNS records *sequential* sequence numbers.
 	mu sync.Mutex
 }
 
-// NewIpnsPublisher constructs a publisher for the IPFS Routing name system.
+// NewIpnsPublisher constructs a publisher for the LINK Routing name system.
 func NewIpnsPublisher(route routing.ValueStore, ds ds.Datastore) *IpnsPublisher {
 	if ds == nil {
 		panic("nil datastore")
@@ -53,7 +53,7 @@ func IpnsDsKey(id peer.ID) ds.Key {
 	return ds.NewKey("/blns/" + base32.RawStdEncoding.EncodeToString([]byte(id)))
 }
 
-// PublishedNames returns the latest IPNS records published by this node and
+// PublishedNames returns the latest BLNS records published by this node and
 // their expiration times.
 //
 // This method will not search the routing system for records published by other
@@ -80,7 +80,7 @@ func (p *IpnsPublisher) ListPublished(ctx context.Context) (map[peer.ID]*pb.Ipns
 			e := new(pb.IpnsEntry)
 			if err := proto.Unmarshal(result.Value, e); err != nil {
 				// Might as well return what we can.
-				log.Error("found an invalid IPNS entry:", err)
+				log.Error("found an invalid BLNS entry:", err)
 				continue
 			}
 			if !strings.HasPrefix(result.Key, ipnsPrefix) {
@@ -122,7 +122,7 @@ func (p *IpnsPublisher) GetPublished(ctx context.Context, id peer.ID, checkRouti
 			// Not found or other network issue. Can't really do
 			// anything about this case.
 			if err != routing.ErrNotFound {
-				log.Debugf("error when determining the last published IPNS record for %s: %s", id, err)
+				log.Debugf("error when determining the last published BLNS record for %s: %s", id, err)
 			}
 
 			return nil, nil
@@ -216,7 +216,7 @@ func PutRecordToRouting(ctx context.Context, r routing.ValueStore, k ci.PubKey, 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	errs := make(chan error, 2) // At most two errors (IPNS, and public key)
+	errs := make(chan error, 2) // At most two errors (BLNS, and public key)
 
 	if err := ipns.EmbedPublicKey(k, entry); err != nil {
 		return err
@@ -236,8 +236,8 @@ func PutRecordToRouting(ctx context.Context, r routing.ValueStore, k ci.PubKey, 
 	// and at that point we can even deprecate the /pk/ namespace in the dht
 	//
 	// NOTE: This check actually checks if the public key has been embedded
-	// in the IPNS entry. This check is sufficient because we embed the
-	// public key in the IPNS entry if it can't be extracted from the ID.
+	// in the BLNS entry. This check is sufficient because we embed the
+	// public key in the BLNS entry if it can't be extracted from the ID.
 	if entry.PubKey != nil {
 		go func() {
 			errs <- PublishPublicKey(ctx, r, PkKeyForID(id), k)

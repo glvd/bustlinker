@@ -27,7 +27,7 @@ type RepoVersion struct {
 
 var RepoCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Manipulate the IPFS repo.",
+		Tagline: "Manipulate the LINK repo.",
 		ShortDescription: `
 'link repo' is a plumbing command used to manipulate the repo.
 `,

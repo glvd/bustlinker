@@ -18,7 +18,7 @@ import (
 var DistPath = "https://ipfs.io/ipfs/Qmdo5m6bpQXCayzfGghyvgXJdVHSsXsCKDUo9vWktDKq3K"
 
 func init() {
-	if dist := os.Getenv("IPFS_DIST_PATH"); dist != "" {
+	if dist := os.Getenv("LINK_DIST_PATH"); dist != "" {
 		DistPath = dist
 	}
 }

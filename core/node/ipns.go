@@ -33,14 +33,14 @@ func Namesys(cacheSize int) func(rt routing.Routing, repo repo.Repo) (namesys.Na
 	}
 }
 
-// IpnsRepublisher runs new IPNS republisher service
+// IpnsRepublisher runs new BLNS republisher service
 func IpnsRepublisher(repubPeriod time.Duration, recordLifetime time.Duration) func(lcProcess, namesys.NameSystem, repo.Repo, crypto.PrivKey) error {
 	return func(lc lcProcess, namesys namesys.NameSystem, repo repo.Repo, privKey crypto.PrivKey) error {
 		repub := republisher.NewRepublisher(namesys, repo.Datastore(), privKey, repo.Keystore())
 
 		if repubPeriod != 0 {
 			if !util.Debug && (repubPeriod < time.Minute || repubPeriod > (time.Hour*24)) {
-				return fmt.Errorf("config setting IPNS.RepublishPeriod is not between 1min and 1day: %s", repubPeriod)
+				return fmt.Errorf("config setting BLNS.RepublishPeriod is not between 1min and 1day: %s", repubPeriod)
 			}
 
 			repub.Interval = repubPeriod

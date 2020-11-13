@@ -21,13 +21,13 @@ var DNSCmd = &cmds.Command{
 		ShortDescription: `
 Multihashes are hard to remember, but domain names are usually easy to
 remember.  To create memorable aliases for multihashes, DNS TXT
-records can point to other DNS links, IPFS objects, IPNS keys, etc.
+records can point to other DNS links, LINK objects, BLNS keys, etc.
 This command resolves those links to the referenced object.
 `,
 		LongDescription: `
 Multihashes are hard to remember, but domain names are usually easy to
 remember.  To create memorable aliases for multihashes, DNS TXT
-records can point to other DNS links, IPFS objects, IPNS keys, etc.
+records can point to other DNS links, LINK objects, BLNS keys, etc.
 This command resolves those links to the referenced object.
 
 Note: This command can only recursively resolve DNS links,

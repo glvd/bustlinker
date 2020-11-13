@@ -2,8 +2,8 @@
 Package core implements the IpfsNode object and related methods.
 
 Packages underneath core/ provide a (relatively) stable, low-level API
-to carry out most IPFS-related tasks.  For more details on the other
-interfaces and how core/... fits into the bigger IPFS picture, see:
+to carry out most LINK-related tasks.  For more details on the other
+interfaces and how core/... fits into the bigger LINK picture, see:
 
   $ godoc github.com/ipfs/go-ipfs
 */
@@ -54,7 +54,7 @@ import (
 
 var log = logging.Logger("core")
 
-// IpfsNode is IPFS Core module. It represents an IPFS instance.
+// IpfsNode is LINK Core module. It represents an LINK instance.
 type IpfsNode struct {
 
 	// Self

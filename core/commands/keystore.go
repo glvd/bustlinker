@@ -24,9 +24,9 @@ import (
 
 var KeyCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Create and list IPNS name keypairs",
+		Tagline: "Create and list BLNS name keypairs",
 		ShortDescription: `
-'ipfs key gen' generates a new keypair for usage with IPNS and 'ipfs name
+'ipfs key gen' generates a new keypair for usage with BLNS and 'ipfs name
 publish'.
 
   > ipfs key gen --type=rsa --size=2048 mykey
@@ -81,7 +81,7 @@ var keyGenCmd = &cmds.Command{
 	Options: []cmds.Option{
 		cmds.StringOption(keyStoreTypeOptionName, "t", "type of the key to create: rsa, ed25519").WithDefault(keyStoreAlgorithmDefault),
 		cmds.IntOption(keyStoreSizeOptionName, "s", "size of the key to generate"),
-		ke.OptionIPNSBase,
+		ke.OptionBLNSBase,
 	},
 	Arguments: []cmds.Argument{
 		cmds.StringArg("name", true, false, "name of key to create"),
@@ -108,7 +108,7 @@ var keyGenCmd = &cmds.Command{
 		if sizefound {
 			opts = append(opts, options.Key.Size(size))
 		}
-		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionIPNSBase.Name()].(string))
+		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionBLNSBase.Name()].(string))
 		if err != nil {
 			return err
 		}
@@ -223,7 +223,7 @@ var keyImportCmd = &cmds.Command{
 		Tagline: "Import a key and prints imported key id",
 	},
 	Options: []cmds.Option{
-		ke.OptionIPNSBase,
+		ke.OptionBLNSBase,
 	},
 	Arguments: []cmds.Argument{
 		cmds.StringArg("name", true, false, "name to associate with key in keychain"),
@@ -236,7 +236,7 @@ var keyImportCmd = &cmds.Command{
 			return fmt.Errorf("cannot import key with name 'self'")
 		}
 
-		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionIPNSBase.Name()].(string))
+		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionBLNSBase.Name()].(string))
 		if err != nil {
 			return err
 		}
@@ -303,10 +303,10 @@ var keyListCmd = &cmds.Command{
 	},
 	Options: []cmds.Option{
 		cmds.BoolOption("l", "Show extra information about keys."),
-		ke.OptionIPNSBase,
+		ke.OptionBLNSBase,
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
-		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionIPNSBase.Name()].(string))
+		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionBLNSBase.Name()].(string))
 		if err != nil {
 			return err
 		}
@@ -352,14 +352,14 @@ var keyRenameCmd = &cmds.Command{
 	},
 	Options: []cmds.Option{
 		cmds.BoolOption(keyStoreForceOptionName, "f", "Allow to overwrite an existing key."),
-		ke.OptionIPNSBase,
+		ke.OptionBLNSBase,
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
 		api, err := cmdenv.GetApi(env, req)
 		if err != nil {
 			return err
 		}
-		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionIPNSBase.Name()].(string))
+		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionBLNSBase.Name()].(string))
 		if err != nil {
 			return err
 		}
@@ -402,14 +402,14 @@ var keyRmCmd = &cmds.Command{
 	},
 	Options: []cmds.Option{
 		cmds.BoolOption("l", "Show extra information about keys."),
-		ke.OptionIPNSBase,
+		ke.OptionBLNSBase,
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
 		api, err := cmdenv.GetApi(env, req)
 		if err != nil {
 			return err
 		}
-		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionIPNSBase.Name()].(string))
+		keyEnc, err := ke.KeyEncoderFromString(req.Options[ke.OptionBLNSBase.Name()].(string))
 		if err != nil {
 			return err
 		}
@@ -446,10 +446,10 @@ Your existing identity key will be backed up in the Keystore.
 The daemon must not be running when calling this command.
 
 ipfs uses a repository in the local file system. By default, the repo is
-located at ~/.ipfs. To change the repo location, set the $IPFS_PATH
+located at ~/.ipfs. To change the repo location, set the $LINK_PATH
 environment variable:
 
-    export IPFS_PATH=/path/to/ipfsrepo
+    export LINK_PATH=/path/to/ipfsrepo
 `,
 	},
 	Arguments: []cmds.Argument{},

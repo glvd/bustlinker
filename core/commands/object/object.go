@@ -48,7 +48,7 @@ const (
 
 var ObjectCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Interact with IPFS objects.",
+		Tagline: "Interact with LINK objects.",
 		ShortDescription: `
 'ipfs object' is a plumbing command used to manipulate DAG objects
 directly.`,
@@ -69,7 +69,7 @@ directly.`,
 // ObjectDataCmd object data command
 var ObjectDataCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline: "Output the raw bytes of an IPFS object.",
+		Tagline: "Output the raw bytes of an LINK object.",
 		ShortDescription: `
 'ipfs object data' is a plumbing command for retrieving the raw bytes stored
 in a DAG node. It outputs to stdout, and <key> is a base58 encoded multihash.

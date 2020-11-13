@@ -214,8 +214,8 @@ func Identity(cfg *config.Config) fx.Option {
 	)
 }
 
-// IPNS groups namesys related units
-var IPNS = fx.Options(
+// BLNS groups namesys related units
+var BLNS = fx.Options(
 	fx.Provide(RecordValidator),
 )
 
@@ -239,11 +239,11 @@ func Online(bcfg *BuildCfg, cfg *config.Config) fx.Option {
 	if cfg.Ipns.RepublishPeriod != "" {
 		d, err := time.ParseDuration(cfg.Ipns.RepublishPeriod)
 		if err != nil {
-			return fx.Error(fmt.Errorf("failure to parse config setting IPNS.RepublishPeriod: %s", err))
+			return fx.Error(fmt.Errorf("failure to parse config setting BLNS.RepublishPeriod: %s", err))
 		}
 
 		if !util.Debug && (d < time.Minute || d > (time.Hour*24)) {
-			return fx.Error(fmt.Errorf("config setting IPNS.RepublishPeriod is not between 1min and 1day: %s", d))
+			return fx.Error(fmt.Errorf("config setting BLNS.RepublishPeriod is not between 1min and 1day: %s", d))
 		}
 
 		repubPeriod = d
@@ -252,7 +252,7 @@ func Online(bcfg *BuildCfg, cfg *config.Config) fx.Option {
 	if cfg.Ipns.RecordLifetime != "" {
 		d, err := time.ParseDuration(cfg.Ipns.RecordLifetime)
 		if err != nil {
-			return fx.Error(fmt.Errorf("failure to parse config setting IPNS.RecordLifetime: %s", err))
+			return fx.Error(fmt.Errorf("failure to parse config setting BLNS.RecordLifetime: %s", err))
 		}
 
 		recordLifetime = d
@@ -287,7 +287,7 @@ func Offline(cfg *config.Config) fx.Option {
 	)
 }
 
-// Core groups basic IPFS services
+// Core groups basic LINK services
 var Core = fx.Options(
 	fx.Provide(BlockService),
 	fx.Provide(Dag),
@@ -303,8 +303,8 @@ func Networked(bcfg *BuildCfg, cfg *config.Config) fx.Option {
 	return Offline(cfg)
 }
 
-// IPFS builds a group of fx Options based on the passed BuildCfg
-func IPFS(ctx context.Context, bcfg *BuildCfg) fx.Option {
+// LINK builds a group of fx Options based on the passed BuildCfg
+func LINK(ctx context.Context, bcfg *BuildCfg) fx.Option {
 	if bcfg == nil {
 		bcfg = new(BuildCfg)
 	}
@@ -324,7 +324,7 @@ func IPFS(ctx context.Context, bcfg *BuildCfg) fx.Option {
 
 		Storage(bcfg, cfg),
 		Identity(cfg),
-		IPNS,
+		BLNS,
 		Networked(bcfg, cfg),
 
 		Core,

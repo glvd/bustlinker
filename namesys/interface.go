@@ -1,8 +1,8 @@
 /*
-Package namesys implements resolvers and publishers for the IPFS
-naming system (IPNS).
+Package namesys implements resolvers and publishers for the LINK
+naming system (BLNS).
 
-The core of IPFS is an immutable, content-addressable Merkle graph.
+The core of LINK is an immutable, content-addressable Merkle graph.
 That works well for many use cases, but doesn't allow you to answer
 questions like "what is Alice's current homepage?".  The mutable name
 system allows Alice to publish information like:
@@ -18,7 +18,7 @@ or:
   /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 
 The mutable name system also allows users to resolve those references
-to find the immutable IPFS object currently referenced by a given
+to find the immutable LINK object currently referenced by a given
 mutable name.
 
 For command-line bindings to this functionality, see:
@@ -74,7 +74,7 @@ type Resolver interface {
 	// Resolve performs a recursive lookup, returning the dereferenced
 	// path.  For example, if ipfs.io has a DNS TXT record pointing to
 	//   /ipns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
-	// and there is a DHT IPNS entry for
+	// and there is a DHT BLNS entry for
 	//   QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
 	//   -> /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 	// then

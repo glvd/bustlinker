@@ -22,12 +22,12 @@ const (
 
 var CatCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
-		Tagline:          "Show IPFS object data.",
-		ShortDescription: "Displays the data contained by an IPFS or IPNS object(s) at the given path.",
+		Tagline:          "Show LINK object data.",
+		ShortDescription: "Displays the data contained by an LINK or BLNS object(s) at the given path.",
 	},
 
 	Arguments: []cmds.Argument{
-		cmds.StringArg("ipfs-path", true, true, "The path to the IPFS object(s) to be outputted.").EnableStdin(),
+		cmds.StringArg("ipfs-path", true, true, "The path to the LINK object(s) to be outputted.").EnableStdin(),
 	},
 	Options: []cmds.Option{
 		cmds.Int64Option(offsetOptionName, "o", "Byte offset to begin reading from."),

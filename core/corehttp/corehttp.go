@@ -1,6 +1,6 @@
 /*
 Package corehttp provides utilities for the webui, gateways, and other
-high-level HTTP interfaces to IPFS.
+high-level HTTP interfaces to LINK.
 */
 package corehttp
 

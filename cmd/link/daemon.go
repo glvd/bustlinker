@@ -59,7 +59,7 @@ const (
 	unrestrictedApiAccessKwd  = "unrestricted-api"
 	writableKwd               = "writable"
 	enablePubSubKwd           = "enable-pubsub-experiment"
-	enableIPNSPubSubKwd       = "enable-namesys-pubsub"
+	enableBLNSPubSubKwd       = "enable-namesys-pubsub"
 	enableMultiplexKwd        = "enable-mplex-experiment"
 	// apiAddrKwd    = "address-api"
 	// swarmAddrKwd  = "address-swarm"
@@ -172,7 +172,7 @@ Headers.
 		cmds.BoolOption(adjustFDLimitKwd, "Check and raise file descriptor limits if needed").WithDefault(true),
 		cmds.BoolOption(migrateKwd, "If true, assume yes at the migrate prompt. If false, assume no."),
 		cmds.BoolOption(enablePubSubKwd, "Instantiate the ipfs daemon with the experimental pubsub feature enabled."),
-		cmds.BoolOption(enableIPNSPubSubKwd, "Enable BLNS record distribution through pubsub; enables pubsub."),
+		cmds.BoolOption(enableBLNSPubSubKwd, "Enable BLNS record distribution through pubsub; enables pubsub."),
 		cmds.BoolOption(enableMultiplexKwd, "DEPRECATED"),
 
 		// TODO: add way to override addresses. tricky part: updating the config if also --init.
@@ -302,7 +302,7 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 	defer repo.Close()
 
 	offline, _ := req.Options[offlineKwd].(bool)
-	ipnsps, _ := req.Options[enableIPNSPubSubKwd].(bool)
+	ipnsps, _ := req.Options[enableBLNSPubSubKwd].(bool)
 	pubsub, _ := req.Options[enablePubSubKwd].(bool)
 	if _, hasMplex := req.Options[enableMultiplexKwd]; hasMplex {
 		log.Errorf("The mplex multiplexer has been enabled by default and the experimental %s flag has been removed.")
@@ -698,12 +698,12 @@ func mountFuse(req *cmds.Request, cctx *oldcmds.Context) error {
 
 	fsdir, found := req.Options[ipfsMountKwd].(string)
 	if !found {
-		fsdir = cfg.Mounts.IPFS
+		fsdir = cfg.Mounts.LINK
 	}
 
 	nsdir, found := req.Options[ipnsMountKwd].(string)
 	if !found {
-		nsdir = cfg.Mounts.IPNS
+		nsdir = cfg.Mounts.BLNS
 	}
 
 	node, err := cctx.ConstructNode()
@@ -716,7 +716,7 @@ func mountFuse(req *cmds.Request, cctx *oldcmds.Context) error {
 		return err
 	}
 	fmt.Printf("LINK mounted at: %s\n", fsdir)
-	fmt.Printf("IPNS mounted at: %s\n", nsdir)
+	fmt.Printf("BLNS mounted at: %s\n", nsdir)
 	return nil
 }
 

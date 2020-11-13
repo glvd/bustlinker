@@ -166,7 +166,7 @@ type mockValueStore struct {
 func newMockValueStore(id testutil.Identity, dstore ds.Datastore, kbook pstore.KeyBook) *mockValueStore {
 	return &mockValueStore{
 		r: offline.NewOfflineRouter(dstore, record.NamespacedValidator{
-			"ipns": blns.Validator{KeyBook: kbook},
+			"blns": blns.Validator{KeyBook: kbook},
 			"pk":   record.PublicKeyValidator{},
 		}),
 		kbook: kbook,

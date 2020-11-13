@@ -271,18 +271,18 @@ func PublishPublicKey(ctx context.Context, r routing.ValueStore, k string, pubk 
 	return r.PutValue(ctx, k, pkbytes)
 }
 
-func PublishEntry(ctx context.Context, r routing.ValueStore, ipnskey string, rec *pb.IpnsEntry) error {
+func PublishEntry(ctx context.Context, r routing.ValueStore, blnskey string, rec *pb.IpnsEntry) error {
 	data, err := proto.Marshal(rec)
 	if err != nil {
 		return err
 	}
 
-	log.Debugf("Storing ipns entry at: %s", ipnskey)
-	// Store ipns entry at "/ipns/"+h(pubkey)
-	return r.PutValue(ctx, ipnskey, data)
+	log.Debugf("Storing blns entry at: %s", blnskey)
+	// Store blns entry at "/blns/"+h(pubkey)
+	return r.PutValue(ctx, blnskey, data)
 }
 
-// InitializeKeyspace sets the ipns record for the given key to
+// InitializeKeyspace sets the blns record for the given key to
 // point to an empty directory.
 // TODO: this doesnt feel like it belongs here
 func InitializeKeyspace(ctx context.Context, pub Publisher, pins pin.Pinner, key ci.PrivKey) error {

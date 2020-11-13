@@ -141,7 +141,7 @@ func TestAsyncDS(t *testing.T) {
 		}
 	}
 
-	t.Fatal("ipns key not synced")
+	t.Fatal("blns key not synced")
 }
 
 type checkSyncDS struct {

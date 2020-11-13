@@ -136,7 +136,7 @@ func (ns *mpns) resolveOnceAsync(ctx context.Context, name string, options opts.
 		blnsCid, cidErr := cid.Decode(key)
 		if cidErr == nil && blnsCid.Version() == 1 && blnsCid.Type() != cid.Libp2pKey {
 			fixedCid := cid.NewCidV1(cid.Libp2pKey, blnsCid.Hash()).String()
-			codecErr := fmt.Errorf("peer ID represented as CIDv1 require libp2p-key multicodec: retry with /ipns/%s", fixedCid)
+			codecErr := fmt.Errorf("peer ID represented as CIDv1 require libp2p-key multicodec: retry with /blns/%s", fixedCid)
 			log.Debugf("RoutingResolver: could not convert public key hash %s to peer ID: %s\n", key, codecErr)
 			out <- onceResult{err: codecErr}
 			close(out)

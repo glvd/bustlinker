@@ -28,8 +28,8 @@ import (
 // It can only publish to: (a) LINK routing naming.
 //
 type mpns struct {
-	dnsResolver, proquintResolver, ipnsResolver resolver
-	ipnsPublisher                               Publisher
+	dnsResolver, proquintResolver, blnsResolver resolver
+	blnsPublisher                               Publisher
 
 	staticMap map[string]path.Path
 	cache     *lru.Cache
@@ -62,8 +62,8 @@ func NewNameSystem(r routing.ValueStore, ds ds.Datastore, cachesize int) NameSys
 	return &mpns{
 		dnsResolver:      NewDNSResolver(),
 		proquintResolver: new(ProquintResolver),
-		ipnsResolver:     NewIpnsResolver(r),
-		ipnsPublisher:    NewIpnsPublisher(r, ds),
+		blnsResolver:     NewIpnsResolver(r),
+		blnsPublisher:    NewIpnsPublisher(r, ds),
 		staticMap:        staticMap,
 		cache:            cache,
 	}
@@ -109,8 +109,8 @@ func (ns *mpns) ResolveAsync(ctx context.Context, name string, options ...opts.R
 func (ns *mpns) resolveOnceAsync(ctx context.Context, name string, options opts.ResolveOpts) <-chan onceResult {
 	out := make(chan onceResult, 1)
 
-	if !strings.HasPrefix(name, ipnsPrefix) {
-		name = ipnsPrefix + name
+	if !strings.HasPrefix(name, blnsPrefix) {
+		name = blnsPrefix + name
 	}
 	segments := strings.SplitN(name, "/", 4)
 	if len(segments) < 3 || segments[0] != "" {
@@ -123,19 +123,19 @@ func (ns *mpns) resolveOnceAsync(ctx context.Context, name string, options opts.
 	key := segments[2]
 
 	// Resolver selection:
-	// 1. if it is a PeerID/CID/multihash resolve through "ipns".
+	// 1. if it is a PeerID/CID/multihash resolve through "blns".
 	// 2. if it is a domain name, resolve through "dns"
 	// 3. otherwise resolve through the "proquint" resolver
 
 	var res resolver
-	ipnsKey, err := peer.Decode(key)
+	blnsKey, err := peer.Decode(key)
 
 	// CIDs in BLNS are expected to have libp2p-key multicodec
 	// We ease the transition by returning a more meaningful error with a valid CID
 	if err != nil && err.Error() == "can't convert CID of type protobuf to a peer ID" {
-		ipnsCid, cidErr := cid.Decode(key)
-		if cidErr == nil && ipnsCid.Version() == 1 && ipnsCid.Type() != cid.Libp2pKey {
-			fixedCid := cid.NewCidV1(cid.Libp2pKey, ipnsCid.Hash()).String()
+		blnsCid, cidErr := cid.Decode(key)
+		if cidErr == nil && blnsCid.Version() == 1 && blnsCid.Type() != cid.Libp2pKey {
+			fixedCid := cid.NewCidV1(cid.Libp2pKey, blnsCid.Hash()).String()
 			codecErr := fmt.Errorf("peer ID represented as CIDv1 require libp2p-key multicodec: retry with /ipns/%s", fixedCid)
 			log.Debugf("RoutingResolver: could not convert public key hash %s to peer ID: %s\n", key, codecErr)
 			out <- onceResult{err: codecErr}
@@ -146,7 +146,7 @@ func (ns *mpns) resolveOnceAsync(ctx context.Context, name string, options opts.
 
 	cacheKey := key
 	if err == nil {
-		cacheKey = string(ipnsKey)
+		cacheKey = string(blnsKey)
 	}
 
 	if p, ok := ns.cacheGet(cacheKey); ok {
@@ -161,7 +161,7 @@ func (ns *mpns) resolveOnceAsync(ctx context.Context, name string, options opts.
 	}
 
 	if err == nil {
-		res = ns.ipnsResolver
+		res = ns.blnsResolver
 	} else if isd.IsDomain(key) {
 		res = ns.dnsResolver
 	} else {
@@ -220,7 +220,7 @@ func (ns *mpns) PublishWithEOL(ctx context.Context, name ci.PrivKey, value path.
 	if err != nil {
 		return err
 	}
-	if err := ns.ipnsPublisher.PublishWithEOL(ctx, name, value, eol); err != nil {
+	if err := ns.blnsPublisher.PublishWithEOL(ctx, name, value, eol); err != nil {
 		// Invalidate the cache. Publishing may _partially_ succeed but
 		// still return an error.
 		ns.cacheInvalidate(string(id))

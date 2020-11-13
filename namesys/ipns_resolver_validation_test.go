@@ -9,8 +9,8 @@ import (
 	dssync "github.com/ipfs/go-datastore/sync"
 	mockrouting "github.com/ipfs/go-ipfs-routing/mock"
 	offline "github.com/ipfs/go-ipfs-routing/offline"
-	ipns "github.com/ipfs/go-ipns"
-	ipns_pb "github.com/ipfs/go-ipns/pb"
+	blns "github.com/ipfs/go-ipns"
+	blns_pb "github.com/ipfs/go-ipns/pb"
 	path "github.com/ipfs/go-path"
 	opts "github.com/ipfs/interface-go-ipfs-core/options/namesys"
 	ci "github.com/libp2p/go-libp2p-core/crypto"
@@ -54,7 +54,7 @@ func testResolverValidation(t *testing.T, keyType int) {
 	nvVstore := offline.NewOfflineRouter(dstore, mockrouting.MockValidator{})
 
 	// Create entry with expiry in one hour
-	priv, id, _, ipnsDHTPath := genKeys(t, keyType)
+	priv, id, _, blnsDHTPath := genKeys(t, keyType)
 	ts := time.Now()
 	p := []byte("/ipfs/QmfM2r8seH2GiRaC4esTjeraXEachRt8ZsSeGaWTPLyMoG")
 	entry, err := createBLNSRecordWithEmbeddedPublicKey(priv, p, 1, ts.Add(time.Hour))
@@ -63,7 +63,7 @@ func testResolverValidation(t *testing.T, keyType int) {
 	}
 
 	// Publish entry
-	err = PublishEntry(ctx, vstore, ipnsDHTPath, entry)
+	err = PublishEntry(ctx, vstore, blnsDHTPath, entry)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,7 +83,7 @@ func testResolverValidation(t *testing.T, keyType int) {
 	}
 
 	// Publish entry
-	err = PublishEntry(ctx, nvVstore, ipnsDHTPath, expiredEntry)
+	err = PublishEntry(ctx, nvVstore, blnsDHTPath, expiredEntry)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,34 +95,34 @@ func testResolverValidation(t *testing.T, keyType int) {
 	}
 
 	// Create BLNS record path with a different private key
-	priv2, id2, _, ipnsDHTPath2 := genKeys(t, keyType)
+	priv2, id2, _, blnsDHTPath2 := genKeys(t, keyType)
 
 	// Publish entry
-	err = PublishEntry(ctx, nvVstore, ipnsDHTPath2, entry)
+	err = PublishEntry(ctx, nvVstore, blnsDHTPath2, entry)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Record should fail validation because public key defined by
-	// ipns path doesn't match record signature
+	// blns path doesn't match record signature
 	_, err = resolve(ctx, resolver, id2.Pretty(), opts.DefaultResolveOpts())
 	if err == nil {
 		t.Fatal("ValidateIpnsRecord should have failed signature verification")
 	}
 
 	// Try embedding the incorrect private key inside the entry
-	if err := ipns.EmbedPublicKey(priv2.GetPublic(), entry); err != nil {
+	if err := blns.EmbedPublicKey(priv2.GetPublic(), entry); err != nil {
 		t.Fatal(err)
 	}
 
 	// Publish entry
-	err = PublishEntry(ctx, nvVstore, ipnsDHTPath2, entry)
+	err = PublishEntry(ctx, nvVstore, blnsDHTPath2, entry)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Record should fail validation because public key defined by
-	// ipns path doesn't match record signature
+	// blns path doesn't match record signature
 	_, err = resolve(ctx, resolver, id2.Pretty(), opts.DefaultResolveOpts())
 	if err == nil {
 		t.Fatal("ValidateIpnsRecord should have failed signature verification")
@@ -143,15 +143,15 @@ func genKeys(t *testing.T, keyType int) (ci.PrivKey, peer.ID, string, string) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return sk, id, PkKeyForID(id), ipns.RecordKey(id)
+	return sk, id, PkKeyForID(id), blns.RecordKey(id)
 }
 
-func createBLNSRecordWithEmbeddedPublicKey(sk ci.PrivKey, val []byte, seq uint64, eol time.Time) (*ipns_pb.IpnsEntry, error) {
-	entry, err := ipns.Create(sk, val, seq, eol)
+func createBLNSRecordWithEmbeddedPublicKey(sk ci.PrivKey, val []byte, seq uint64, eol time.Time) (*blns_pb.IpnsEntry, error) {
+	entry, err := blns.Create(sk, val, seq, eol)
 	if err != nil {
 		return nil, err
 	}
-	if err := ipns.EmbedPublicKey(sk.GetPublic(), entry); err != nil {
+	if err := blns.EmbedPublicKey(sk.GetPublic(), entry); err != nil {
 		return nil, err
 	}
 
@@ -166,7 +166,7 @@ type mockValueStore struct {
 func newMockValueStore(id testutil.Identity, dstore ds.Datastore, kbook pstore.KeyBook) *mockValueStore {
 	return &mockValueStore{
 		r: offline.NewOfflineRouter(dstore, record.NamespacedValidator{
-			"ipns": ipns.Validator{KeyBook: kbook},
+			"ipns": blns.Validator{KeyBook: kbook},
 			"pk":   record.PublicKeyValidator{},
 		}),
 		kbook: kbook,

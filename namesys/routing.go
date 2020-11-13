@@ -7,7 +7,7 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 	cid "github.com/ipfs/go-cid"
-	ipns "github.com/ipfs/go-ipns"
+	blns "github.com/ipfs/go-ipns"
 	pb "github.com/ipfs/go-ipns/pb"
 	logging "github.com/ipfs/go-log"
 	path "github.com/ipfs/go-path"
@@ -58,7 +58,7 @@ func (r *IpnsResolver) resolveOnceAsync(ctx context.Context, name string, option
 		ctx, cancel = context.WithTimeout(ctx, options.DhtTimeout)
 	}
 
-	name = strings.TrimPrefix(name, "/ipns/")
+	name = strings.TrimPrefix(name, "/blns/")
 
 	pid, err := peer.Decode(name)
 	if err != nil {
@@ -70,11 +70,11 @@ func (r *IpnsResolver) resolveOnceAsync(ctx context.Context, name string, option
 	}
 
 	// Use the routing system to get the name.
-	// Note that the DHT will call the ipns validator when retrieving
-	// the value, which in turn verifies the ipns record signature
-	ipnsKey := ipns.RecordKey(pid)
+	// Note that the DHT will call the blns validator when retrieving
+	// the value, which in turn verifies the blns record signature
+	blnsKey := blns.RecordKey(pid)
 
-	vals, err := r.routing.SearchValue(ctx, ipnsKey, dht.Quorum(int(options.DhtRecordCount)))
+	vals, err := r.routing.SearchValue(ctx, blnsKey, dht.Quorum(int(options.DhtRecordCount)))
 	if err != nil {
 		log.Debugf("RoutingResolver: dht get for name %s failed: %s", name, err)
 		out <- onceResult{err: err}
@@ -105,7 +105,7 @@ func (r *IpnsResolver) resolveOnceAsync(ctx context.Context, name string, option
 				// check for old style record:
 				if valh, err := mh.Cast(entry.GetValue()); err == nil {
 					// Its an old style multihash record
-					log.Debugf("encountered CIDv0 ipns entry: %s", valh)
+					log.Debugf("encountered CIDv0 blns entry: %s", valh)
 					p = path.FromCid(cid.NewCidV0(valh))
 				} else {
 					// Not a multihash, probably a new style record
@@ -120,8 +120,8 @@ func (r *IpnsResolver) resolveOnceAsync(ctx context.Context, name string, option
 				if entry.Ttl != nil {
 					ttl = time.Duration(*entry.Ttl)
 				}
-				switch eol, err := ipns.GetEOL(entry); err {
-				case ipns.ErrUnrecognizedValidity:
+				switch eol, err := blns.GetEOL(entry); err {
+				case blns.ErrUnrecognizedValidity:
 					// No EOL.
 				case nil:
 					ttEol := time.Until(eol)

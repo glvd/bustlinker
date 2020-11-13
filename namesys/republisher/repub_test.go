@@ -13,8 +13,8 @@ import (
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 
 	ds "github.com/ipfs/go-datastore"
-	"github.com/ipfs/go-ipns"
-	ipns_pb "github.com/ipfs/go-ipns/pb"
+	blns "github.com/ipfs/go-ipns"
+	blns_pb "github.com/ipfs/go-ipns/pb"
 	path "github.com/ipfs/go-path"
 
 	"github.com/ipfs/go-ipfs/core"
@@ -65,7 +65,7 @@ func TestRepublish(t *testing.T) {
 	publisher := nodes[3]
 	p := path.FromString("/ipfs/QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn") // does not need to be valid
 	rp := namesys.NewIpnsPublisher(publisher.Routing, publisher.Repo.Datastore())
-	name := "/ipns/" + publisher.Identity.Pretty()
+	name := "/blns/" + publisher.Identity.Pretty()
 
 	// Retry in case the record expires before we can fetch it. This can
 	// happen when running the test on a slow machine.
@@ -156,7 +156,7 @@ func TestLongEOLRepublish(t *testing.T) {
 	publisher := nodes[3]
 	p := path.FromString("/ipfs/QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn") // does not need to be valid
 	rp := namesys.NewIpnsPublisher(publisher.Routing, publisher.Repo.Datastore())
-	name := "/ipns/" + publisher.Identity.Pretty()
+	name := "/blns/" + publisher.Identity.Pretty()
 
 	expiration := time.Now().Add(time.Hour)
 	err := rp.PublishWithEOL(ctx, publisher.PrivateKey, p, expiration)
@@ -192,7 +192,7 @@ func TestLongEOLRepublish(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	finalEol, err := ipns.GetEOL(entry)
+	finalEol, err := blns.GetEOL(entry)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -202,14 +202,14 @@ func TestLongEOLRepublish(t *testing.T) {
 	}
 }
 
-func getLastBLNSEntry(dstore ds.Datastore, id peer.ID) (*ipns_pb.IpnsEntry, error) {
+func getLastBLNSEntry(dstore ds.Datastore, id peer.ID) (*blns_pb.IpnsEntry, error) {
 	// Look for it locally only
 	val, err := dstore.Get(namesys.IpnsDsKey(id))
 	if err != nil {
 		return nil, err
 	}
 
-	e := new(ipns_pb.IpnsEntry)
+	e := new(blns_pb.IpnsEntry)
 	if err := proto.Unmarshal(val, e); err != nil {
 		return nil, err
 	}

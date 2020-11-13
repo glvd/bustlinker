@@ -73,12 +73,12 @@ type Resolver interface {
 
 	// Resolve performs a recursive lookup, returning the dereferenced
 	// path.  For example, if ipfs.io has a DNS TXT record pointing to
-	//   /ipns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
+	//   /blns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
 	// and there is a DHT BLNS entry for
 	//   QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
 	//   -> /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 	// then
-	//   Resolve(ctx, "/ipns/ipfs.io")
+	//   Resolve(ctx, "/blns/ipfs.io")
 	// will resolve both names, returning
 	//   /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 	//

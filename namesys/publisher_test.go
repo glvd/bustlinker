@@ -11,7 +11,7 @@ import (
 	dssync "github.com/ipfs/go-datastore/sync"
 	dshelp "github.com/ipfs/go-ipfs-ds-help"
 	mockrouting "github.com/ipfs/go-ipfs-routing/mock"
-	ipns "github.com/ipfs/go-ipns"
+	blns "github.com/ipfs/go-ipns"
 	ci "github.com/libp2p/go-libp2p-core/crypto"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	testutil "github.com/libp2p/go-libp2p-testing/net"
@@ -75,7 +75,7 @@ func testNamekeyPublisher(t *testing.T, keyType int, expectedErr error, expected
 	serv := mockrouting.NewServer()
 	r := serv.ClientWithDatastore(context.Background(), &identity{p}, dstore)
 
-	entry, err := ipns.Create(privKey, value, seqnum, eol)
+	entry, err := blns.Create(privKey, value, seqnum, eol)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -123,20 +123,20 @@ func TestAsyncDS(t *testing.T) {
 	}
 	publisher := NewIpnsPublisher(rt, ds)
 
-	ipnsFakeID := testutil.RandIdentityOrFatal(t)
-	ipnsVal, err := path.ParsePath("/ipns/foo.bar")
+	blnsFakeID := testutil.RandIdentityOrFatal(t)
+	blnsVal, err := path.ParsePath("/blns/foo.bar")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if err := publisher.Publish(ctx, ipnsFakeID.PrivateKey(), ipnsVal); err != nil {
+	if err := publisher.Publish(ctx, blnsFakeID.PrivateKey(), blnsVal); err != nil {
 		t.Fatal(err)
 	}
 
-	ipnsKey := IpnsDsKey(ipnsFakeID.ID())
+	blnsKey := IpnsDsKey(blnsFakeID.ID())
 
 	for k := range ds.syncKeys {
-		if k.IsAncestorOf(ipnsKey) || k.Equal(ipnsKey) {
+		if k.IsAncestorOf(blnsKey) || k.Equal(blnsKey) {
 			return
 		}
 	}

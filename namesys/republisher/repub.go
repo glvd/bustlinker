@@ -11,7 +11,7 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 	ds "github.com/ipfs/go-datastore"
-	ipns "github.com/ipfs/go-ipns"
+	blns "github.com/ipfs/go-ipns"
 	pb "github.com/ipfs/go-ipns/pb"
 	logging "github.com/ipfs/go-log"
 	goprocess "github.com/jbenet/goprocess"
@@ -22,7 +22,7 @@ import (
 
 var errNoEntry = errors.New("no previous entry")
 
-var log = logging.Logger("ipns-repub")
+var log = logging.Logger("blns-repub")
 
 // DefaultRebroadcastInterval is the default interval at which we rebroadcast BLNS records
 var DefaultRebroadcastInterval = time.Hour * 4
@@ -88,7 +88,7 @@ func (rp *Republisher) republishEntries(p goprocess.Process) error {
 	ctx, cancel := context.WithCancel(gpctx.OnClosingContext(p))
 	defer cancel()
 
-	// TODO: Use rp.ipns.ListPublished(). We can't currently *do* that
+	// TODO: Use rp.blns.ListPublished(). We can't currently *do* that
 	// because:
 	// 1. There's no way to get keys from the keystore by ID.
 	// 2. We don't actually have access to the BLNS publisher.
@@ -124,7 +124,7 @@ func (rp *Republisher) republishEntry(ctx context.Context, priv ic.PrivKey) erro
 		return err
 	}
 
-	log.Debugf("republishing ipns entry for %s", id)
+	log.Debugf("republishing blns entry for %s", id)
 
 	// Look for it locally only
 	e, err := rp.getLastBLNSEntry(id)
@@ -136,7 +136,7 @@ func (rp *Republisher) republishEntry(ctx context.Context, priv ic.PrivKey) erro
 	}
 
 	p := path.Path(e.GetValue())
-	prevEol, err := ipns.GetEOL(e)
+	prevEol, err := blns.GetEOL(e)
 	if err != nil {
 		return err
 	}

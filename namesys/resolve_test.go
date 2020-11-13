@@ -9,7 +9,7 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
 	mockrouting "github.com/ipfs/go-ipfs-routing/mock"
-	ipns "github.com/ipfs/go-ipns"
+	blns "github.com/ipfs/go-ipns"
 	path "github.com/ipfs/go-path"
 	testutil "github.com/libp2p/go-libp2p-testing/net"
 	tnet "github.com/libp2p/go-libp2p-testing/net"
@@ -55,7 +55,7 @@ func TestPrexistingExpiredRecord(t *testing.T) {
 	h := path.FromString("/ipfs/QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN")
 	eol := time.Now().Add(time.Hour * -1)
 
-	entry, err := ipns.Create(identity.PrivateKey(), []byte(h), 0, eol)
+	entry, err := blns.Create(identity.PrivateKey(), []byte(h), 0, eol)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,7 +88,7 @@ func TestPrexistingRecord(t *testing.T) {
 	// Make a good record and put it in the datastore
 	h := path.FromString("/ipfs/QmZULkCELmmk5XNfCgTnCyFgAVxBRBXyDHGGMVoLFLiXEN")
 	eol := time.Now().Add(time.Hour)
-	entry, err := ipns.Create(identity.PrivateKey(), []byte(h), 0, eol)
+	entry, err := blns.Create(identity.PrivateKey(), []byte(h), 0, eol)
 	if err != nil {
 		t.Fatal(err)
 	}

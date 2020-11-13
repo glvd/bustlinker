@@ -10,7 +10,7 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	dsquery "github.com/ipfs/go-datastore/query"
 	pin "github.com/ipfs/go-ipfs-pinner"
-	ipns "github.com/ipfs/go-ipns"
+	blns "github.com/ipfs/go-ipns"
 	pb "github.com/ipfs/go-ipns/pb"
 	path "github.com/ipfs/go-path"
 	ft "github.com/ipfs/go-unixfs"
@@ -20,7 +20,7 @@ import (
 	base32 "github.com/whyrusleeping/base32"
 )
 
-const ipnsPrefix = "/blns/"
+const blnsPrefix = "/blns/"
 
 const DefaultRecordEOL = 24 * time.Hour
 
@@ -60,7 +60,7 @@ func IpnsDsKey(id peer.ID) ds.Key {
 // nodes.
 func (p *IpnsPublisher) ListPublished(ctx context.Context) (map[peer.ID]*pb.IpnsEntry, error) {
 	query, err := p.ds.Query(dsquery.Query{
-		Prefix: ipnsPrefix,
+		Prefix: blnsPrefix,
 	})
 	if err != nil {
 		return nil, err
@@ -83,11 +83,11 @@ func (p *IpnsPublisher) ListPublished(ctx context.Context) (map[peer.ID]*pb.Ipns
 				log.Error("found an invalid BLNS entry:", err)
 				continue
 			}
-			if !strings.HasPrefix(result.Key, ipnsPrefix) {
-				log.Errorf("datastore query for keys with prefix %s returned a key: %s", ipnsPrefix, result.Key)
+			if !strings.HasPrefix(result.Key, blnsPrefix) {
+				log.Errorf("datastore query for keys with prefix %s returned a key: %s", blnsPrefix, result.Key)
 				continue
 			}
-			k := result.Key[len(ipnsPrefix):]
+			k := result.Key[len(blnsPrefix):]
 			pid, err := base32.RawStdEncoding.DecodeString(k)
 			if err != nil {
 				log.Errorf("blns ds key invalid: %s", result.Key)
@@ -116,8 +116,8 @@ func (p *IpnsPublisher) GetPublished(ctx context.Context, id peer.ID, checkRouti
 		if !checkRouting {
 			return nil, nil
 		}
-		ipnskey := ipns.RecordKey(id)
-		value, err = p.routing.GetValue(ctx, ipnskey)
+		blnskey := blns.RecordKey(id)
+		value, err = p.routing.GetValue(ctx, blnskey)
 		if err != nil {
 			// Not found or other network issue. Can't really do
 			// anything about this case.
@@ -160,7 +160,7 @@ func (p *IpnsPublisher) updateRecord(ctx context.Context, k ci.PrivKey, value pa
 	}
 
 	// Create record
-	entry, err := ipns.Create(k, []byte(value), seqno, eol)
+	entry, err := blns.Create(k, []byte(value), seqno, eol)
 	if err != nil {
 		return nil, err
 	}
@@ -218,7 +218,7 @@ func PutRecordToRouting(ctx context.Context, r routing.ValueStore, k ci.PubKey, 
 
 	errs := make(chan error, 2) // At most two errors (BLNS, and public key)
 
-	if err := ipns.EmbedPublicKey(k, entry); err != nil {
+	if err := blns.EmbedPublicKey(k, entry); err != nil {
 		return err
 	}
 
@@ -228,7 +228,7 @@ func PutRecordToRouting(ctx context.Context, r routing.ValueStore, k ci.PubKey, 
 	}
 
 	go func() {
-		errs <- PublishEntry(ctx, r, ipns.RecordKey(id), entry)
+		errs <- PublishEntry(ctx, r, blns.RecordKey(id), entry)
 	}()
 
 	// Publish the public key if a public key cannot be extracted from the ID

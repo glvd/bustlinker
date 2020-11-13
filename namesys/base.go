@@ -67,7 +67,7 @@ func resolveAsync(ctx context.Context, r resolver, name string, options opts.Res
 					return
 				}
 				log.Debugf("resolved %s to %s", name, res.value.String())
-				if !strings.HasPrefix(res.value.String(), ipnsPrefix) {
+				if !strings.HasPrefix(res.value.String(), blnsPrefix) {
 					emitResult(ctx, outCh, Result{Path: res.value})
 					break
 				}
@@ -90,7 +90,7 @@ func resolveAsync(ctx context.Context, r resolver, name string, options opts.Res
 				subCtx, cancelSub = context.WithCancel(ctx)
 				_ = cancelSub
 
-				p := strings.TrimPrefix(res.value.String(), ipnsPrefix)
+				p := strings.TrimPrefix(res.value.String(), blnsPrefix)
 				subCh = resolveAsync(subCtx, r, p, subopts)
 			case res, ok := <-subCh:
 				if !ok {

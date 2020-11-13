@@ -14,11 +14,11 @@ import (
 // ErrNoNamesys is an explicit error for when an LINK node doesn't
 // (yet) have a name system
 var ErrNoNamesys = errors.New(
-	"core/resolve: no Namesys on IpfsNode - can't resolve ipns entry")
+	"core/resolve: no Namesys on IpfsNode - can't resolve blns entry")
 
-// ResolveBLNS resolves /ipns paths
+// ResolveBLNS resolves /blns paths
 func ResolveBLNS(ctx context.Context, nsys namesys.NameSystem, p path.Path) (path.Path, error) {
-	if strings.HasPrefix(p.String(), "/ipns/") {
+	if strings.HasPrefix(p.String(), "/blns/") {
 		// TODO(cryptix): we should be able to query the local cache for the path
 		if nsys == nil {
 			return "", ErrNoNamesys
@@ -27,7 +27,7 @@ func ResolveBLNS(ctx context.Context, nsys namesys.NameSystem, p path.Path) (pat
 		seg := p.Segments()
 
 		if len(seg) < 2 || seg[1] == "" { // just "/<protocol/>" without further segments
-			err := fmt.Errorf("invalid path %q: ipns path missing BLNS ID", p)
+			err := fmt.Errorf("invalid path %q: blns path missing BLNS ID", p)
 			return "", err
 		}
 

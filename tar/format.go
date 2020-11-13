@@ -40,7 +40,7 @@ func ImportTar(ctx context.Context, r io.Reader, ds ipld.DAGService) (*dag.Proto
 	tr := tar.NewReader(r)
 
 	root := new(dag.ProtoNode)
-	root.SetData([]byte("ipfs/tar"))
+	root.SetData([]byte("link/tar"))
 
 	e := dagutils.NewDagEditor(root, ds)
 
@@ -199,7 +199,7 @@ func (tr *tarReader) Read(b []byte) (int, error) {
 // ExportTar exports the passed DAG as a tar file. This function is the inverse
 // of ImportTar.
 func ExportTar(ctx context.Context, root *dag.ProtoNode, ds ipld.DAGService) (io.Reader, error) {
-	if string(root.Data()) != "ipfs/tar" {
+	if string(root.Data()) != "link/tar" {
 		return nil, errors.New("not an LINK tarchive")
 	}
 	return &tarReader{

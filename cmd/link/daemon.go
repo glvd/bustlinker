@@ -43,7 +43,7 @@ const (
 	initOptionKwd             = "init"
 	initConfigOptionKwd       = "init-config"
 	initProfileOptionKwd      = "init-profile"
-	ipfsMountKwd              = "mount-link"
+	linkMountKwd              = "mount-link"
 	blnsMountKwd              = "mount-blns"
 	migrateKwd                = "migrate"
 	mountKwd                  = "mount"
@@ -69,7 +69,7 @@ var daemonCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Run a network-connected LINK node.",
 		ShortDescription: `
-'ipfs daemon' runs a persistent ipfs daemon that can serve commands
+'link daemon' runs a persistent link daemon that can serve commands
 over the network. Most applications that use LINK will do so by
 communicating with a daemon over the HTTP API. While the daemon is
 running, calls to 'ipfs' commands will be sent over the network to
@@ -164,7 +164,7 @@ Headers.
 		cmds.StringOption(routingOptionKwd, "Overrides the routing option").WithDefault(routingOptionDefaultKwd),
 		cmds.BoolOption(mountKwd, "Mounts LINK to the filesystem"),
 		cmds.BoolOption(writableKwd, "Enable writing objects (with POST, PUT and DELETE)"),
-		cmds.StringOption(ipfsMountKwd, "Path to the mountpoint for LINK (if using --mount). Defaults to config setting."),
+		cmds.StringOption(linkMountKwd, "Path to the mountpoint for LINK (if using --mount). Defaults to config setting."),
 		cmds.StringOption(blnsMountKwd, "Path to the mountpoint for BLNS (if using --mount). Defaults to config setting."),
 		cmds.BoolOption(unrestrictedApiAccessKwd, "Allow API access to unlisted hashes"),
 		cmds.BoolOption(unencryptTransportKwd, "Disable transport encryption (for debugging protocols)"),
@@ -696,7 +696,7 @@ func mountFuse(req *cmds.Request, cctx *oldcmds.Context) error {
 		return fmt.Errorf("mountFuse: GetConfig() failed: %s", err)
 	}
 
-	fsdir, found := req.Options[ipfsMountKwd].(string)
+	fsdir, found := req.Options[linkMountKwd].(string)
 	if !found {
 		fsdir = cfg.Mounts.LINK
 	}

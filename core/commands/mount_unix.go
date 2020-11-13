@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	mountLINKPathOptionName = "ipfs-path"
+	mountLINKPathOptionName = "link-path"
 	mountBLNSPathOptionName = "blns-path"
 )
 

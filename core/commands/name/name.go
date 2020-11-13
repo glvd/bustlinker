@@ -29,12 +29,12 @@ respective keys.
 
 Examples:
 
-Publish an <ipfs-path> with your default name:
+Publish an <link-path> with your default name:
 
   > ipfs name publish /ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
   Published to QmbCMUZw6JFeZ7Wp9jkzbye3Fzp2GGcPgC3nmeUjfVF87n: /ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
 
-Publish an <ipfs-path> with another name, added by an 'ipfs key' command:
+Publish an <link-path> with another name, added by an 'ipfs key' command:
 
   > ipfs key gen --type=rsa --size=2048 mykey
   > ipfs name publish --key=mykey /ipfs/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy

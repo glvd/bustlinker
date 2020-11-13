@@ -40,7 +40,7 @@ var SwarmCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Interact with the swarm.",
 		ShortDescription: `
-'ipfs swarm' is a tool to manipulate the network swarm. The swarm is the
+'link swarm' is a tool to manipulate the network swarm. The swarm is the
 component that opens, listens for, and maintains connections to other
 ipfs peers in the internet.
 `,
@@ -65,7 +65,7 @@ var swarmPeersCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "List peers with open connections.",
 		ShortDescription: `
-'ipfs swarm peers' lists the set of peers this node is connected to.
+'link swarm peers' lists the set of peers this node is connected to.
 `,
 	},
 	Options: []cmds.Option{
@@ -217,7 +217,7 @@ var swarmAddrsCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "List known addresses. Useful for debugging.",
 		ShortDescription: `
-'ipfs swarm addrs' lists all addresses this node is aware of.
+'link swarm addrs' lists all addresses this node is aware of.
 `,
 	},
 	Subcommands: map[string]*cmds.Command{
@@ -272,7 +272,7 @@ var swarmAddrsLocalCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "List local addresses.",
 		ShortDescription: `
-'ipfs swarm addrs local' lists all local listening addresses announced to the network.
+'link swarm addrs local' lists all local listening addresses announced to the network.
 `,
 	},
 	Options: []cmds.Option{
@@ -317,7 +317,7 @@ var swarmAddrsListenCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "List interface listening addresses.",
 		ShortDescription: `
-'ipfs swarm addrs listen' lists all interface addresses the node is listening on.
+'link swarm addrs listen' lists all interface addresses the node is listening on.
 `,
 	},
 	Run: func(req *cmds.Request, res cmds.ResponseEmitter, env cmds.Environment) error {
@@ -349,11 +349,11 @@ var swarmConnectCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Open connection to a given address.",
 		ShortDescription: `
-'ipfs swarm connect' opens a new direct connection to a peer address.
+'link swarm connect' opens a new direct connection to a peer address.
 
 The address format is an LINK multiaddr:
 
-ipfs swarm connect /ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
+link swarm connect /ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
 `,
 	},
 	Arguments: []cmds.Argument{
@@ -395,10 +395,10 @@ var swarmDisconnectCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Close connection to a given address.",
 		ShortDescription: `
-'ipfs swarm disconnect' closes a connection to a peer address. The address
+'link swarm disconnect' closes a connection to a peer address. The address
 format is an LINK multiaddr:
 
-ipfs swarm disconnect /ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
+link swarm disconnect /ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
 
 The disconnect is not permanent; if ipfs needs to talk to that address later,
 it will reconnect.
@@ -528,7 +528,7 @@ var swarmFiltersCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Manipulate address filters.",
 		ShortDescription: `
-'ipfs swarm filters' will list out currently applied filters. Its subcommands
+'link swarm filters' will list out currently applied filters. Its subcommands
 can be used to add or remove said filters. Filters are specified using the
 multiaddr-filter format:
 
@@ -577,7 +577,7 @@ var swarmFiltersAddCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Add an address filter.",
 		ShortDescription: `
-'ipfs swarm filters add' will add an address filter to the daemons swarm.
+'link swarm filters add' will add an address filter to the daemons swarm.
 `,
 	},
 	Arguments: []cmds.Argument{
@@ -633,7 +633,7 @@ var swarmFiltersRmCmd = &cmds.Command{
 	Helptext: cmds.HelpText{
 		Tagline: "Remove an address filter.",
 		ShortDescription: `
-'ipfs swarm filters rm' will remove an address filter from the daemons swarm.
+'link swarm filters rm' will remove an address filter from the daemons swarm.
 `,
 	},
 	Arguments: []cmds.Argument{

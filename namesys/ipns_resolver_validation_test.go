@@ -56,7 +56,7 @@ func testResolverValidation(t *testing.T, keyType int) {
 	// Create entry with expiry in one hour
 	priv, id, _, blnsDHTPath := genKeys(t, keyType)
 	ts := time.Now()
-	p := []byte("/ipfs/QmfM2r8seH2GiRaC4esTjeraXEachRt8ZsSeGaWTPLyMoG")
+	p := []byte("/link/QmfM2r8seH2GiRaC4esTjeraXEachRt8ZsSeGaWTPLyMoG")
 	entry, err := createBLNSRecordWithEmbeddedPublicKey(priv, p, 1, ts.Add(time.Hour))
 	if err != nil {
 		t.Fatal(err)

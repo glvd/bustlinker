@@ -55,7 +55,7 @@ func testNamekeyPublisher(t *testing.T, keyType int, expectedErr error, expected
 	}
 
 	// Value
-	value := []byte("ipfs/TESTING")
+	value := []byte("link/TESTING")
 
 	// Seqnum
 	seqnum := uint64(0)

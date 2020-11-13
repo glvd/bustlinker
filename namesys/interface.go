@@ -8,14 +8,14 @@ questions like "what is Alice's current homepage?".  The mutable name
 system allows Alice to publish information like:
 
   The current homepage for alice.example.com is
-  /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
+  /link/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 
 or:
 
   The current homepage for node
   QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
   is
-  /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
+  /link/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 
 The mutable name system also allows users to resolve those references
 to find the immutable LINK object currently referenced by a given
@@ -23,9 +23,9 @@ mutable name.
 
 For command-line bindings to this functionality, see:
 
-  ipfs name
-  ipfs dns
-  ipfs resolve
+  link name
+  link dns
+  link resolve
 */
 package namesys
 
@@ -72,15 +72,15 @@ type Result struct {
 type Resolver interface {
 
 	// Resolve performs a recursive lookup, returning the dereferenced
-	// path.  For example, if ipfs.io has a DNS TXT record pointing to
+	// path.  For example, if link.io has a DNS TXT record pointing to
 	//   /blns/QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
 	// and there is a DHT BLNS entry for
 	//   QmatmE9msSfkKxoffpHwNLNKgwZG8eT9Bud6YoPab52vpy
-	//   -> /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
+	//   -> /link/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 	// then
-	//   Resolve(ctx, "/blns/ipfs.io")
+	//   Resolve(ctx, "/blns/link.io")
 	// will resolve both names, returning
-	//   /ipfs/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
+	//   /link/Qmcqtw8FfrVSBaRmbWwHxt3AuySBhJLcvmFYi3Lbc4xnwj
 	//
 	// There is a default depth-limit to avoid infinite recursion.  Most
 	// users will be fine with this default limit, but if you need to

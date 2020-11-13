@@ -64,14 +64,14 @@ func newMockDNS() *mockDNS {
 			"multihash.example.com.": []string{
 				"dnslink=QmY3hE8xgFCjGcz6PHgnvJz5HZi1BaKRfPkn1ghZUcYMjD",
 			},
-			"ipfs.example.com.": []string{
-				"dnslink=/ipfs/QmY3hE8xgFCjGcz6PHgnvJz5HZi1BaKRfPkn1ghZUcYMjD",
+			"link.example.com.": []string{
+				"dnslink=/link/QmY3hE8xgFCjGcz6PHgnvJz5HZi1BaKRfPkn1ghZUcYMjD",
 			},
-			"_dnslink.dipfs.example.com.": []string{
-				"dnslink=/ipfs/QmY3hE8xgFCjGcz6PHgnvJz5HZi1BaKRfPkn1ghZUcYMjD",
+			"_dnslink.dlink.example.com.": []string{
+				"dnslink=/link/QmY3hE8xgFCjGcz6PHgnvJz5HZi1BaKRfPkn1ghZUcYMjD",
 			},
 			"dns1.example.com.": []string{
-				"dnslink=/blns/ipfs.example.com",
+				"dnslink=/blns/link.example.com",
 			},
 			"dns2.example.com.": []string{
 				"dnslink=/blns/dns1.example.com",

@@ -48,7 +48,7 @@ func NewNameSystem(r routing.ValueStore, ds ds.Datastore, cachesize int) NameSys
 	// Prewarm namesys cache with static records for deterministic tests and debugging.
 	// Useful for testing things like DNSLink without real DNS lookup.
 	// Example:
-	// LINK_NS_MAP="dnslink-test.example.com:/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
+	// LINK_NS_MAP="dnslink-test.example.com:/link/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
 	if list := os.Getenv("LINK_NS_MAP"); list != "" {
 		staticMap = make(map[string]path.Path)
 		for _, pair := range strings.Split(list, ",") {
@@ -74,19 +74,19 @@ const DefaultResolverCacheTTL = time.Minute
 
 // Resolve implements Resolver.
 func (ns *mpns) Resolve(ctx context.Context, name string, options ...opts.ResolveOpt) (path.Path, error) {
-	if strings.HasPrefix(name, "/ipfs/") {
+	if strings.HasPrefix(name, "/link/") {
 		return path.ParsePath(name)
 	}
 
 	if !strings.HasPrefix(name, "/") {
-		return path.ParsePath("/ipfs/" + name)
+		return path.ParsePath("/link/" + name)
 	}
 
 	return resolve(ctx, ns, name, opts.ProcessOpts(options))
 }
 
 func (ns *mpns) ResolveAsync(ctx context.Context, name string, options ...opts.ResolveOpt) <-chan Result {
-	if strings.HasPrefix(name, "/ipfs/") {
+	if strings.HasPrefix(name, "/link/") {
 		p, err := path.ParsePath(name)
 		res := make(chan Result, 1)
 		res <- Result{p, err}
@@ -95,7 +95,7 @@ func (ns *mpns) ResolveAsync(ctx context.Context, name string, options ...opts.R
 	}
 
 	if !strings.HasPrefix(name, "/") {
-		p, err := path.ParsePath("/ipfs/" + name)
+		p, err := path.ParsePath("/link/" + name)
 		res := make(chan Result, 1)
 		res <- Result{p, err}
 		close(res)

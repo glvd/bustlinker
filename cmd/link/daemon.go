@@ -72,26 +72,26 @@ var daemonCmd = &cmds.Command{
 'link daemon' runs a persistent link daemon that can serve commands
 over the network. Most applications that use LINK will do so by
 communicating with a daemon over the HTTP API. While the daemon is
-running, calls to 'ipfs' commands will be sent over the network to
+running, calls to 'link' commands will be sent over the network to
 the daemon.
 `,
 		LongDescription: `
 The daemon will start listening on ports on the network, which are
-documented in (and can be modified through) 'ipfs config Addresses'.
+documented in (and can be modified through) 'link config Addresses'.
 For example, to change the 'Gateway' port:
 
-  ipfs config Addresses.Gateway /ip4/127.0.0.1/tcp/8082
+  link config Addresses.Gateway /ip4/127.0.0.1/tcp/8082
 
 The API address can be changed the same way:
 
-  ipfs config Addresses.API /ip4/127.0.0.1/tcp/5002
+  link config Addresses.API /ip4/127.0.0.1/tcp/5002
 
 Make sure to restart the daemon after changing addresses.
 
 By default, the gateway is only accessible locally. To expose it to
 other computers in the network, use 0.0.0.0 as the ip address:
 
-  ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
+  link config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
 
 Be careful if you expose the API. It is a security risk, as anyone could
 control your node remotely. If you need to control the node remotely,
@@ -100,12 +100,12 @@ make sure to protect the port as you would other services or database
 
 HTTP Headers
 
-ipfs supports passing arbitrary headers to the API and Gateway. You can
+link supports passing arbitrary headers to the API and Gateway. You can
 do this by setting headers on the API.HTTPHeaders and Gateway.HTTPHeaders
 keys:
 
-  ipfs config --json API.HTTPHeaders.X-Special-Header "[\"so special :)\"]"
-  ipfs config --json Gateway.HTTPHeaders.X-Special-Header "[\"so special :)\"]"
+  link config --json API.HTTPHeaders.X-Special-Header "[\"so special :)\"]"
+  link config --json Gateway.HTTPHeaders.X-Special-Header "[\"so special :)\"]"
 
 Note that the value of the keys is an _array_ of strings. This is because
 headers can have more than one value, and it is convenient to pass through
@@ -115,9 +115,9 @@ CORS Headers (for API)
 
 You can setup CORS headers the same way:
 
-  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"example.com\"]"
-  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods "[\"PUT\", \"GET\", \"POST\"]"
-  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
+  link config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"example.com\"]"
+  link config --json API.HTTPHeaders.Access-Control-Allow-Methods "[\"PUT\", \"GET\", \"POST\"]"
+  link config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
 
 Shutdown
 
@@ -128,11 +128,11 @@ second signal.
 
 LINK_PATH environment variable
 
-ipfs uses a repository in the local file system. By default, the repo is
-located at ~/.ipfs. To change the repo location, set the $LINK_PATH
+link uses a repository in the local file system. By default, the repo is
+located at ~/.link. To change the repo location, set the $LINK_PATH
 environment variable:
 
-  export LINK_PATH=/path/to/ipfsrepo
+  export LINK_PATH=/path/to/linkrepo
 
 Routing
 
@@ -140,14 +140,14 @@ LINK by default will use a DHT for content routing. There is a highly
 experimental alternative that operates the DHT in a 'client only' mode that
 can be enabled by running the daemon as:
 
-  ipfs daemon --routing=dhtclient
+  link daemon --routing=dhtclient
 
 This will later be transitioned into a config option once it gets out of the
 'experimental' stage.
 
 DEPRECATION NOTICE
 
-Previously, ipfs used an environment variable as seen below:
+Previously, link used an environment variable as seen below:
 
   export API_ORIGIN="http://localhost:8888/"
 
@@ -158,9 +158,9 @@ Headers.
 	},
 
 	Options: []cmds.Option{
-		cmds.BoolOption(initOptionKwd, "Initialize ipfs with default settings if not already initialized"),
+		cmds.BoolOption(initOptionKwd, "Initialize link with default settings if not already initialized"),
 		cmds.StringOption(initConfigOptionKwd, "Path to existing configuration file to be loaded during --init"),
-		cmds.StringOption(initProfileOptionKwd, "Configuration profiles to apply for --init. See ipfs init --help for more"),
+		cmds.StringOption(initProfileOptionKwd, "Configuration profiles to apply for --init. See link init --help for more"),
 		cmds.StringOption(routingOptionKwd, "Overrides the routing option").WithDefault(routingOptionDefaultKwd),
 		cmds.BoolOption(mountKwd, "Mounts LINK to the filesystem"),
 		cmds.BoolOption(writableKwd, "Enable writing objects (with POST, PUT and DELETE)"),
@@ -171,7 +171,7 @@ Headers.
 		cmds.BoolOption(enableGCKwd, "Enable automatic periodic repo garbage collection"),
 		cmds.BoolOption(adjustFDLimitKwd, "Check and raise file descriptor limits if needed").WithDefault(true),
 		cmds.BoolOption(migrateKwd, "If true, assume yes at the migrate prompt. If false, assume no."),
-		cmds.BoolOption(enablePubSubKwd, "Instantiate the ipfs daemon with the experimental pubsub feature enabled."),
+		cmds.BoolOption(enablePubSubKwd, "Instantiate the link daemon with the experimental pubsub feature enabled."),
 		cmds.BoolOption(enableBLNSPubSubKwd, "Enable BLNS record distribution through pubsub; enables pubsub."),
 		cmds.BoolOption(enableMultiplexKwd, "DEPRECATED"),
 
@@ -215,7 +215,7 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 		}
 	}()
 
-	// print the ipfs version
+	// print the link version
 	printVersion()
 
 	managefd, _ := req.Options[adjustFDLimitKwd].(bool)
@@ -276,7 +276,7 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 
 		if !domigrate {
 			fmt.Println("Not running migrations of fs-repo now.")
-			fmt.Println("Please get fs-repo-migrations from https://dist.ipfs.io")
+			fmt.Println("Please get fs-repo-migrations from https://dist.link.io")
 			return fmt.Errorf("fs-repo requires migration")
 		}
 
@@ -285,7 +285,7 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 			fmt.Println("The migrations of fs-repo failed:")
 			fmt.Printf("  %s\n", err)
 			fmt.Println("If you think this is a bug, please file an issue and include this whole log output.")
-			fmt.Println("  https://github.com/ipfs/fs-repo-migrations")
+			fmt.Println("  https://github.com/link/fs-repo-migrations")
 			return err
 		}
 
@@ -417,14 +417,14 @@ func daemonFunc(req *cmds.Request, re cmds.ResponseEmitter, env cmds.Environment
 		return err
 	}
 
-	// Add ipfs version info to prometheus metrics
-	var ipfsInfoMetric = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "ipfs_info",
+	// Add link version info to prometheus metrics
+	var linkInfoMetric = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "link_info",
 		Help: "LINK version information.",
 	}, []string{"version", "commit"})
 
 	// Setting to 1 lets us multiply it with other stats to add the version labels
-	ipfsInfoMetric.With(prometheus.Labels{
+	linkInfoMetric.With(prometheus.Labels{
 		"version": version.CurrentVersionNumber,
 		"commit":  version.CurrentCommit,
 	}).Set(1)
@@ -463,7 +463,7 @@ func serveHTTPApi(req *cmds.Request, cctx *oldcmds.Context) (<-chan error, error
 		return nil, fmt.Errorf("serveHTTPApi: GetConfig() failed: %s", err)
 	}
 
-	listeners, err := sockets.TakeListeners("io.ipfs.api")
+	listeners, err := sockets.TakeListeners("io.link.api")
 	if err != nil {
 		return nil, fmt.Errorf("serveHTTPApi: socket activation failed: %s", err)
 	}
@@ -509,7 +509,7 @@ func serveHTTPApi(req *cmds.Request, cctx *oldcmds.Context) (<-chan error, error
 	//}
 	//}
 
-	// by default, we don't let you load arbitrary ipfs objects through the api,
+	// by default, we don't let you load arbitrary link objects through the api,
 	// because this would open up the api to scripting vulnerabilities.
 	// only the webui objects are allowed.
 	// if you know what you're doing, go ahead and pass --unrestricted-api.
@@ -607,7 +607,7 @@ func serveHTTPGateway(req *cmds.Request, cctx *oldcmds.Context) (<-chan error, e
 		writable = cfg.Gateway.Writable
 	}
 
-	listeners, err := sockets.TakeListeners("io.ipfs.gateway")
+	listeners, err := sockets.TakeListeners("io.link.gateway")
 	if err != nil {
 		return nil, fmt.Errorf("serveHTTPGateway: socket activation failed: %s", err)
 	}

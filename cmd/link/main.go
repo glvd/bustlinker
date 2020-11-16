@@ -1,4 +1,4 @@
-// cmd/ipfs implements the primary CLI binary for ipfs
+// cmd/link implements the primary CLI binary for link
 package main
 
 import (
@@ -103,8 +103,8 @@ func mainRet() int {
 		if os.Args[1] == "help" {
 			if len(os.Args) > 2 {
 				os.Args = append(os.Args[:1], os.Args[2:]...)
-				// Handle `ipfs help --help`
-				// append `--help`,when the command is not `ipfs help --help`
+				// Handle `link help --help`
+				// append `--help`,when the command is not `link help --help`
 				if os.Args[1] != "--help" {
 					os.Args = append(os.Args, "--help")
 				}
@@ -228,7 +228,7 @@ func makeExecutor(req *cmds.Request, env interface{}) (cmds.Executor, error) {
 	if req.Command.NoRemote {
 		if daemonRequested {
 			// User requested that the command be run on the daemon but we can't.
-			// NOTE: We drop this check for the `ipfs daemon` command.
+			// NOTE: We drop this check for the `link daemon` command.
 			return nil, errors.New("api flag specified but command cannot be run on the daemon")
 		}
 		return exe, nil

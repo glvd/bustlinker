@@ -59,7 +59,7 @@ type NoRepoError struct {
 var _ error = NoRepoError{}
 
 func (err NoRepoError) Error() string {
-	return fmt.Sprintf("no LINK repo found in %s.\nplease run: 'ipfs init'", err.Path)
+	return fmt.Sprintf("no LINK repo found in %s.\nplease run: 'link init'", err.Path)
 }
 
 const apiFile = "api"

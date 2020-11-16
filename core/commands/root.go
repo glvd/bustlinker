@@ -3,13 +3,11 @@ package commands
 import (
 	"errors"
 
+	cmds "github.com/ipfs/go-ipfs-cmds"
 	cmdenv "github.com/ipfs/go-ipfs/core/commands/cmdenv"
 	dag "github.com/ipfs/go-ipfs/core/commands/dag"
 	name "github.com/ipfs/go-ipfs/core/commands/name"
 	ocmd "github.com/ipfs/go-ipfs/core/commands/object"
-	unixfs "github.com/ipfs/go-ipfs/core/commands/unixfs"
-
-	cmds "github.com/ipfs/go-ipfs-cmds"
 	logging "github.com/ipfs/go-log"
 )
 
@@ -38,40 +36,18 @@ BASIC COMMANDS
   ls <ref>      List links from an object
   refs <ref>    List hashes of links from an object
 
-DATA STRUCTURE COMMANDS
-  block         Interact with raw blocks in the datastore
-  object        Interact with raw dag nodes
-  files         Interact with objects as if they were a unix filesystem
-  dag           Interact with IPLD documents (experimental)
-
 ADVANCED COMMANDS
   daemon        Start a long-running daemon process
-  mount         Mount an LINK read-only mount point
-  resolve       Resolve any type of name
-  name          Publish and resolve BLNS names
-  key           Create and list BLNS name keypairs
-  dns           Resolve DNS links
   pin           Pin objects to local storage
-  repo          Manipulate the LINK repository
-  stats         Various operational stats
-  p2p           Libp2p stream mounting
-  filestore     Manage the filestore (experimental)
 
 NETWORK COMMANDS
   id            Show info about LINK peers
   bootstrap     Add or remove bootstrap peers
   swarm         Manage connections to the p2p network
-  dht           Query the DHT for values or peers
   ping          Measure the latency of a connection
-  diag          Print diagnostics
 
 TOOL COMMANDS
-  config        Manage configuration
   version       Show link version information
-  update        Download and apply bustlinker updates
-  commands      List all available commands
-  cid           Convert and discover properties of CIDs
-  log           Manage and show logs of running daemon
 
 Use 'link <command> --help' to learn more about each command.
 
@@ -113,42 +89,17 @@ var CommandsDaemonCmd = CommandsCmd(Root)
 
 var rootSubcommands = map[string]*cmds.Command{
 	"add":       AddCmd,
-	"bitswap":   BitswapCmd,
-	"block":     BlockCmd,
 	"cat":       CatCmd,
 	"commands":  CommandsDaemonCmd,
-	"files":     FilesCmd,
-	"filestore": FileStoreCmd,
 	"get":       GetCmd,
-	"pubsub":    PubsubCmd,
-	"repo":      RepoCmd,
-	"stats":     StatsCmd,
 	"bootstrap": BootstrapCmd,
-	"config":    ConfigCmd,
-	"dag":       dag.DagCmd,
-	"dht":       DhtCmd,
-	"diag":      DiagCmd,
-	"dns":       DNSCmd,
 	"id":        IDCmd,
-	"key":       KeyCmd,
-	"log":       LogCmd,
 	"ls":        LsCmd,
-	"mount":     MountCmd,
-	"name":      name.NameCmd,
-	"object":    ocmd.ObjectCmd,
 	"pin":       PinCmd,
 	"ping":      PingCmd,
-	"p2p":       P2PCmd,
-	"refs":      RefsCmd,
-	"resolve":   ResolveCmd,
 	"swarm":     SwarmCmd,
-	"tar":       TarCmd,
-	"file":      unixfs.UnixFSCmd,
-	"update":    ExternalBinary("Please see https://git.io/fjylH for installation instructions."),
-	"urlstore":  urlStoreCmd,
 	"version":   VersionCmd,
 	"shutdown":  daemonShutdownCmd,
-	"cid":       CidCmd,
 }
 
 // RootRO is the readonly version of Root

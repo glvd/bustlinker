@@ -708,5 +708,8 @@ func isInitializedUnsynced(repoPath string) bool {
 
 func CleanUpBootstrapWhenUseSwarmKey(path string) []string {
 	//spath := filepath.Join(path, swarmKeyFile)
-	return []string{}
+	//DefaultBootstrapAddresses
+	return []string{
+		"/ip4/47.101.178.76/tcp/4001/p2p/12D3KooWHK2DUEdfRbEDivFRF7Hah8WnNSkvuFNozWDoL7N5Y9Co",
+	}
 }

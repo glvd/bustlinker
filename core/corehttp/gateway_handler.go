@@ -70,7 +70,7 @@ func newGatewayHandler(c GatewayConfig, api coreiface.CoreAPI) *gatewayHandler {
 	return i
 }
 
-func parseIpfsPath(p string) (cid.Cid, string, error) {
+func parseLinkPath(p string) (cid.Cid, string, error) {
 	rootPath, err := path.ParsePath(p)
 	if err != nil {
 		return cid.Cid{}, "", err
@@ -160,7 +160,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	// the prefix header can be set to signal this sub-path.
 	// It will be prepended to links in directory listings and the index.html redirect.
 	prefix := ""
-	if prfx := r.Header.Get("X-Ipfs-Gateway-Prefix"); len(prfx) > 0 {
+	if prfx := r.Header.Get("X-Link-Gateway-Prefix"); len(prfx) > 0 {
 		for _, p := range i.config.PathPrefixes {
 			if prfx == p || strings.HasPrefix(prfx, p+"/") {
 				prefix = prfx
@@ -185,7 +185,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	if r.Header.Get("Service-Worker") == "script" {
 		// Disallow Service Worker registration on namespace roots
 		// https://github.com/link/go-link/issues/4025
-		matched, _ := regexp.MatchString(`^/ip[fn]s/[^/]+$`, r.URL.Path)
+		matched, _ := regexp.MatchString(`^/[lb][il]n[ks]/[^/]+$`, r.URL.Path)
 		if matched {
 			err := fmt.Errorf("registration is not allowed for this scope")
 			webError(w, "navigator.serviceWorker", err, http.StatusBadRequest)
@@ -217,7 +217,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 
 	dr, err := i.api.Unixfs().Get(r.Context(), resolvedPath)
 	if err != nil {
-		webError(w, "ipfs cat "+escapedURLPath, err, http.StatusNotFound)
+		webError(w, "link cat "+escapedURLPath, err, http.StatusNotFound)
 		return
 	}
 
@@ -249,7 +249,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	// set these headers _after_ the error, for we may just not have it
 	// and don't want the client to cache a 500 response...
 	// and only if it's /ipfs!
-	// TODO: break this out when we split /ipfs /blns routes.
+	// TODO: break this out when we split /link /blns routes.
 	modtime := time.Now()
 
 	if f, ok := dr.(files.File); ok {
@@ -316,7 +316,7 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	// See statusResponseWriter.WriteHeader
-	// and https://github.com/ipfs/go-ipfs/issues/7164
+	// and https://github.com/link/go-link/issues/7164
 	// Note: this needs to occur before listingTemplate.Execute otherwise we get
 	// superfluous response.WriteHeader call from prometheus/client_golang
 	if w.Header().Get("Location") != "" {
@@ -363,17 +363,17 @@ func (i *gatewayHandler) getOrHeadHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	// construct the correct back link
-	// https://github.com/ipfs/go-ipfs/issues/1365
+	// https://github.com/link/go-link/issues/1365
 	var backLink string = originalUrlPath
 
-	// don't go further up than /ipfs/$hash/
+	// don't go further up than /link/$hash/
 	pathSplit := path.SplitList(urlPath)
 	switch {
 	// keep backlink
-	case len(pathSplit) == 3: // url: /ipfs/$hash
+	case len(pathSplit) == 3: // url: /link/$hash
 
 	// keep backlink
-	case len(pathSplit) == 4 && pathSplit[3] == "": // url: /ipfs/$hash/
+	case len(pathSplit) == 4 && pathSplit[3] == "": // url: /link/$hash/
 
 	// add the correct link depending on whether the path ends with a slash
 	default:
@@ -446,7 +446,7 @@ func (i *gatewayHandler) serveFile(w http.ResponseWriter, req *http.Request, nam
 		ctype = mime.TypeByExtension(gopath.Ext(name))
 		if ctype == "" {
 			// uses https://github.com/gabriel-vasile/mimetype library to determine the content type.
-			// Fixes https://github.com/ipfs/go-ipfs/issues/7252
+			// Fixes https://github.com/link/go-link/issues/7252
 			mimeType, err := mimetype.DetectReader(content)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("cannot detect content-type: %s", err.Error()), http.StatusInternalServerError)
@@ -463,7 +463,7 @@ func (i *gatewayHandler) serveFile(w http.ResponseWriter, req *http.Request, nam
 		// Strip the encoding from the HTML Content-Type header and let the
 		// browser figure it out.
 		//
-		// Fixes https://github.com/ipfs/go-ipfs/issues/2203
+		// Fixes https://github.com/link/go-link/issues/2203
 		if strings.HasPrefix(ctype, "text/html;") {
 			ctype = "text/html"
 		}
@@ -521,7 +521,7 @@ func (i *gatewayHandler) putHandler(w http.ResponseWriter, r *http.Request) {
 	ds := i.api.Dag()
 
 	// Parse the path
-	rootCid, newPath, err := parseIpfsPath(r.URL.Path)
+	rootCid, newPath, err := parseLinkPath(r.URL.Path)
 	if err != nil {
 		webError(w, "WritableGateway: failed to parse the path", err, http.StatusBadRequest)
 		return
@@ -613,7 +613,7 @@ func (i *gatewayHandler) deleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	// parse the path
 
-	rootCid, newPath, err := parseIpfsPath(r.URL.Path)
+	rootCid, newPath, err := parseLinkPath(r.URL.Path)
 	if err != nil {
 		webError(w, "WritableGateway: failed to parse the path", err, http.StatusBadRequest)
 		return
@@ -712,7 +712,7 @@ func internalWebError(w http.ResponseWriter, err error) {
 
 func getFilename(s string) string {
 	if (strings.HasPrefix(s, linkPathPrefix) || strings.HasPrefix(s, blnsPathPrefix)) && strings.Count(gopath.Clean(s), "/") <= 2 {
-		// Don't want to treat ipfs.io in /blns/ipfs.io as a filename.
+		// Don't want to treat link.io in /blns/link.io as a filename.
 		return ""
 	}
 	return gopath.Base(s)
@@ -752,7 +752,7 @@ func preferred404Filename(acceptHeaders []string) (string, string, error) {
 			contentType := strings.SplitN(spec, ";", 1)[0]
 			switch contentType {
 			case "*/*", "text/*", "text/html":
-				return "ipfs-404.html", "text/html", nil
+				return "link-404.html", "text/html", nil
 			}
 		}
 	}
